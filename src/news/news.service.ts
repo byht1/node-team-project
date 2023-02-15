@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { New, NewDocument } from 'src/db-schema/news.schema';
+import { New, NewDocument } from 'src/db-schema/new.schema';
 
 @Injectable()
 export class NewsService {
