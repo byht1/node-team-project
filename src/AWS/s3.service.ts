@@ -3,7 +3,6 @@ import { uuid } from 'uuidv4';
 import * as AWS from 'aws-sdk';
 
 export enum TypeOperation {
-  AUDIO = 'audio',
   IMAGE = 'image',
 }
 
