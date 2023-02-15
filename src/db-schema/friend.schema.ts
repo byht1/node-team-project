@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { ApiProperty } from '@nestjs/swagger';
 import mongoose, { Document } from 'mongoose';
 
-type WorkDaySchedule = {
+interface IWorkDaySchedule {
     isOpen: boolean;
     from?: string;
     to?: string;
@@ -21,7 +21,7 @@ export class Friend {
 
     @ApiProperty({example: 'site url'})
     @Prop()
-    url: number;
+    url: string;
 
     @ApiProperty({example: 'address url'})
     @Prop()
@@ -41,7 +41,7 @@ export class Friend {
         to: "16:00",
     }]})
     @Prop()
-    workDays: WorkDaySchedule[];
+    workDays: IWorkDaySchedule[];
 
     @ApiProperty({example: '+380931934069'})
     @Prop()
