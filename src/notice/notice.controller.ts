@@ -20,11 +20,16 @@ import { SearchDto } from './dto/search.dto';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { JwtAuthGuard } from './../auth/guard/jwt-auth.guard';
 import { IRequestUser } from 'src/type/req';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Notice } from 'src/db-schema/notice.schema';
 
+@ApiTags('Notices')
 @Controller('/notices')
 export class NoticeController {
   constructor(private noticeService: NoticeService, private userService: UserService) {}
 
+  @ApiOperation({ summary: 'Eндпоінт для отримання оголошень по категоріям' })
+  @ApiResponse({ status: 200, type: [Notice] })
   @Get()
   getNoticesByCategory(@Query() dto: SearchDto) {
     console.log('getByCategory');
