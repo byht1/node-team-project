@@ -6,7 +6,7 @@ import * as bcrypt from 'bcryptjs';
 import { Users, UsersDocument } from 'src/db-schema/user.schema';
 // import { EmailMessageService } from '../email-message/email-message.service';
 import { LogInDto, NewUserDto } from './dto';
-import { TAvatar, TResUserAuth, TTokens } from './type';
+import { TAvatar, Token, TResUserAuth, TTokens } from './type';
 import { UserService } from 'src/user/user.service';
 import { TId } from 'src/type';
 
@@ -53,14 +53,52 @@ export class AuthService {
     return this.normalizeData(isUser, tokens);
   }
 
-  // FIXME: добиит рефреш токен
-  async logOut(user: UsersDocument, currentToken: string): Promise<void> {
+  async logOut(
+    user: UsersDocument,
+    assesToken: string,
+    refreshToken: string,
+  ): Promise<void> {
     const id = user._id;
-    const tokenDelete = user.asses_token.filter(x => x !== currentToken);
+    const assesTokenDelete = user.asses_token.filter(
+      x => x.token !== assesToken,
+    );
+    const refreshTokenDelete = user.refresh_token.filter(
+      x => x.token !== refreshToken,
+    );
 
-    await this.usersModel.findByIdAndUpdate(id, { asses_token: tokenDelete });
+    await this.usersModel.findByIdAndUpdate(id, {
+      asses_token: assesTokenDelete,
+      refresh_token: refreshTokenDelete,
+    });
 
     return;
+  }
+
+  async refresh(refreshToken: string): Promise<string> {
+    try {
+      const isValid = await this.jwtService.verify(refreshToken, {
+        secret: process.env.REFRESH_SECRET_KEY,
+      });
+
+      const user = await this.usersModel.findById(isValid.id);
+
+      const assesToken = this.generatorToken(isValid.id, 'asses');
+
+      user.asses_token.push(assesToken);
+      user.save();
+
+      return assesToken.token;
+    } catch (error) {
+      const payload = await this.jwtService.decode(refreshToken);
+
+      if (typeof payload === 'string' || !payload.id) {
+        throw new HttpException('Не валідний токен', HttpStatus.FORBIDDEN);
+      }
+
+      await this.clearTokens(payload.id, refreshToken);
+
+      throw new HttpException('Не валідний токен', HttpStatus.FORBIDDEN);
+    }
   }
 
   async getTokens(id: TId) {
@@ -74,15 +112,25 @@ export class AuthService {
     };
   }
 
+  private generatorToken(id: TId, type: 'asses' | 'ref'): Token {
+    return {
+      token: this.jwtService.sign(
+        { id },
+        {
+          expiresIn: type === 'ref' ? '1d' : '15m',
+          secret:
+            type === 'ref'
+              ? process.env.REFRESH_SECRET_KEY
+              : process.env.ASSES_SECRET_KEY,
+        },
+      ),
+      date: Date.now(),
+    };
+  }
+
   private async generatorTokens(id: TId): Promise<TTokens> {
-    const asses = this.jwtService.sign(
-      { id },
-      { expiresIn: '2d', secret: process.env.ASSES_SECRET_KEY },
-    );
-    const refresh = this.jwtService.sign(
-      { id },
-      { expiresIn: '2d', secret: process.env.REFRESH_SECRET_KEY },
-    );
+    const asses = this.generatorToken(id, 'asses');
+    const refresh = this.generatorToken(id, 'ref');
 
     const user = await this.usersModel.findById(id);
 
@@ -90,7 +138,7 @@ export class AuthService {
     user.refresh_token.push(refresh);
     user.save();
 
-    return { asses_token: asses, refresh_token: refresh };
+    return { asses_token: asses.token, refresh_token: refresh.token };
   }
 
   private async hashPassword(password: string): Promise<string> {
@@ -114,5 +162,27 @@ export class AuthService {
     delete res._doc.password;
 
     return { ...res._doc, ...tokens };
+  }
+
+  private async clearTokens(id: TId, refCurrentToken: string) {
+    const user = await this.usersModel.findById(id);
+
+    if (!user) {
+      throw new HttpException('Не валідний токен', HttpStatus.FORBIDDEN);
+    }
+
+    const currentDate = Date.now();
+
+    const assesToken = [];
+    const refreshToken = user.refresh_token.filter(
+      x =>
+        currentDate - x.date <= 24 * 60 * 60 * 1000 &&
+        x.token !== refCurrentToken,
+    );
+
+    user.asses_token = assesToken;
+    user.refresh_token = refreshToken;
+
+    user.save;
   }
 }

@@ -5,11 +5,14 @@ import {
   HttpCode,
   Post,
   Req,
+  Res,
   UseGuards,
   UsePipes,
 } from '@nestjs/common';
 import { ApiHeaders, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Response } from 'express';
 import { Users } from 'src/db-schema/user.schema';
+import { CustomCookie } from 'src/decorators/CustomCookie.decorator';
 import { IRequestUser } from 'src/type/req';
 import { AuthService } from './auth.service';
 import { LogInDto, NewUserDto } from './dto';
@@ -41,8 +44,16 @@ export class AuthController {
   @ApiResponse({ status: 500, description: 'Server error' })
   @UsePipes(ValidatePipe)
   @Post('log-in')
-  logIn(@Body() logInDto: LogInDto) {
-    return this.authService.logIn(logInDto);
+  async logIn(
+    @Body() logInDto: LogInDto,
+    @Res({ passthrough: true }) response: Response,
+  ) {
+    const user = await this.authService.logIn(logInDto);
+    response.cookie('refreshToken', user.refresh_token, {
+      maxAge: 2 * 24 * 60 * 60 * 1000,
+      httpOnly: true,
+    });
+    return user;
   }
 
   @ApiHeaders([
@@ -57,8 +68,23 @@ export class AuthController {
   @ApiResponse({ status: 500, description: 'Server error' })
   @UseGuards(JwtAuthGuard)
   @HttpCode(204)
-  @Get('/logout')
-  logOut(@Req() req: IRequestUser) {
-    return this.authService.logOut(req.user, req.asses_token);
+  @Get('logout')
+  logOut(@Req() req: IRequestUser, @CustomCookie('refreshToken') refreshToken) {
+    return this.authService.logOut(req.user, req.asses_token, refreshToken);
+  }
+
+  @ApiResponse({ status: 201, type: 'New refresh token' })
+  @ApiHeaders([
+    {
+      name: 'Cookie',
+      required: true,
+      description: 'The refresh token issued to the current user.',
+    },
+  ])
+  @ApiResponse({ status: 403, description: 'Не валідний токен' })
+  @ApiResponse({ status: 500, description: 'Server error' })
+  @Get('refresh')
+  refresh(@CustomCookie('refreshToken') refreshToken) {
+    return this.authService.refresh(refreshToken);
   }
 }
