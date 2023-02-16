@@ -10,6 +10,7 @@ export class Notice {
   @ApiProperty({ name: '_id', example: '6373c0bca5a6e4c9556f1e7a' })
   _id: ObjectId;
 
+  @ApiProperty({ example: 'test@gmail.com' })
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Users' })
   owner: Users;
 

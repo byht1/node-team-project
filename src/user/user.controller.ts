@@ -7,9 +7,6 @@ export class UserController {
 
   @Get('test')
   test() {
-    return this.userService.removeFavirite(
-      '63ed62b5c19e964d34ac9fae',
-      '63ecf30a25d33bae0cd89451',
-    );
+    return this.userService.removeNoticeFromFavorite('63ed62b5c19e964d34ac9fae', '63ecf30a25d33bae0cd89451');
   }
 }
