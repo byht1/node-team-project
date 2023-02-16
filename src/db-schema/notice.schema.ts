@@ -7,38 +7,66 @@ export type NoticeDocument = HydratedDocument<Notice>;
 
 @Schema()
 export class Notice {
-  @ApiProperty({ name: '_id', example: '6373c0bca5a6e4c9556f1e7a' })
+  @ApiProperty({ description: 'Unique identifier', example: '63ee3d660f0d7d1060550d13' })
+  @Prop()
   _id: ObjectId;
 
-  @ApiProperty({ example: 'test@gmail.com' })
+  @ApiProperty({
+    description: 'Unique identifier of the user who created the Notice',
+    example: '63ee3d660f0d7d1060550d13',
+  })
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Users' })
-  owner: Users;
+  owner: ObjectId;
 
+  @ApiProperty({
+    description: 'Notice title',
+    example: 'Сute dog looking for a home',
+  })
   @Prop({
     type: String,
     required: [true, 'Title is required'],
   })
   title: string;
 
-  @Prop()
+  @ApiProperty({
+    description: "Pet's name",
+    example: 'Rich',
+  })
+  @Prop({ type: String, default: '' })
   name: string;
 
-  @Prop()
+  @ApiProperty({
+    description: 'Image',
+    example: {
+      jpg: 'https://i.imgur.com/KcNVF45.jpg',
+      png: 'https://i.imgur.com/KcNVF45.png',
+    },
+  })
+  @Prop({ type: String, default: '' })
   imgUrl: string;
 
-  @Prop()
+  @ApiProperty({
+    description: "Pet's birthday",
+    example: '21.09.2020',
+  })
+  @Prop({ type: String, default: '' })
   birthday: string;
+  default: '00.00.0000';
 
-  @Prop()
+  @ApiProperty({
+    description: "Pet's bread",
+    example: 'Pomeranian',
+  })
+  @Prop({ type: String, default: '' })
   bread: string;
 
-  @Prop()
+  @Prop({ type: String, default: '' })
   place: string;
 
   @Prop({ type: String, enum: ['male', 'female'] })
   sex: string;
 
-  @Prop()
+  @Prop({ type: String, default: '' })
   price: string;
 
   @Prop({
@@ -48,7 +76,7 @@ export class Notice {
   })
   category: string;
 
-  @Prop()
+  @Prop({ type: String, default: '' })
   comments: string;
 }
 
