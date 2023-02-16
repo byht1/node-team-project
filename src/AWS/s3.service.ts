@@ -4,6 +4,7 @@ import * as AWS from 'aws-sdk';
 
 export enum TypeOperation {
   IMAGE = 'image',
+  FRIENDS = 'friend',
 }
 
 @Injectable()
