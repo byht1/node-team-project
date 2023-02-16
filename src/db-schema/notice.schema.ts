@@ -1,11 +1,18 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument } from 'mongoose';
-// import * as mongoose from 'mongoose';
+import mongoose, { HydratedDocument, ObjectId } from 'mongoose';
+import { ApiProperty } from '@nestjs/swagger';
+import { Users } from './user.schema';
 
 export type NoticeDocument = HydratedDocument<Notice>;
 
 @Schema()
 export class Notice {
+  @ApiProperty({ name: '_id', example: '6373c0bca5a6e4c9556f1e7a' })
+  _id: ObjectId;
+
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Users' })
+  owner: Users;
+
   @Prop({
     type: String,
     required: [true, 'Title is required'],
@@ -42,9 +49,6 @@ export class Notice {
 
   @Prop()
   comments: string;
-
-  // @Prop({ type: mongoose.Schema.Types.ObjectId, ref: "User" })
-  // owner: User
 }
 
 export const NoticeSchema = SchemaFactory.createForClass(Notice);
