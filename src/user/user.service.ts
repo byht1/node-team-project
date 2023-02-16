@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, ObjectId } from 'mongoose';
-import { Notice, NoticeDocument } from 'src/db-schema/notice.schema';
 import { Users, UsersDocument } from 'src/db-schema/user.schema';
 import { TId } from 'src/type';
 
@@ -31,11 +30,9 @@ export class UserService {
   async removeFavirite(userId: TId, advertisementId: ObjectId | any) {
     const user = await this.usersModel.findById(userId);
 
-    console.log('🚀  UserService  user.favorite', user.favorite);
     user.favorite = user.favorite.filter(x => {
       return x.toString() !== advertisementId;
     });
-    console.log('🚀  UserService  user.favorite', user.favorite);
     await user.save();
 
     return true;

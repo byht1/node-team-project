@@ -2,7 +2,6 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { ApiProperty } from '@nestjs/swagger';
 import mongoose, { ObjectId } from 'mongoose';
 import { Token } from '../auth/type';
-import { Notice } from './notice.schema';
 
 export type UsersDocument = Users & Document;
 
@@ -85,12 +84,17 @@ export class Users {
 
   @ApiProperty({ example: ['6373c0bca5a6e4c9556f1e7a'] })
   @Prop({
-    // FIXME: задати нормальний ref
     type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Notice' }],
     default: [],
   })
-  // FIXME: задати нормальний тип масиву
   advertisement: ObjectId[];
+
+  @ApiProperty({ example: ['6373c0bca5a6e4c9556f1e7a'] })
+  @Prop({
+    type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Notice' }],
+    default: [],
+  })
+  cards: ObjectId[];
 
   @ApiProperty({
     example: '11bf5b37-e0b8-42e0-8dcf-dc8c4aefc000',
