@@ -6,9 +6,7 @@ import { TId } from 'src/type';
 
 @Injectable()
 export class UserService {
-  constructor(
-    @InjectModel(Users.name) private usersModel: Model<UsersDocument>,
-  ) {}
+  constructor(@InjectModel(Users.name) private usersModel: Model<UsersDocument>) {}
 
   async addFavirite(userId: TId, advertisementId: ObjectId) {
     const user = await this.usersModel.findById(userId);
@@ -19,52 +17,41 @@ export class UserService {
     return true;
   }
 
-  async getFavirite(userId: TId) {
-    const user = await (
-      await this.usersModel.findById(userId)
-    ).populate('favorite');
+  async getFavotiteNotices(userId: TId) {
+    const user = await this.usersModel.findById(userId, 'favorite').populate('favorite');
 
     return user.favorite;
   }
 
-  async removeFavirite(userId: TId, advertisementId: ObjectId | any) {
-    const user = await this.usersModel.findById(userId);
-
-    user.favorite = user.favorite.filter(x => {
-      return x.toString() !== advertisementId;
+  async removeNoticeFromFavorite(userId: TId, noticeId: ObjectId | any): Promise<ObjectId> {
+    await this.usersModel.findByIdAndUpdate(userId, {
+      $pull: { favorite: noticeId },
     });
-    await user.save();
-
-    return true;
+    return noticeId;
   }
 
-  async addAdvertisement(userId: TId, advertisementId: ObjectId) {
+  async addNoticeToFavorite(userId: TId, noticeId: ObjectId): Promise<ObjectId> {
     const user = await this.usersModel.findById(userId);
 
-    user.advertisement.push(advertisementId);
+    user.favorite.push(noticeId);
     await user.save();
 
-    return true;
+    return noticeId;
   }
 
-  async getAdvertisement(userId: TId) {
-    const user = await (
-      await this.usersModel.findById(userId)
-    ).populate('advertisement');
+  // async getAdvertisement(userId: TId) {
+  //   const user = await (await this.usersModel.findById(userId)).populate('advertisement');
 
-    return user.advertisement;
-  }
+  //   return user.advertisement;
+  // }
 
-  async removeAdvertisement(userId: TId, advertisementId: ObjectId | any) {
-    const user = await this.usersModel.findById(userId);
+  // async removeAdvertisement(userId: TId, advertisementId: ObjectId | any) {
+  //   const user = await this.usersModel.findById(userId);
 
-    (user.advertisement = user.advertisement.filter(
-      x => x.toString() !== advertisementId,
-    )),
-      await user.save();
+  //   (user.advertisement = user.advertisement.filter(x => x.toString() !== advertisementId)), await user.save();
 
-    return true;
-  }
+  //   return true;
+  // }
 
   async userById(id: TId): Promise<UsersDocument> {
     return await this.usersModel.findById(id);

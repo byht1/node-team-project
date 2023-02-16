@@ -14,6 +14,7 @@ import {
 } from '@nestjs/common';
 import { ObjectId } from 'mongoose';
 import { NoticeService } from './notice.service';
+import { UserService } from 'src/user/user.service';
 import { CreateNoticeDto } from './dto/create-notice.dto';
 import { SearchDto } from './dto/search.dto';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
@@ -22,7 +23,7 @@ import { IRequestUser } from 'src/type/req';
 
 @Controller('/notices')
 export class NoticeController {
-  constructor(private noticeService: NoticeService) {}
+  constructor(private noticeService: NoticeService, private userService: UserService) {}
 
   @Get()
   getNoticesByCategory(@Query() dto: SearchDto) {
@@ -39,13 +40,11 @@ export class NoticeController {
     return this.noticeService.getUserNotices(user._id);
   }
 
-  //------------пенернести до юзера----------
-
   @UseGuards(JwtAuthGuard)
   @Get('/favorite')
   getFavotiteNotices(@Req() request: IRequestUser) {
     const { user } = request;
-    return this.noticeService.getFavotiteNotices(user._id);
+    return this.userService.getFavotiteNotices(user._id);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -53,7 +52,7 @@ export class NoticeController {
   addNoticeToFavorite(@Req() request: IRequestUser, @Param('id') id: ObjectId) {
     console.log('addToFavorite');
     const { user } = request;
-    return this.noticeService.addNoticeToFavorite(user._id, id);
+    return this.userService.addNoticeToFavorite(user._id, id);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -61,9 +60,8 @@ export class NoticeController {
   removeNoticeFromFavorite(@Req() request: IRequestUser, @Param('id') id: ObjectId) {
     console.log('removeFromFavorite');
     const { user } = request;
-    return this.noticeService.removeNoticeFromFavorite(user._id, id);
+    return this.userService.removeNoticeFromFavorite(user._id, id);
   }
-  //-------------------------------------
 
   @Get('/:id')
   getNoticeById(@Param('id') id: ObjectId) {
