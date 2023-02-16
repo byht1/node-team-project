@@ -7,8 +7,7 @@ import { Friend, FriendDocument } from 'src/db-schema/friend.schema';
 export class FriendsService {
     constructor(@InjectModel(Friend.name) private friendModel: Model<FriendDocument>) {}
     
-    async getAllFriends() {
-        return await this.friendModel.find({"_id": {$ne: "63ed3f54220356e340b77d1f"}})
-        // return await this.friendModel.find()
+    async getAllFriends(): Promise<Friend[]> {
+        return await this.friendModel.find()
     }
 }
