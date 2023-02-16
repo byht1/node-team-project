@@ -10,17 +10,20 @@ import {
   Delete,
   UseInterceptors,
   UploadedFiles,
+  UseGuards,
 } from '@nestjs/common';
 import { ObjectId } from 'mongoose';
-import { Request } from 'express';
 import { NoticeService } from './notice.service';
+import { UserService } from 'src/user/user.service';
 import { CreateNoticeDto } from './dto/create-notice.dto';
 import { SearchDto } from './dto/search.dto';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
+import { JwtAuthGuard } from './../auth/guard/jwt-auth.guard';
+import { IRequestUser } from 'src/type/req';
 
 @Controller('/notices')
 export class NoticeController {
-  constructor(private noticeService: NoticeService) {}
+  constructor(private noticeService: NoticeService, private userService: UserService) {}
 
   @Get()
   getNoticesByCategory(@Query() dto: SearchDto) {
@@ -28,11 +31,36 @@ export class NoticeController {
     return this.noticeService.getNoticesByCategory(dto);
   }
 
+  @UseGuards(JwtAuthGuard)
+  @Get('/user')
+  getUserNotices(@Req() request: IRequestUser) {
+    console.log('getUserNotices');
+    const { user } = request;
+
+    return this.noticeService.getUserNotices(user._id);
+  }
+
+  @UseGuards(JwtAuthGuard)
   @Get('/favorite')
-  getFavotiteNotices(@Req() request: Request) {
-    console.log('getFavotite');
-    // console.log(request);
-    return this.noticeService.getFavotiteNotices();
+  getFavotiteNotices(@Req() request: IRequestUser) {
+    const { user } = request;
+    return this.userService.getFavotiteNotices(user._id);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch('/:id/favorite')
+  addNoticeToFavorite(@Req() request: IRequestUser, @Param('id') id: ObjectId) {
+    console.log('addToFavorite');
+    const { user } = request;
+    return this.userService.addNoticeToFavorite(user._id, id);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete(':id/favorite')
+  removeNoticeFromFavorite(@Req() request: IRequestUser, @Param('id') id: ObjectId) {
+    console.log('removeFromFavorite');
+    const { user } = request;
+    return this.userService.removeNoticeFromFavorite(user._id, id);
   }
 
   @Get('/:id')
@@ -41,26 +69,23 @@ export class NoticeController {
     return this.noticeService.getNoticeById(id);
   }
 
-  @Patch('/:id/favorite')
-  addNoticeToFavorite(@Req() request: Request, @Param('id') id: ObjectId) {
-    console.log('addToFavorite');
-    // console.log(request);
-    return this.noticeService.addNoticeToFavorite(id);
-  }
-
-  @Delete(':id/favorite')
-  removeNoticeFromFavorite(@Req() request: Request, @Param('id') id: ObjectId) {
-    console.log('removeFromFavorite');
-    // console.log(request);
-    return this.noticeService.removeNoticeFromFavorite(id);
-  }
-
+  @UseGuards(JwtAuthGuard)
   @Post()
   @UseInterceptors(FileFieldsInterceptor([{ name: 'picture', maxCount: 1 }]))
-  addNotice(@UploadedFiles() files, @Body() dto: CreateNoticeDto) {
+  addNotice(@Req() request: IRequestUser, @UploadedFiles() files, @Body() dto: CreateNoticeDto) {
+    console.log('addNotice');
+    const { user } = request;
     const { picture } = files;
-    return this.noticeService.addNotice(dto, picture[0]);
+    const image = picture ? picture[0] : '';
+
+    return this.noticeService.addNotice(user._id, dto, image);
   }
 
-  getUser;
+  @UseGuards(JwtAuthGuard)
+  @Delete('/:id')
+  removeNotice(@Param('id') id: ObjectId) {
+    console.log('removeNotice');
+
+    return this.noticeService.removeNotice(id);
+  }
 }
