@@ -1,14 +1,13 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument, ObjectId } from 'mongoose';
 import { ApiProperty } from '@nestjs/swagger';
-import { Users } from './user.schema';
 
 export type NoticeDocument = HydratedDocument<Notice>;
 
 @Schema()
 export class Notice {
   @ApiProperty({ description: 'Unique identifier', example: '63ee3d660f0d7d1060550d13' })
-  @Prop()
+  @Prop({ type: mongoose.Schema.Types.ObjectId })
   _id: ObjectId;
 
   @ApiProperty({
@@ -19,7 +18,6 @@ export class Notice {
   owner: ObjectId;
 
   @ApiProperty({
-    description: 'Notice title',
     example: 'Сute dog looking for a home',
   })
   @Prop({
@@ -29,14 +27,12 @@ export class Notice {
   title: string;
 
   @ApiProperty({
-    description: "Pet's name",
     example: 'Rich',
   })
   @Prop({ type: String, default: '' })
   name: string;
 
   @ApiProperty({
-    description: 'Image',
     example: {
       jpg: 'https://i.imgur.com/KcNVF45.jpg',
       png: 'https://i.imgur.com/KcNVF45.png',
@@ -46,7 +42,6 @@ export class Notice {
   imgUrl: string;
 
   @ApiProperty({
-    description: "Pet's birthday",
     example: '21.09.2020',
   })
   @Prop({ type: String, default: '' })
@@ -54,21 +49,35 @@ export class Notice {
   default: '00.00.0000';
 
   @ApiProperty({
-    description: "Pet's bread",
     example: 'Pomeranian',
   })
   @Prop({ type: String, default: '' })
   bread: string;
 
+  @ApiProperty({
+    example: 'Lviv',
+  })
   @Prop({ type: String, default: '' })
   place: string;
 
-  @Prop({ type: String, enum: ['male', 'female'] })
+  @ApiProperty({
+    example: 'male',
+  })
+  @Prop({ type: String, enum: ['male', 'female'], default: '' })
   sex: string;
 
+  @ApiProperty({
+    example: 'user@mail.com',
+  })
+  @ApiProperty({
+    example: '150$',
+  })
   @Prop({ type: String, default: '' })
   price: string;
 
+  @ApiProperty({
+    example: 'for-free',
+  })
   @Prop({
     type: String,
     required: [true, 'Category is required'],
@@ -76,6 +85,10 @@ export class Notice {
   })
   category: string;
 
+  @ApiProperty({
+    example:
+      'Comments:  Lorem ipsum dolor sit amet, consectetur Lorem ipsum dolor sit amet, consectetur  Lorem ipsum dolor sit amet, consectetur Lorem',
+  })
   @Prop({ type: String, default: '' })
   comments: string;
 }
