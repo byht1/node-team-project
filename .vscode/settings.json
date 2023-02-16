@@ -1,5 +1,43 @@
 {
-    "cSpell.words": [
-        "Petly"
-    ]
+  "cSpell.words": ["Petly"],
+  "cSpell.enableFiletypes": [
+    "!asciidoc",
+    "!c",
+    "!csharp",
+    "!erlang",
+    "!go",
+    "!handlebars",
+    "!jade",
+    "!java",
+    "!jsonc",
+    "!jupyter",
+    "!latex",
+    "!less",
+    "!php",
+    "!plaintext",
+    "!rust",
+    "!scala",
+    "!typescript"
+    "metatype",
+    "Petly",
+    "велику",
+    "користувача",
+    "літеру",
+    "Логін",
+    "маленьку",
+    "Мінімум",
+    "містити",
+    "номер",
+    "один",
+    "одну",
+    "Пароль",
+    "повинен",
+    "символ",
+    "симфолів",
+    "сцец",
+    "сцеціальний",
+    "телефона",
+    "хотяби",
+    "цифру"
+  ]
 }
