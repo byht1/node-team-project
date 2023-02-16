@@ -1,5 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import * as cookieParser from 'cookie-parser';
+
 import { AppModule } from './app.module';
 
 const start = async () => {
@@ -7,6 +9,7 @@ const start = async () => {
   try {
     const app = await NestFactory.create(AppModule, { cors: true });
     app.enableCors();
+    app.use(cookieParser());
 
     app.setGlobalPrefix('api');
 

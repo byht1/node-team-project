@@ -1,7 +1,8 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { ApiProperty } from '@nestjs/swagger';
 import mongoose, { ObjectId } from 'mongoose';
-// import mongoose from 'mongoose';
+import { Token } from '../auth/type';
+import { Notice } from './notice.schema';
 
 export type UsersDocument = Users & Document;
 
@@ -25,14 +26,14 @@ export class Users {
       'eyJhbGciOiJIUzI1NiI.eyJpZCI6IjYLCJpYXQiOjE2NjU2NTM2NgsImV4cCI6MTY2NTc0MDA3OH0.mZMKEw1j3N9VVZ97E',
   })
   @Prop()
-  asses_token: string[];
+  asses_token: Token[];
 
   @ApiProperty({
     example:
       'eyJhbGciOiJIUzI1NiI.eyJpZCI6IjYLCJpYXQiOjE2NjU2NTM2NgsImV4cCI6MTY2NTc0MDA3OH0.mZMKEw1j3N9VVZ97E',
   })
   @Prop()
-  refresh_token: string[];
+  refresh_token: Token[];
 
   @ApiProperty({ example: 'test@gmail.com' })
   @Prop({ type: String, required: true })
@@ -77,17 +78,15 @@ export class Users {
 
   @ApiProperty({ example: ['6373c0bca5a6e4c9556f1e7a'] })
   @Prop({
-    // FIXME: задати нормальний ref
-    type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'favorite' }],
+    type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Notice' }],
     default: [],
   })
-  // FIXME: задати нормальний тип масиву
   favorite: ObjectId[];
 
   @ApiProperty({ example: ['6373c0bca5a6e4c9556f1e7a'] })
   @Prop({
     // FIXME: задати нормальний ref
-    type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'advertisement' }],
+    type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Notice' }],
     default: [],
   })
   // FIXME: задати нормальний тип масиву

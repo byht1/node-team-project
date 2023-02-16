@@ -19,10 +19,9 @@ export class JwtAuthGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const req = context.switchToHttp().getRequest();
+    const [bearer, token] = req.headers.authorization.split(' ');
 
     try {
-      const [bearer, token] = req.headers.authorization.split(' ');
-
       if (bearer !== 'Bearer' || !token) {
         throw new HttpException('Не валідний токен', HttpStatus.FORBIDDEN);
       }
@@ -44,6 +43,17 @@ export class JwtAuthGuard implements CanActivate {
 
       return true;
     } catch (error) {
+      const payload = this.jwtService.decode(token);
+
+      if (typeof payload === 'string' || !payload.id) {
+        throw new HttpException('Не валідний токен', HttpStatus.FORBIDDEN);
+      }
+
+      const user = await this.usersModel.findById(payload.id);
+
+      user.asses_token = user.asses_token.filter(x => x.token !== token);
+      user.save();
+
       throw new HttpException('Не валідний токен', HttpStatus.FORBIDDEN);
     }
   }

@@ -1,6 +1,7 @@
+import { Request } from 'express';
 import { UsersDocument } from 'src/db-schema/user.schema';
 
-export interface IRequestUser extends Express.Request {
+export interface IRequestUser extends Request {
   user: UsersDocument;
   asses_token: string;
 }
