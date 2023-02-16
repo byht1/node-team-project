@@ -1,5 +1,23 @@
 {
-  "cSpell.words": [
+  "cSpell.words": ["Petly"],
+  "cSpell.enableFiletypes": [
+    "!asciidoc",
+    "!c",
+    "!csharp",
+    "!erlang",
+    "!go",
+    "!handlebars",
+    "!jade",
+    "!java",
+    "!jsonc",
+    "!jupyter",
+    "!latex",
+    "!less",
+    "!php",
+    "!plaintext",
+    "!rust",
+    "!scala",
+    "!typescript"
     "metatype",
     "Petly",
     "велику",
