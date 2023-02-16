@@ -29,31 +29,7 @@ export class NoticeService {
     return notice;
   }
 
-  //-----перенести до юзера
-
-  async getFavotiteNotices(id: ObjectId) {
-    const { favorite } = await this.usersModel.findById(id, 'favorite').populate('favorite');
-    return favorite;
-  }
-
-  async addNoticeToFavorite(userId: ObjectId, noticeId: ObjectId): Promise<ObjectId> {
-    const user = await this.usersModel.findById(userId);
-    user.favorite.push(noticeId);
-    await user.save();
-
-    return noticeId;
-  }
-
-  async removeNoticeFromFavorite(userId: ObjectId, noticeId: ObjectId): Promise<ObjectId> {
-    await this.usersModel.findByIdAndUpdate(userId, {
-      $pull: { favorite: noticeId },
-    });
-    return noticeId;
-  }
-  //--------------------------
-
   async addNotice(userId: ObjectId, dto: CreateNoticeDto, picture: string): Promise<Notice> {
-    console.log('addNotice service');
     const picturePath = await this.s3Service.uploadFile(picture, TypeOperation.IMAGE);
 
     const notice = await this.noticeModel.create({
