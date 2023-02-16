@@ -5,15 +5,10 @@ import { S3Service, TypeOperation } from 'src/AWS/s3.service';
 import { Notice, NoticeDocument } from 'src/db-schema/notice.schema';
 import { CreateNoticeDto } from './dto/create-notice.dto';
 import { SearchDto } from './dto/search.dto';
-import { Users, UsersDocument } from 'src/db-schema/user.schema';
 
 @Injectable()
 export class NoticeService {
-  constructor(
-    @InjectModel(Notice.name) private noticeModel: Model<NoticeDocument>,
-    @InjectModel(Users.name) private usersModel: Model<UsersDocument>,
-    private s3Service: S3Service,
-  ) {}
+  constructor(@InjectModel(Notice.name) private noticeModel: Model<NoticeDocument>, private s3Service: S3Service) {}
 
   async getNoticesByCategory(dto: SearchDto): Promise<Notice[]> {
     const notices = await this.noticeModel.find(dto);
@@ -49,6 +44,10 @@ export class NoticeService {
 
   async removeNotice(noticeId: ObjectId): Promise<Notice> {
     const notice = await this.noticeModel.findByIdAndRemove(noticeId);
+
+    if (!notice) {
+      throw new HttpException('Оголошення не знайдено', HttpStatus.NOT_FOUND);
+    }
 
     return notice;
   }
