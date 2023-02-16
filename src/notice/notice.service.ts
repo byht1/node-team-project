@@ -1,59 +1,79 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, ObjectId } from 'mongoose';
 import { S3Service, TypeOperation } from 'src/AWS/s3.service';
 import { Notice, NoticeDocument } from 'src/db-schema/notice.schema';
 import { CreateNoticeDto } from './dto/create-notice.dto';
 import { SearchDto } from './dto/search.dto';
+import { Users, UsersDocument } from 'src/db-schema/user.schema';
 
 @Injectable()
 export class NoticeService {
   constructor(
     @InjectModel(Notice.name) private noticeModel: Model<NoticeDocument>,
+    @InjectModel(Users.name) private usersModel: Model<UsersDocument>,
     private s3Service: S3Service,
   ) {}
 
-  async getNoticesByCategory(dto: SearchDto) {
-    console.log(dto);
+  async getNoticesByCategory(dto: SearchDto): Promise<Notice[]> {
     const notices = await this.noticeModel.find(dto);
     return notices;
   }
 
-  async getFavotiteNotices() {
-    //получить пользователя с избранными объявлениями (метод популейт)
-    //вернуть масив избранных объявлений
-    return `get user's favorites notices`;
-  }
-
-  async getNoticeById(id: ObjectId) {
+  async getNoticeById(id: ObjectId): Promise<Notice> {
     const notice = await this.noticeModel.findById(id);
+
+    if (!notice) {
+      throw new HttpException('Оголошення не знайдено', HttpStatus.NOT_FOUND);
+    }
     return notice;
   }
 
-  async addNoticeToFavorite(id: ObjectId) {
-    //достать юзера по id
-    //если юзер есть, то обновить поле избранных объявлений
-    //сохранить юзера
-    //вернуть id объявления
-    return `add notice with ${id} to user's favorite notices`;
+  //-----перенести до юзера
+
+  async getFavotiteNotices(id: ObjectId) {
+    const { favorite } = await this.usersModel.findById(id, 'favorite').populate('favorite');
+    return favorite;
   }
 
-  async removeNoticeFromFavorite(id: ObjectId) {
-    //если юзер есть, то обновить поле фаворитов ($pull)
-    return `remove notice with ${id} from user's favorite notices`;
+  async addNoticeToFavorite(userId: ObjectId, noticeId: ObjectId): Promise<ObjectId> {
+    const user = await this.usersModel.findById(userId);
+    user.favorite.push(noticeId);
+    await user.save();
+
+    return noticeId;
   }
 
-  async addNotice(dto: CreateNoticeDto, picture: string) {
-    //добавить владельца
-    const picturePath = await this.s3Service.uploadFile(
-      picture,
-      TypeOperation.IMAGE,
-    );
+  async removeNoticeFromFavorite(userId: ObjectId, noticeId: ObjectId): Promise<ObjectId> {
+    await this.usersModel.findByIdAndUpdate(userId, {
+      $pull: { favorite: noticeId },
+    });
+    return noticeId;
+  }
+  //--------------------------
+
+  async addNotice(userId: ObjectId, dto: CreateNoticeDto, picture: string): Promise<Notice> {
+    console.log('addNotice service');
+    const picturePath = await this.s3Service.uploadFile(picture, TypeOperation.IMAGE);
 
     const notice = await this.noticeModel.create({
       ...dto,
+      owner: userId,
       imgUrl: picturePath,
     });
+
+    return notice;
+  }
+
+  async getUserNotices(userId: ObjectId): Promise<Notice[]> {
+    const notices = this.noticeModel.find({ owner: userId });
+
+    return notices;
+  }
+
+  async removeNotice(noticeId: ObjectId): Promise<Notice> {
+    const notice = await this.noticeModel.findByIdAndRemove(noticeId);
+
     return notice;
   }
 }

@@ -78,7 +78,7 @@ export class Users {
   @ApiProperty({ example: ['6373c0bca5a6e4c9556f1e7a'] })
   @Prop({
     // FIXME: задати нормальний ref
-    type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'favorite' }],
+    type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Notice' }],
     default: [],
   })
   // FIXME: задати нормальний тип масиву
