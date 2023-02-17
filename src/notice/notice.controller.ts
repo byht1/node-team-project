@@ -13,7 +13,7 @@ import {
   UseGuards,
   UsePipes,
 } from '@nestjs/common';
-import { ObjectId } from 'mongoose';
+import mongoose, { ObjectId } from 'mongoose';
 import { NoticeService } from './notice.service';
 import { UserService } from 'src/user/user.service';
 import { CreateNoticeDto } from './dto/create-notice.dto';
@@ -21,7 +21,7 @@ import { SearchDto } from './dto/search.dto';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { JwtAuthGuard } from './../auth/guard/jwt-auth.guard';
 import { IRequestUser } from 'src/type/req';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiOkResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Notice } from 'src/db-schema/notice.schema';
 import { ValidatePipe } from 'src/global/pipe/validate.pipe';
 
@@ -33,12 +33,20 @@ export class NoticeController {
   @ApiOperation({ summary: 'Endpoint to receive ads by category' })
   @ApiResponse({ status: 200, type: [Notice] })
   @ApiResponse({ status: 404, description: 'Not found' })
+  @ApiResponse({ status: 500, description: 'Server error' })
+  @UsePipes(ValidatePipe)
   @Get()
   getNoticesByCategory(@Query() dto: SearchDto) {
+    console.log('🚀 ~ file: notice.controller.ts:40 ~ NoticeController ~ getNoticesByCategory ~ dto', dto);
     console.log('getByCategory');
     return this.noticeService.getNoticesByCategory(dto);
   }
 
+  @ApiOperation({ summary: 'Endpoint for receiving ads of an authorized user created by this user' })
+  @ApiResponse({ status: 200, type: [Notice] })
+  @ApiResponse({ status: 403, description: 'Invalid token' })
+  @ApiResponse({ status: 404, description: 'Not found' })
+  @ApiResponse({ status: 500, description: 'Server error' })
   @UseGuards(JwtAuthGuard)
   @Get('/user')
   getUserNotices(@Req() request: IRequestUser) {
@@ -48,6 +56,11 @@ export class NoticeController {
     return this.noticeService.getUserNotices(user._id);
   }
 
+  @ApiOperation({ summary: 'Endpoint for receiving ads of an authorized user who added them to favorites' })
+  @ApiResponse({ status: 200, type: [Notice] })
+  @ApiResponse({ status: 403, description: 'Invalid token' })
+  @ApiResponse({ status: 404, description: 'Not found' })
+  @ApiResponse({ status: 500, description: 'Server error' })
   @UseGuards(JwtAuthGuard)
   @Get('/favorite')
   getFavotiteNotices(@Req() request: IRequestUser) {
@@ -56,6 +69,11 @@ export class NoticeController {
     return this.userService.getFavotiteNotices(user._id);
   }
 
+  @ApiOperation({ summary: 'Endpoint for adding an ad to your favorites' })
+  @ApiResponse({ status: 200, type: mongoose.Schema.Types.ObjectId })
+  @ApiResponse({ status: 403, description: 'Invalid token' })
+  @ApiResponse({ status: 404, description: 'Not found' })
+  @ApiResponse({ status: 500, description: 'Server error' })
   @UseGuards(JwtAuthGuard)
   @Patch('/:id/favorite')
   addNoticeToFavorite(@Req() request: IRequestUser, @Param('id') id: ObjectId) {
@@ -64,6 +82,11 @@ export class NoticeController {
     return this.userService.addNoticeToFavorite(user._id, id);
   }
 
+  @ApiOperation({ summary: 'Endpoint for adding an ad to your favorites' })
+  @ApiResponse({ status: 200, type: mongoose.Schema.Types.ObjectId })
+  @ApiResponse({ status: 403, description: 'Invalid token' })
+  @ApiResponse({ status: 404, description: 'Not found' })
+  @ApiResponse({ status: 500, description: 'Server error' })
   @UseGuards(JwtAuthGuard)
   @Delete(':id/favorite')
   removeNoticeFromFavorite(@Req() request: IRequestUser, @Param('id') id: ObjectId) {
@@ -72,36 +95,38 @@ export class NoticeController {
     return this.userService.removeNoticeFromFavorite(user._id, id);
   }
 
+  @ApiOperation({ summary: 'Endpoint for receiving one ad' })
+  @ApiResponse({ status: 200, type: Notice })
+  @ApiResponse({ status: 404, description: 'Not found' })
+  @ApiResponse({ status: 500, description: 'Server error' })
   @Get('/:id')
   getNoticeById(@Param('id') id: ObjectId) {
     console.log('getById');
     return this.noticeService.getNoticeById(id);
   }
 
-  //===========================
-  // @UseGuards(JwtAuthGuard)
-  // @UsePipes(ValidatePipe)
-  // @Post()
-  // @UseInterceptors(FileFieldsInterceptor([{ name: 'picture', maxCount: 1 }]))
-  // addNotice(@Req() request: IRequestUser, @UploadedFiles() files, @Body() dto: CreateNoticeDto) {
-  //   console.log('addNotice');
-  //   const { user } = request;
-  //   const { picture } = files;
-  //   console.log(files);
-
-  //   return this.noticeService.addNotice(user._id, dto, picture[0]);
-  // }
-  //===========================
+  @ApiOperation({ summary: 'Endpoint for adding ads according to the selected category' })
+  @ApiResponse({ status: 201, type: Notice })
+  @ApiResponse({ status: 403, description: 'Invalid token' })
+  @ApiResponse({ status: 404, description: 'Not found' })
+  @ApiResponse({ status: 500, description: 'Server error' })
   @UseGuards(JwtAuthGuard)
+  @UsePipes(ValidatePipe)
   @Post()
-  addNotice(@Req() request: IRequestUser, @Body() dto: CreateNoticeDto) {
-    console.log('addNotice', new Date());
-    console.log('dto', dto);
+  @UseInterceptors(FileFieldsInterceptor([{ name: 'picture', maxCount: 1 }]))
+  addNotice(@Req() request: IRequestUser, @UploadedFiles() files, @Body() dto: CreateNoticeDto) {
+    console.log('addNotice');
     const { user } = request;
-    return true;
-    // return this.noticeService.addNotice(user._id, dto, '');
+    const { picture } = files;
+
+    return this.noticeService.addNotice(user._id, dto, picture[0]);
   }
-  //==================
+
+  @ApiOperation({ summary: "Endpoint for deleting an authorized user's ad created by this user " })
+  @ApiResponse({ status: 200, type: Notice })
+  @ApiResponse({ status: 403, description: 'Invalid token' })
+  @ApiResponse({ status: 404, description: 'Not found' })
+  @ApiResponse({ status: 500, description: 'Server error' })
   @UseGuards(JwtAuthGuard)
   @Delete('/:id')
   removeNotice(@Param('id') id: ObjectId) {

@@ -1,9 +1,15 @@
-import { IsEnum } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
+import { IsEnum, IsString } from 'class-validator';
+
+export enum Category {
+  SELL = 'sell',
+  LOST_FOUND = 'lost-found',
+  FOR_FREE = 'for-free',
+}
 
 export class SearchDto {
-  @IsEnum(
-    { entity: ['sell', 'lost-found', 'for-free'] },
-    { message: "Cathegory should be on of: ['sell', 'lost-found', 'for-free']" },
-  )
-  readonly category: string;
+  @ApiProperty({ example: ['sell', 'lost-found', 'for-free'] })
+  @IsString({ message: 'Not a line' })
+  @IsEnum(Category)
+  readonly category?: Category = Category.SELL;
 }

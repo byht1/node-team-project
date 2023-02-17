@@ -106,7 +106,7 @@ export class AuthService {
       token: this.jwtService.sign(
         { id },
         {
-          expiresIn: type === 'ref' ? '1d' : '4h',
+          expiresIn: type === 'ref' ? '1d' : '15m',
           secret: type === 'ref' ? process.env.REFRESH_SECRET_KEY : process.env.ASSES_SECRET_KEY,
         },
       ),

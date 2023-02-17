@@ -1,14 +1,13 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument, ObjectId } from 'mongoose';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsPhoneNumber, IsEmail } from 'class-validator';
 
 export type NoticeDocument = HydratedDocument<Notice>;
 
 @Schema()
 export class Notice {
   @ApiProperty({
-    description: 'Unique identifier of the user who created the Notice',
+    description: 'Identifier of the user who created the Notice',
     example: '63ee3d660f0d7d1060550d13',
   })
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Users' })
@@ -30,16 +29,13 @@ export class Notice {
   name: string;
 
   @ApiProperty({
-    example: {
-      jpg: 'https://i.imgur.com/KcNVF45.jpg',
-      png: 'https://i.imgur.com/KcNVF45.png',
-    },
+    example: 'https://i.imgur.com/KcNVF45.jpg',
   })
   @Prop({ type: String, default: 'https://api.multiavatar.com/User.png' })
   imgUrl: string;
 
   @ApiProperty({
-    example: '21.09.2020',
+    example: '2020-08-31',
   })
   @Prop({ type: String, default: '' })
   birthday: string;
@@ -86,12 +82,10 @@ export class Notice {
   comments: string;
 
   @ApiProperty({ example: '+380999996633' })
-  @IsPhoneNumber()
   @Prop({ type: String, default: '' })
   phone: string;
 
   @ApiProperty({ example: 'owner@mail.com' })
-  @IsEmail()
   @Prop({ type: String, default: '' })
   email: string;
 }
