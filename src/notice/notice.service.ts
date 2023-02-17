@@ -11,6 +11,9 @@ export class NoticeService {
   constructor(@InjectModel(Notice.name) private noticeModel: Model<NoticeDocument>, private s3Service: S3Service) {}
 
   async getNoticesByCategory(dto: SearchDto): Promise<Notice[]> {
+    if (!dto) {
+      throw new HttpException('Bad request', HttpStatus.BAD_REQUEST);
+    }
     const notices = await this.noticeModel.find(dto);
     return notices;
   }
@@ -19,7 +22,7 @@ export class NoticeService {
     const notice = await this.noticeModel.findById(id);
 
     if (!notice) {
-      throw new HttpException('Оголошення не знайдено', HttpStatus.NOT_FOUND);
+      throw new HttpException('Ad not found', HttpStatus.NOT_FOUND);
     }
     return notice;
   }
