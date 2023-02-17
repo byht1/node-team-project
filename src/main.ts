@@ -17,6 +17,7 @@ const start = async () => {
       .setTitle('Petly')
       .setDescription('Docs REST API')
       .setVersion('0.0.1')
+      .addServer(`${CURRENT_HOST ? `http://localhost:${PORT}` : 'ТУТ БУДЕ СЕРВЕР))'}`)
       .addServer(`${CURRENT_HOST ? `http://localhost:${PORT}` : 'https://node-team-project.onrender.com'}`)
       .build();
     const document = SwaggerModule.createDocument(app, config);
