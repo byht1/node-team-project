@@ -5,6 +5,7 @@ import * as AWS from 'aws-sdk';
 export enum TypeOperation {
   IMAGE = 'image',
   FRIENDS = 'friend',
+  AVSTAR = 'avatars',
 }
 
 @Injectable()
@@ -17,27 +18,16 @@ export class S3Service {
   });
 
   async uploadFile(file: any | undefined, type: TypeOperation) {
+    console.log('🚀  S3Service  file', file);
     if (!file) return '';
     const { originalname } = file;
     const expansionFile = originalname.split('.').pop();
     const name = `${uuid()}.${expansionFile}`;
 
-    return await this.s3_upload(
-      file.buffer,
-      this.AWS_S3_BUCKET,
-      name,
-      file.mimetype,
-      type,
-    );
+    return await this.s3_upload(file.buffer, this.AWS_S3_BUCKET, name, file.mimetype, type);
   }
 
-  private async s3_upload(
-    file: Buffer,
-    bucket: string,
-    name: string,
-    mimetype: string,
-    type: TypeOperation,
-  ) {
+  private async s3_upload(file: Buffer, bucket: string, name: string, mimetype: string, type: TypeOperation) {
     const params = {
       Bucket: `${bucket}/${type}`,
       Key: String(name),

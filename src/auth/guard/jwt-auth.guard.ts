@@ -1,10 +1,4 @@
-import {
-  CanActivate,
-  ExecutionContext,
-  HttpException,
-  HttpStatus,
-  Injectable,
-} from '@nestjs/common';
+import { CanActivate, ExecutionContext, HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
@@ -12,18 +6,15 @@ import { Users, UsersDocument } from 'src/db-schema/user.schema';
 
 @Injectable()
 export class JwtAuthGuard implements CanActivate {
-  constructor(
-    @InjectModel(Users.name) private usersModel: Model<UsersDocument>,
-    private jwtService: JwtService,
-  ) {}
+  constructor(@InjectModel(Users.name) private usersModel: Model<UsersDocument>, private jwtService: JwtService) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const req = context.switchToHttp().getRequest();
-    const [bearer, token] = req.headers.authorization.split(' ');
+    const [bearer, token] = req.headers.authorization?.split(' ');
 
     try {
       if (bearer !== 'Bearer' || !token) {
-        throw new HttpException('Не валідний токен', HttpStatus.FORBIDDEN);
+        throw new HttpException('Invalid token', HttpStatus.FORBIDDEN);
       }
 
       const isValidToken = this.jwtService.verify(token, {
@@ -32,10 +23,10 @@ export class JwtAuthGuard implements CanActivate {
 
       const user = await this.usersModel.findById(isValidToken.id);
 
-      if (!user || !user.asses_token.includes(token)) {
+      if (!user || !user.asses_token.find(x => x.token === token)) {
         user.asses_token.filter(x => x !== token);
         user.save();
-        throw new HttpException('Не валідний токен', HttpStatus.FORBIDDEN);
+        throw new HttpException('Invalid token', HttpStatus.FORBIDDEN);
       }
 
       req.user = user;
@@ -45,8 +36,8 @@ export class JwtAuthGuard implements CanActivate {
     } catch (error) {
       const payload = this.jwtService.decode(token);
 
-      if (typeof payload === 'string' || !payload.id) {
-        throw new HttpException('Не валідний токен', HttpStatus.FORBIDDEN);
+      if (typeof payload === 'string' || !payload?.id) {
+        throw new HttpException('Invalid token', HttpStatus.FORBIDDEN);
       }
 
       const user = await this.usersModel.findById(payload.id);
@@ -54,7 +45,7 @@ export class JwtAuthGuard implements CanActivate {
       user.asses_token = user.asses_token.filter(x => x.token !== token);
       user.save();
 
-      throw new HttpException('Не валідний токен', HttpStatus.FORBIDDEN);
+      throw new HttpException('Invalid token', HttpStatus.FORBIDDEN);
     }
   }
 }

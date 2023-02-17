@@ -1,12 +1,28 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, ObjectId } from 'mongoose';
+import { S3Service, TypeOperation } from 'src/AWS/s3.service';
 import { Users, UsersDocument } from 'src/db-schema/user.schema';
 import { TId } from 'src/type';
+import { EditingUserDto } from './dto/editingUser.dto';
 
 @Injectable()
 export class UserService {
-  constructor(@InjectModel(Users.name) private usersModel: Model<UsersDocument>) {}
+  constructor(@InjectModel(Users.name) private usersModel: Model<UsersDocument>, private s3servise: S3Service) {}
+
+  async editingData(editingUserDto: EditingUserDto, id: TId) {
+    const user = await this.usersModel.findByIdAndUpdate(id, editingUserDto, { new: true });
+
+    return this.normalizeData(user);
+  }
+
+  async editingPhoto(file: any, userId: TId) {
+    const photoUrl = await this.s3servise.uploadFile(file, TypeOperation.AVSTAR);
+
+    const user = await this.usersModel.findByIdAndUpdate(userId, { photo: photoUrl }, { new: true });
+
+    return this.normalizeData(user);
+  }
 
   async addFavirite(userId: TId, advertisementId: ObjectId) {
     const user = await this.usersModel.findById(userId);
@@ -63,5 +79,15 @@ export class UserService {
 
   async userByUsername(username: string): Promise<UsersDocument> {
     return await this.usersModel.findOne({ name: username });
+  }
+
+  private normalizeData(user: UsersDocument) {
+    const res: { [key: string]: any } = { ...user };
+
+    delete res._doc.password;
+    delete res._doc.asses_token;
+    delete res._doc.refresh_token;
+
+    return { ...res._doc };
   }
 }
