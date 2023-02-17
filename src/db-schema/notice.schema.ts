@@ -1,15 +1,12 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument, ObjectId } from 'mongoose';
 import { ApiProperty } from '@nestjs/swagger';
+import { IsPhoneNumber, IsEmail } from 'class-validator';
 
 export type NoticeDocument = HydratedDocument<Notice>;
 
 @Schema()
 export class Notice {
-  @ApiProperty({ description: 'Unique identifier', example: '63ee3d660f0d7d1060550d13' })
-  @Prop({ type: mongoose.Schema.Types.ObjectId })
-  _id: ObjectId;
-
   @ApiProperty({
     description: 'Unique identifier of the user who created the Notice',
     example: '63ee3d660f0d7d1060550d13',
@@ -38,7 +35,7 @@ export class Notice {
       png: 'https://i.imgur.com/KcNVF45.png',
     },
   })
-  @Prop({ type: String, default: '' })
+  @Prop({ type: String, default: 'https://api.multiavatar.com/User.png' })
   imgUrl: string;
 
   @ApiProperty({
@@ -46,7 +43,6 @@ export class Notice {
   })
   @Prop({ type: String, default: '' })
   birthday: string;
-  default: '00.00.0000';
 
   @ApiProperty({
     example: 'Pomeranian',
@@ -67,10 +63,7 @@ export class Notice {
   sex: string;
 
   @ApiProperty({
-    example: 'user@mail.com',
-  })
-  @ApiProperty({
-    example: '150$',
+    example: '150uah',
   })
   @Prop({ type: String, default: '' })
   price: string;
@@ -87,10 +80,20 @@ export class Notice {
 
   @ApiProperty({
     example:
-      'Comments:  Lorem ipsum dolor sit amet, consectetur Lorem ipsum dolor sit amet, consectetur  Lorem ipsum dolor sit amet, consectetur Lorem',
+      'Lorem ipsum dolor sit amet, consectetur Lorem ipsum dolor sit amet, consectetur  Lorem ipsum dolor sit amet, consectetur Lorem',
   })
   @Prop({ type: String, default: '' })
   comments: string;
+
+  @ApiProperty({ example: '+380999996633' })
+  @IsPhoneNumber()
+  @Prop({ type: String, default: '' })
+  phone: string;
+
+  @ApiProperty({ example: 'owner@mail.com' })
+  @IsEmail()
+  @Prop({ type: String, default: '' })
+  email: string;
 }
 
 export const NoticeSchema = SchemaFactory.createForClass(Notice);

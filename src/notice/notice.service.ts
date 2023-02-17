@@ -19,12 +19,14 @@ export class NoticeService {
     const notice = await this.noticeModel.findById(id);
 
     if (!notice) {
-      throw new HttpException('Оголошення не знайдено', HttpStatus.NOT_FOUND);
+      throw new HttpException('Ad not found', HttpStatus.NOT_FOUND);
     }
     return notice;
   }
 
   async addNotice(userId: ObjectId, dto: CreateNoticeDto, picture: string): Promise<Notice> {
+    console.log('addNotice-service');
+
     const picturePath = await this.s3Service.uploadFile(picture, TypeOperation.IMAGE);
 
     const notice = await this.noticeModel.create({

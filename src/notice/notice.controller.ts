@@ -11,6 +11,7 @@ import {
   UseInterceptors,
   UploadedFiles,
   UseGuards,
+  UsePipes,
 } from '@nestjs/common';
 import { ObjectId } from 'mongoose';
 import { NoticeService } from './notice.service';
@@ -22,14 +23,16 @@ import { JwtAuthGuard } from './../auth/guard/jwt-auth.guard';
 import { IRequestUser } from 'src/type/req';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Notice } from 'src/db-schema/notice.schema';
+import { ValidatePipe } from 'src/global/pipe/validate.pipe';
 
 @ApiTags('Notices')
 @Controller('/notices')
 export class NoticeController {
   constructor(private noticeService: NoticeService, private userService: UserService) {}
 
-  @ApiOperation({ summary: 'Eндпоінт для отримання оголошень по категоріям' })
+  @ApiOperation({ summary: 'Endpoint to receive ads by category' })
   @ApiResponse({ status: 200, type: [Notice] })
+  @ApiResponse({ status: 404, description: 'Not found' })
   @Get()
   getNoticesByCategory(@Query() dto: SearchDto) {
     console.log('getByCategory');
@@ -48,6 +51,7 @@ export class NoticeController {
   @UseGuards(JwtAuthGuard)
   @Get('/favorite')
   getFavotiteNotices(@Req() request: IRequestUser) {
+    console.log('favorite');
     const { user } = request;
     return this.userService.getFavotiteNotices(user._id);
   }
@@ -74,18 +78,30 @@ export class NoticeController {
     return this.noticeService.getNoticeById(id);
   }
 
+  //===========================
+  // @UseGuards(JwtAuthGuard)
+  // @UsePipes(ValidatePipe)
+  // @Post()
+  // @UseInterceptors(FileFieldsInterceptor([{ name: 'picture', maxCount: 1 }]))
+  // addNotice(@Req() request: IRequestUser, @UploadedFiles() files, @Body() dto: CreateNoticeDto) {
+  //   console.log('addNotice');
+  //   const { user } = request;
+  //   const { picture } = files;
+  //   console.log(files);
+
+  //   return this.noticeService.addNotice(user._id, dto, picture[0]);
+  // }
+  //===========================
   @UseGuards(JwtAuthGuard)
   @Post()
-  @UseInterceptors(FileFieldsInterceptor([{ name: 'picture', maxCount: 1 }]))
-  addNotice(@Req() request: IRequestUser, @UploadedFiles() files, @Body() dto: CreateNoticeDto) {
-    console.log('addNotice');
+  addNotice(@Req() request: IRequestUser, @Body() dto: CreateNoticeDto) {
+    console.log('addNotice', new Date());
+    console.log('dto', dto);
     const { user } = request;
-    const { picture } = files;
-    const image = picture ? picture[0] : '';
-
-    return this.noticeService.addNotice(user._id, dto, image);
+    return true;
+    // return this.noticeService.addNotice(user._id, dto, '');
   }
-
+  //==================
   @UseGuards(JwtAuthGuard)
   @Delete('/:id')
   removeNotice(@Param('id') id: ObjectId) {
