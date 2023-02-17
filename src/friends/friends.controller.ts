@@ -3,7 +3,7 @@ import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Friend } from 'src/db-schema/friend.schema';
 import { FriendsService } from './friends.service';
 
-@ApiTags('Friends')
+@ApiTags('Services-Sidebar')
 @Controller('friends')
 export class FriendsController {
     constructor(private readonly friendsService: FriendsService) {}
@@ -11,7 +11,7 @@ export class FriendsController {
     @ApiOperation({summary: 'Get all friends'})
     @ApiResponse({status: 200, type: [Friend]})
     @Get()
-    getAll() {
+    getAll(): Promise<Friend[]> {
         return this.friendsService.getAllFriends() 
     }
 }

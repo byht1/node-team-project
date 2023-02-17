@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
+import { MongooseModule } from '@nestjs/mongoose';
 import { FriendsService } from './friends.service';
 import { FriendsController } from './friends.controller';
-import { MongooseModule } from '@nestjs/mongoose';
 import { Friend, FriendSchema } from 'src/db-schema/friend.schema';
 
 @Module({
@@ -9,7 +9,7 @@ import { Friend, FriendSchema } from 'src/db-schema/friend.schema';
   controllers: [FriendsController],
   imports: [
     MongooseModule.forFeature([
-      {name: Friend.name, schema: FriendSchema}
+      { name: Friend.name, schema: FriendSchema }
     ])
   ],
 })
