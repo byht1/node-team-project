@@ -8,7 +8,13 @@ import { EditingUserDto } from './dto/editingUser.dto';
 
 @Injectable()
 export class UserService {
+  private resDate = '-password -asses_token -refresh_token';
+
   constructor(@InjectModel(Users.name) private usersModel: Model<UsersDocument>, private s3servise: S3Service) {}
+
+  async currentUser(id: TId) {
+    return await this.usersModel.findById(id, this.resDate);
+  }
 
   async editingData(editingUserDto: EditingUserDto, id: TId) {
     const user = await this.usersModel.findByIdAndUpdate(id, editingUserDto, { new: true });

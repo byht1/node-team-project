@@ -1,7 +1,7 @@
 import { IsFile, IsFileSize } from 'src/decorators';
 
 export class EditingUserPhotoDto {
-  @IsFile()
+  @IsFile({ mime: ['', ''] }, { message: '' })
   @IsFileSize()
   file?: string;
 }

@@ -1,6 +1,6 @@
-import { Body, Controller, Patch, Req, UploadedFiles, UseGuards, UseInterceptors, UsePipes } from '@nestjs/common';
+import { Body, Controller, Get, Patch, Req, UploadedFiles, UseGuards, UseInterceptors, UsePipes } from '@nestjs/common';
 import { UserService } from './user.service';
-import { ApiBody, ApiConsumes, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiConsumes, ApiResponse, ApiTags, ApiOperation } from '@nestjs/swagger';
 import { ValidatePipe } from 'src/global/pipe/validate.pipe';
 import { ValidateIsNotVoid } from 'src/global/pipe/validateIsNotVoid.pipe';
 import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
@@ -14,6 +14,17 @@ import { EditingUserDto, EditingUserPhotoDto } from './dto';
 export class UserController {
   constructor(private userService: UserService) {}
 
+  @ApiOperation({ summary: 'Get user data' })
+  @ApiResponse({ status: 201, type: UpdateUser })
+  @ApiResponse({ status: 403, description: 'Invalid token' })
+  @ApiResponse({ status: 500, description: 'Server error' })
+  @UseGuards(JwtAuthGuard)
+  @Get()
+  currentUser(@Req() req: IRequestUser) {
+    return this.userService.currentUser(req.user._id);
+  }
+
+  @ApiOperation({ summary: 'Update user data' })
   @ApiResponse({ status: 201, type: UpdateUser })
   @ApiResponse({ status: 400, description: 'Invalid data' })
   @ApiResponse({ status: 403, description: 'Invalid token' })
@@ -26,6 +37,7 @@ export class UserController {
     return this.userService.editingData(editingUserDto, req.user._id);
   }
 
+  @ApiOperation({ summary: 'Update user avatar' })
   @ApiConsumes('multipart/form-data')
   @ApiBody({
     schema: {

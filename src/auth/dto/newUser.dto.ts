@@ -14,6 +14,9 @@ export class NewUserDto {
   @ApiProperty({ example: 'Email user' })
   @IsString({ message: 'Not a line' })
   @IsEmail({}, { message: 'Incorrect email' })
+  @Matches(/^(?!.-.)([A-Za-z]{2,}@[A-Za-z]+.[A-Za-z]+)$/, {
+    message: 'Incorrect email',
+  })
   readonly email: string;
 
   @ApiProperty({ example: 'Password user' })
