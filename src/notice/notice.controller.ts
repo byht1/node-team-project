@@ -34,6 +34,7 @@ import {
 import { Notice } from 'src/db-schema/notice.schema';
 import { ValidatePipe } from 'src/global/pipe/validate.pipe';
 import { UploadedFilesDto } from './dto/uploaded-files.dto';
+import { CreateNoticeSchema } from './schema-swagger/create-notice.schema';
 
 @ApiTags('Notices')
 @Controller('/notices')
@@ -160,12 +161,7 @@ export class NoticeController {
     },
   ])
   @ApiConsumes('multipart/form-data')
-  @ApiBody({
-    type: CreateNoticeDto,
-  })
-  // @ApiBody({
-  //   type: UploadedFilesDto,
-  // })
+  @ApiBody({ type: CreateNoticeSchema })
   @ApiResponse({ status: 201, type: Notice })
   @ApiResponse({ status: 403, description: 'Invalid token' })
   @ApiResponse({ status: 404, description: 'Not found' })
