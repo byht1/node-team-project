@@ -59,22 +59,17 @@ export class Users {
   verify: boolean;
 
   @ApiProperty({
-    example: {
-      svg: 'https://api.multiavatar.com/1.svg',
-      png: 'https://api.multiavatar.com/1.png',
-    },
+    example: 'https://api.multiavatar.com/1.png',
   })
   @Prop({
-    type: { svg: String, png: String },
-    default: {
-      svg: 'https://api.multiavatar.com/1.svg',
-      png: 'https://api.multiavatar.com/1.png',
-    },
+    type: String,
+    default: 'https://api.multiavatar.com/1.png',
   })
   photo: string;
 
   @ApiProperty({ example: ['6373c0bca5a6e4c9556f1e7a'] })
   @Prop({
+    // FIXME: задати нормальний ref
     type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Notice' }],
     default: [],
   })
@@ -99,6 +94,12 @@ export class Users {
   })
   @Prop({ type: String, default: null })
   forgottenPassword: string;
+
+  @ApiProperty({
+    example: '20.08.1999',
+  })
+  @Prop({ type: String, default: '00.00.0000' })
+  birthday: string;
 }
 
 export const UsersSchema = SchemaFactory.createForClass(Users);

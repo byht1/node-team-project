@@ -6,7 +6,7 @@ import * as bcrypt from 'bcryptjs';
 import { Users, UsersDocument } from 'src/db-schema/user.schema';
 // import { EmailMessageService } from '../email-message/email-message.service';
 import { LogInDto, NewUserDto } from './dto';
-import { TAvatar, Token, TResUserAuth, TTokens } from './type';
+import { Token, TResUserAuth, TTokens } from './type';
 import { UserService } from 'src/user/user.service';
 import { TId } from 'src/type';
 
@@ -53,18 +53,10 @@ export class AuthService {
     return this.normalizeData(isUser, tokens);
   }
 
-  async logOut(
-    user: UsersDocument,
-    assesToken: string,
-    refreshToken: string,
-  ): Promise<void> {
+  async logOut(user: UsersDocument, assesToken: string, refreshToken: string): Promise<void> {
     const id = user._id;
-    const assesTokenDelete = user.asses_token.filter(
-      x => x.token !== assesToken,
-    );
-    const refreshTokenDelete = user.refresh_token.filter(
-      x => x.token !== refreshToken,
-    );
+    const assesTokenDelete = user.asses_token.filter(x => x.token !== assesToken);
+    const refreshTokenDelete = user.refresh_token.filter(x => x.token !== refreshToken);
 
     await this.usersModel.findByIdAndUpdate(id, {
       asses_token: assesTokenDelete,
@@ -92,24 +84,26 @@ export class AuthService {
       const payload = await this.jwtService.decode(refreshToken);
 
       if (typeof payload === 'string' || !payload.id) {
-        throw new HttpException('Не валідний токен', HttpStatus.FORBIDDEN);
+        throw new HttpException('Invalid token', HttpStatus.FORBIDDEN);
       }
 
       await this.clearTokens(payload.id, refreshToken);
 
-      throw new HttpException('Не валідний токен', HttpStatus.FORBIDDEN);
+      throw new HttpException('Invalid token', HttpStatus.FORBIDDEN);
     }
+  }
+
+  async current(id: TId) {
+    const user = await this.usersModel.findById(id, '-password -asses_token -refresh_token').populate('cards');
+    return user;
   }
 
   async getTokens(id: TId) {
     return await this.generatorTokens(id);
   }
 
-  private avatarGenerator(name): TAvatar {
-    return {
-      png: `https://api.multiavatar.com/${name}.png`,
-      svg: `https://api.multiavatar.com/${name}.svg`,
-    };
+  private avatarGenerator(name): string {
+    return `https://api.multiavatar.com/${name}.png`;
   }
 
   private generatorToken(id: TId, type: 'asses' | 'ref'): Token {
@@ -117,11 +111,8 @@ export class AuthService {
       token: this.jwtService.sign(
         { id },
         {
-          expiresIn: type === 'ref' ? '1d' : '15m',
-          secret:
-            type === 'ref'
-              ? process.env.REFRESH_SECRET_KEY
-              : process.env.ASSES_SECRET_KEY,
+          expiresIn: type === 'ref' ? '1d' : '24h',
+          secret: type === 'ref' ? process.env.REFRESH_SECRET_KEY : process.env.ASSES_SECRET_KEY,
         },
       ),
       date: Date.now(),
@@ -153,10 +144,7 @@ export class AuthService {
     }
   }
 
-  private normalizeData(
-    user: UsersDocument,
-    tokens: TTokens,
-  ): Promise<TResUserAuth> {
+  private normalizeData(user: UsersDocument, tokens: TTokens): Promise<TResUserAuth> {
     const res: { [key: string]: any } = { ...user };
 
     delete res._doc.password;
@@ -168,16 +156,14 @@ export class AuthService {
     const user = await this.usersModel.findById(id);
 
     if (!user) {
-      throw new HttpException('Не валідний токен', HttpStatus.FORBIDDEN);
+      throw new HttpException('Invalid token', HttpStatus.FORBIDDEN);
     }
 
     const currentDate = Date.now();
 
     const assesToken = [];
     const refreshToken = user.refresh_token.filter(
-      x =>
-        currentDate - x.date <= 24 * 60 * 60 * 1000 &&
-        x.token !== refCurrentToken,
+      x => currentDate - x.date <= 24 * 60 * 60 * 1000 && x.token !== refCurrentToken,
     );
 
     user.asses_token = assesToken;

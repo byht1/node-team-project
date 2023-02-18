@@ -1,0 +1,340 @@
+{
+  "info": {
+    "_postman_id": "e307a23e-b83d-45da-8011-4a266edabcc4",
+    "name": "Petly",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "23258567"
+  },
+  "item": [
+    {
+      "name": "auth",
+      "item": [
+        {
+          "name": "sign-up",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\": \"user@mail.com\",\r\n    \"password\": \"Aa2345678!\",\r\n    \"name\": \"User\",\r\n    \"phone\": \"+380501231415\",\r\n    \"city\": \"Town City\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "localhost:5000/api/auth/sign-up",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "auth", "sign-up"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "log-in",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\": \"user@mail.com\",\r\n    \"password\": \"Aa2345678!\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "localhost:5000/api/auth/log-in",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "auth", "log-in"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Notice",
+      "item": [
+        {
+          "name": "new notice",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzZWRmNTNhNDljMmNmYTMxOTNhNDljZCIsImlhdCI6MTY3NjU0NzQ3MSwiZXhwIjoxNjc2NzIwMjcxfQ.OKvgZvwANeFL1xRLgtn03Iw-LoNPh-vTTy1Y_5aBJSw",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "title",
+                  "value": "Notice with File",
+                  "type": "text"
+                },
+                {
+                  "key": "category",
+                  "value": "sell",
+                  "type": "text"
+                },
+                {
+                  "key": "picture",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            },
+            "url": {
+              "raw": "localhost:5000/api/notices",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "notices"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "get user's notices",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "title",
+                  "value": "Notice with File",
+                  "type": "text"
+                },
+                {
+                  "key": "category",
+                  "value": "sell",
+                  "type": "text"
+                },
+                {
+                  "key": "picture",
+                  "type": "file",
+                  "src": "/d:/Users/Стогний Владимир/Desktop/2023-01-14_1328_l2QcInZDpq.png"
+                }
+              ]
+            },
+            "url": {
+              "raw": "localhost:5000/api/notices",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "notices"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "get notice by id",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"title\": \"notice 4\",\r\n    \"category\": \"in good hands\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "localhost:5000/api/notices/63ed4aca5731543520a81fc0",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "notices", "63ed4aca5731543520a81fc0"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "delete notice",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzZWRmNTNhNDljMmNmYTMxOTNhNDljZCIsImlhdCI6MTY3NjU0NzQ3MSwiZXhwIjoxNjc2NzIwMjcxfQ.OKvgZvwANeFL1xRLgtn03Iw-LoNPh-vTTy1Y_5aBJSw",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"title\": \"notice 4\",\r\n    \"category\": \"in good hands\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "localhost:5000/api/notices/63ee161154fe4212a6bc9b2e",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "notices", "63ee161154fe4212a6bc9b2e"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "get notice by category",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"title\": \"notice 4\",\r\n    \"category\": \"in good hands\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "localhost:5000/api/notices/?category=sell",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "notices", ""],
+              "query": [
+                {
+                  "key": "category",
+                  "value": "sell"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "get favorites notices",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzZWRmNTNhNDljMmNmYTMxOTNhNDljZCIsImlhdCI6MTY3NjUzOTE5NCwiZXhwIjoxNjc2NzExOTk0fQ.6VOKJJBdfAx-cgGbT4uQgKBLeu1d7YoravKpP33I8WI",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "localhost:5000/api/notices/favorite",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "notices", "favorite"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "add to favorite",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzZWRmNTNhNDljMmNmYTMxOTNhNDljZCIsImlhdCI6MTY3NjUzOTE5NCwiZXhwIjoxNjc2NzExOTk0fQ.6VOKJJBdfAx-cgGbT4uQgKBLeu1d7YoravKpP33I8WI",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"title\": \"notice 4\",\r\n    \"category\": \"in good hands\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "localhost:5000/api/notices/63ecf2f525d33bae0cd8944d/favorite",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "notices", "63ecf2f525d33bae0cd8944d", "favorite"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "delete from favorite",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzZWRmNTNhNDljMmNmYTMxOTNhNDljZCIsImlhdCI6MTY3NjUzOTE5NCwiZXhwIjoxNjc2NzExOTk0fQ.6VOKJJBdfAx-cgGbT4uQgKBLeu1d7YoravKpP33I8WI",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"title\": \"notice 4\",\r\n    \"category\": \"in good hands\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "localhost:5000/api/notices/63ecf2fc25d33bae0cd8944f/favorite",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "notices", "63ecf2fc25d33bae0cd8944f", "favorite"]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
