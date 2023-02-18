@@ -19,11 +19,15 @@ export function IsFile(options: IsFileOptions = { mime }, validationOptions?: Va
       },
       validator: {
         validate(file: any) {
-          const value = file[0];
-          if (value?.mimetype && (options?.mime ?? []).includes(value?.mimetype)) {
-            return true;
-          }
-          return false;
+          const result = file.every(f => f?.mimetype && (options?.mime ?? []).includes(f?.mimetype));
+
+          // const value = file[0];
+          // if (value?.mimetype && (options?.mime ?? []).includes(value?.mimetype)) {
+          //   return true;
+          // }
+          // return false;
+
+          return result;
         },
       },
     });

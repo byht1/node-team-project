@@ -4,7 +4,7 @@ import { subtract } from 'date-and-time';
 export function IsValidDate(validationOptions?: ValidationOptions) {
   return function (object: any, propertyName: string) {
     return registerDecorator({
-      name: 'isFile',
+      name: 'IsValidDate',
       target: object.constructor,
       propertyName: propertyName,
       constraints: [],

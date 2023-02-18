@@ -46,13 +46,9 @@ export class NoticeController {
   @ApiResponse({ status: 500, description: 'Server error' })
   @UsePipes(ValidatePipe)
   @Get()
-  getNoticesByCategoryAndSearch(
-    @Query() dto: SearchDto,
-    @Query('count') count: number,
-    @Query('offset') offset: number,
-  ) {
+  getNoticesByCategoryAndSearch(@Query() dto: SearchDto) {
     console.log('getByCategoryAndSearch');
-    return this.noticeService.getNoticesByCategoryAndSearch(dto, count, offset);
+    return this.noticeService.getNoticesByCategoryAndSearch(dto);
   }
 
   @ApiOperation({ summary: 'Endpoint for receiving ads of an authorized user created by this user' })
@@ -96,6 +92,7 @@ export class NoticeController {
     console.log('favorite');
     const { user } = request;
     return this.userService.getFavotiteNotices(user._id);
+    //
   }
 
   @ApiOperation({ summary: 'Endpoint for adding an ad to your favorites' })

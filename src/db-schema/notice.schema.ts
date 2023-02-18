@@ -93,14 +93,6 @@ export class Notice {
   })
   @Prop({ type: String, required: [true, 'Price is required'] })
   comments: string;
-
-  @ApiProperty({ example: '+380999996633', required: false })
-  @Prop({ type: String, default: '' })
-  phone: string;
-
-  @ApiProperty({ example: 'owner@mail.com', required: false })
-  @Prop({ type: String, default: '' })
-  email: string;
 }
 
 export const NoticeSchema = SchemaFactory.createForClass(Notice);

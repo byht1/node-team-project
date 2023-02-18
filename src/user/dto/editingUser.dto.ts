@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEmail, IsMobilePhone, IsOptional, IsString, Matches } from 'class-validator';
-import { IsValidDate } from '../../decorators/dataValidait';
+import { IsValidDate } from '../../decorators/dataValidate';
 
 export class EditingUserDto {
   @ApiProperty({ example: 'Vitalik' })
