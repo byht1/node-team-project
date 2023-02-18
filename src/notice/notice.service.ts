@@ -10,10 +10,12 @@ import { SearchDto } from './dto/search.dto';
 export class NoticeService {
   constructor(@InjectModel(Notice.name) private noticeModel: Model<NoticeDocument>, private s3Service: S3Service) {}
 
-  async getNoticesByCategoryAndSearch(dto: SearchDto, count = 10, offset = 0): Promise<Notice[]> {
+  async getNoticesByCategoryAndSearch(dto: SearchDto): Promise<Notice[]> {
+    const { count = 10, offset = 0, category } = dto;
+    console.log(count, offset, category);
     const notices = await this.noticeModel
       .find({
-        category: dto.category,
+        category,
         title: { $regex: new RegExp(dto.search, 'i') },
       })
       .skip(Number(offset))
@@ -22,7 +24,7 @@ export class NoticeService {
   }
 
   async getNoticeById(id: ObjectId): Promise<Notice> {
-    const notice = await this.noticeModel.findById(id);
+    const notice = await this.noticeModel.findById(id).populate({ path: 'owner', select: ['email', 'phone'] });
 
     if (!notice) {
       throw new HttpException('Ad not found', HttpStatus.NOT_FOUND);

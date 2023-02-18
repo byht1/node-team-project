@@ -4,7 +4,7 @@ export function IsFileSize(options?: number, validationOptions?: ValidationOptio
   const size = options ? options : 5000000;
   return function (object: any, propertyName: string) {
     return registerDecorator({
-      name: 'isFile',
+      name: 'IsFileSize',
       target: object.constructor,
       propertyName: propertyName,
       constraints: [],
@@ -14,11 +14,13 @@ export function IsFileSize(options?: number, validationOptions?: ValidationOptio
       },
       validator: {
         validate(file: any) {
-          const value = file[0];
-          if (value?.size <= size) {
-            return true;
-          }
-          return false;
+          const result = file.every(f => f?.size <= size);
+          // const value = file[0];
+          // if (value?.size <= size) {
+          //   return true;
+          // }
+          // return false;
+          return result;
         },
       },
     });

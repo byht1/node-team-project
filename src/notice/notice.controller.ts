@@ -34,6 +34,7 @@ import {
 import { Notice } from 'src/db-schema/notice.schema';
 import { ValidatePipe } from 'src/global/pipe/validate.pipe';
 import { UploadedFilesDto } from './dto/uploaded-files.dto';
+import { CreateNoticeSchema } from './schema-swagger/create-notice.schema';
 
 @ApiTags('Notices')
 @Controller('/notices')
@@ -46,13 +47,9 @@ export class NoticeController {
   @ApiResponse({ status: 500, description: 'Server error' })
   @UsePipes(ValidatePipe)
   @Get()
-  getNoticesByCategoryAndSearch(
-    @Query() dto: SearchDto,
-    @Query('count') count: number,
-    @Query('offset') offset: number,
-  ) {
+  getNoticesByCategoryAndSearch(@Query() dto: SearchDto) {
     console.log('getByCategoryAndSearch');
-    return this.noticeService.getNoticesByCategoryAndSearch(dto, count, offset);
+    return this.noticeService.getNoticesByCategoryAndSearch(dto);
   }
 
   @ApiOperation({ summary: 'Endpoint for receiving ads of an authorized user created by this user' })
@@ -96,6 +93,7 @@ export class NoticeController {
     console.log('favorite');
     const { user } = request;
     return this.userService.getFavotiteNotices(user._id);
+    //
   }
 
   @ApiOperation({ summary: 'Endpoint for adding an ad to your favorites' })
@@ -163,12 +161,7 @@ export class NoticeController {
     },
   ])
   @ApiConsumes('multipart/form-data')
-  @ApiBody({
-    type: CreateNoticeDto,
-  })
-  // @ApiBody({
-  //   type: UploadedFilesDto,
-  // })
+  @ApiBody({ type: CreateNoticeSchema })
   @ApiResponse({ status: 201, type: Notice })
   @ApiResponse({ status: 403, description: 'Invalid token' })
   @ApiResponse({ status: 404, description: 'Not found' })
