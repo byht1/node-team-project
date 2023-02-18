@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEnum, IsNumber, IsNumberString, IsOptional, IsString } from 'class-validator';
+import { IsEnum, IsNumberString, IsOptional, IsString } from 'class-validator';
 import { CategoryNotices } from '../../global/enum/categoryNotices';
 
 export class SearchDto {
