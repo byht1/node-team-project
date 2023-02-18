@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument, ObjectId } from 'mongoose';
 import { ApiProperty } from '@nestjs/swagger';
+import { CategoryNotices } from 'src/global/enum/categoryNotices';
 
 export type NoticeDocument = HydratedDocument<Notice>;
 
@@ -24,36 +25,49 @@ export class Notice {
 
   @ApiProperty({
     example: 'Rich',
+    required: false,
   })
   @Prop({ type: String, default: '' })
   name: string;
 
   @ApiProperty({
     example: 'https://i.imgur.com/KcNVF45.jpg',
+    required: false,
   })
-  @Prop({ type: String, default: 'https://api.multiavatar.com/User.png' })
-  imgUrl: string;
+  @Prop({ type: [String], default: 'https://api.multiavatar.com/User.png' })
+  imgUrl: string[];
 
   @ApiProperty({
     example: '2020-08-31',
+    required: false,
   })
   @Prop({ type: String, default: '' })
   birthday: string;
 
   @ApiProperty({
+    example: 'Dog',
+    required: false,
+  })
+  @Prop({ type: String, default: '' })
+  petType: string;
+
+  @ApiProperty({
     example: 'Pomeranian',
+    required: false,
   })
   @Prop({ type: String, default: '' })
   bread: string;
 
   @ApiProperty({
     example: 'Lviv',
+    required: false,
   })
   @Prop({ type: String, default: '' })
-  place: string;
+  location: string;
 
   @ApiProperty({
     example: 'male',
+    required: false,
   })
   @Prop({ type: String, enum: ['male', 'female'], default: '' })
   sex: string;
@@ -61,31 +75,30 @@ export class Notice {
   @ApiProperty({
     example: '150uah',
   })
-  @Prop({ type: String, default: '' })
+  @Prop({ type: String, required: [true, 'Price is required'] })
   price: string;
 
   @ApiProperty({
-    example: 'for-free',
+    example: 'in good hands',
   })
   @Prop({
     type: String,
     required: [true, 'Category is required'],
-    enum: ['sell', 'lost-found', 'for-free'],
   })
-  category: string;
+  category: CategoryNotices;
 
   @ApiProperty({
     example:
       'Lorem ipsum dolor sit amet, consectetur Lorem ipsum dolor sit amet, consectetur  Lorem ipsum dolor sit amet, consectetur Lorem',
   })
-  @Prop({ type: String, default: '' })
+  @Prop({ type: String, required: [true, 'Price is required'] })
   comments: string;
 
-  @ApiProperty({ example: '+380999996633' })
+  @ApiProperty({ example: '+380999996633', required: false })
   @Prop({ type: String, default: '' })
   phone: string;
 
-  @ApiProperty({ example: 'owner@mail.com' })
+  @ApiProperty({ example: 'owner@mail.com', required: false })
   @Prop({ type: String, default: '' })
   email: string;
 }

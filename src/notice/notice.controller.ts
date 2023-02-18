@@ -21,9 +21,19 @@ import { SearchDto } from './dto/search.dto';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { JwtAuthGuard } from './../auth/guard/jwt-auth.guard';
 import { IRequestUser } from 'src/type/req';
-import { ApiOkResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiConsumes,
+  ApiHeaders,
+  ApiOperation,
+  ApiParam,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { Notice } from 'src/db-schema/notice.schema';
 import { ValidatePipe } from 'src/global/pipe/validate.pipe';
+import { UploadedFilesDto } from './dto/uploaded-files.dto';
 
 @ApiTags('Notices')
 @Controller('/notices')
@@ -36,13 +46,24 @@ export class NoticeController {
   @ApiResponse({ status: 500, description: 'Server error' })
   @UsePipes(ValidatePipe)
   @Get()
-  getNoticesByCategory(@Query() dto: SearchDto) {
-    console.log('🚀 ~ file: notice.controller.ts:40 ~ NoticeController ~ getNoticesByCategory ~ dto', dto);
-    console.log('getByCategory');
-    return this.noticeService.getNoticesByCategory(dto);
+  getNoticesByCategoryAndSearch(
+    @Query() dto: SearchDto,
+    @Query('count') count: number,
+    @Query('offset') offset: number,
+  ) {
+    console.log('getByCategoryAndSearch');
+    return this.noticeService.getNoticesByCategoryAndSearch(dto, count, offset);
   }
 
   @ApiOperation({ summary: 'Endpoint for receiving ads of an authorized user created by this user' })
+  @ApiBearerAuth()
+  @ApiHeaders([
+    {
+      name: 'Authorization',
+      required: true,
+      description: 'The token issued to the current user.',
+    },
+  ])
   @ApiResponse({ status: 200, type: [Notice] })
   @ApiResponse({ status: 403, description: 'Invalid token' })
   @ApiResponse({ status: 404, description: 'Not found' })
@@ -57,6 +78,14 @@ export class NoticeController {
   }
 
   @ApiOperation({ summary: 'Endpoint for receiving ads of an authorized user who added them to favorites' })
+  @ApiBearerAuth()
+  @ApiHeaders([
+    {
+      name: 'Authorization',
+      required: true,
+      description: 'The token issued to the current user.',
+    },
+  ])
   @ApiResponse({ status: 200, type: [Notice] })
   @ApiResponse({ status: 403, description: 'Invalid token' })
   @ApiResponse({ status: 404, description: 'Not found' })
@@ -70,10 +99,19 @@ export class NoticeController {
   }
 
   @ApiOperation({ summary: 'Endpoint for adding an ad to your favorites' })
+  @ApiBearerAuth()
+  @ApiHeaders([
+    {
+      name: 'Authorization',
+      required: true,
+      description: 'The token issued to the current user.',
+    },
+  ])
   @ApiResponse({ status: 200, type: mongoose.Schema.Types.ObjectId })
   @ApiResponse({ status: 403, description: 'Invalid token' })
   @ApiResponse({ status: 404, description: 'Not found' })
   @ApiResponse({ status: 500, description: 'Server error' })
+  @ApiParam({ name: 'id', required: true, description: 'Ad identifier' })
   @UseGuards(JwtAuthGuard)
   @Patch('/:id/favorite')
   addNoticeToFavorite(@Req() request: IRequestUser, @Param('id') id: ObjectId) {
@@ -83,10 +121,19 @@ export class NoticeController {
   }
 
   @ApiOperation({ summary: 'Endpoint for adding an ad to your favorites' })
+  @ApiBearerAuth()
+  @ApiHeaders([
+    {
+      name: 'Authorization',
+      required: true,
+      description: 'The token issued to the current user.',
+    },
+  ])
   @ApiResponse({ status: 200, type: mongoose.Schema.Types.ObjectId })
   @ApiResponse({ status: 403, description: 'Invalid token' })
   @ApiResponse({ status: 404, description: 'Not found' })
   @ApiResponse({ status: 500, description: 'Server error' })
+  @ApiParam({ name: 'id', required: true, description: 'Ad identifier' })
   @UseGuards(JwtAuthGuard)
   @Delete(':id/favorite')
   removeNoticeFromFavorite(@Req() request: IRequestUser, @Param('id') id: ObjectId) {
@@ -99,6 +146,7 @@ export class NoticeController {
   @ApiResponse({ status: 200, type: Notice })
   @ApiResponse({ status: 404, description: 'Not found' })
   @ApiResponse({ status: 500, description: 'Server error' })
+  @ApiParam({ name: 'id', required: true, description: 'Ad identifier' })
   @Get('/:id')
   getNoticeById(@Param('id') id: ObjectId) {
     console.log('getById');
@@ -106,6 +154,21 @@ export class NoticeController {
   }
 
   @ApiOperation({ summary: 'Endpoint for adding ads according to the selected category' })
+  @ApiBearerAuth()
+  @ApiHeaders([
+    {
+      name: 'Authorization',
+      required: true,
+      description: 'The token issued to the current user.',
+    },
+  ])
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    type: CreateNoticeDto,
+  })
+  // @ApiBody({
+  //   type: UploadedFilesDto,
+  // })
   @ApiResponse({ status: 201, type: Notice })
   @ApiResponse({ status: 403, description: 'Invalid token' })
   @ApiResponse({ status: 404, description: 'Not found' })
@@ -113,20 +176,29 @@ export class NoticeController {
   @UseGuards(JwtAuthGuard)
   @UsePipes(ValidatePipe)
   @Post()
-  @UseInterceptors(FileFieldsInterceptor([{ name: 'picture', maxCount: 1 }]))
-  addNotice(@Req() request: IRequestUser, @UploadedFiles() files, @Body() dto: CreateNoticeDto) {
+  @UseInterceptors(FileFieldsInterceptor([{ name: 'picture', maxCount: 4 }]))
+  addNotice(@Req() request: IRequestUser, @UploadedFiles() files: UploadedFilesDto, @Body() dto: CreateNoticeDto) {
     console.log('addNotice');
     const { user } = request;
     const { picture } = files;
 
-    return this.noticeService.addNotice(user._id, dto, picture[0]);
+    return this.noticeService.addNotice(user._id, dto, picture);
   }
 
   @ApiOperation({ summary: "Endpoint for deleting an authorized user's ad created by this user " })
+  @ApiBearerAuth()
+  @ApiHeaders([
+    {
+      name: 'Authorization',
+      required: true,
+      description: 'The token issued to the current user.',
+    },
+  ])
   @ApiResponse({ status: 200, type: Notice })
   @ApiResponse({ status: 403, description: 'Invalid token' })
   @ApiResponse({ status: 404, description: 'Not found' })
   @ApiResponse({ status: 500, description: 'Server error' })
+  @ApiParam({ name: 'id', required: true, description: 'Ad identifier' })
   @UseGuards(JwtAuthGuard)
   @Delete('/:id')
   removeNotice(@Param('id') id: ObjectId) {
