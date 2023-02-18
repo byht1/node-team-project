@@ -1,4 +1,5 @@
 import { IsString, Length } from "class-validator";
+// import { IsFile, IsFileSize } from "src/decorators";
 
 export class CreatePetDto {
     @IsString({message: 'Name should be a string'})
@@ -11,8 +12,10 @@ export class CreatePetDto {
     @IsString({message: 'Should be a string'})
     readonly breed: string;
 
-    @IsString({message: 'Should be a string'})
-    readonly image: string;
+    // @IsString({message: 'Should be a string'})
+    // @IsFile()
+    // @IsFileSize()
+    // readonly image: string[];
     
     @IsString({message: 'Should be a string'})
     readonly comments: string;

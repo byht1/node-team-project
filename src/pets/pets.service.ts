@@ -1,4 +1,4 @@
-import { Delete, Injectable, Post } from '@nestjs/common';
+import { Injectable} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { S3Service, TypeOperation } from 'src/AWS/s3.service';
@@ -10,8 +10,6 @@ export class PetsService {
     constructor(@InjectModel(Pet.name) private petModel: Model<PetDocument>,
     private fileService: S3Service) {}
 
-    // body, file
-    @Post()
     async createPet(dto: CreatePetDto, image: any): Promise<Pet> {
         // const fileName = await this.fileService.uploadFile(image, TypeOperation.PETS)
         const fileName = 'image'
@@ -19,7 +17,6 @@ export class PetsService {
         return pet
     }
 
-    @Delete()
     async removePet(id: string): Promise<Pet> {
         return this.petModel.findByIdAndRemove(id)
     }

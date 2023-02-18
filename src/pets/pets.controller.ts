@@ -10,7 +10,7 @@ export class PetsController {
 
     @UseInterceptors(FileInterceptor('image'))
     @Post()
-    create(@Body() dto: CreatePetDto, 
+    create(@Body() dto: CreatePetDto,
     @UploadedFile() image): Promise<Pet> {
         return this.petsService.createPet(dto, image)
     }

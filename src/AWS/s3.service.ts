@@ -5,7 +5,6 @@ import * as AWS from 'aws-sdk';
 export enum TypeOperation {
   IMAGE = 'image',
   PETS = 'pets',
-  FRIENDS = 'friend',
   AVSTAR = 'avatars',
 }
 
