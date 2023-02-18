@@ -61,7 +61,7 @@ export class UserController {
   @Patch('editing/photo')
   editingPhoto(@UploadedFiles() { file }: EditingUserPhotoDto, @Req() req: IRequestUser) {
     return this.userService.editingPhoto(file[0], req.user._id);
+
   }
 }
 
-//fix

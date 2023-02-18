@@ -10,8 +10,14 @@ import { SearchDto } from './dto/search.dto';
 export class NoticeService {
   constructor(@InjectModel(Notice.name) private noticeModel: Model<NoticeDocument>, private s3Service: S3Service) {}
 
-  async getNoticesByCategory(dto: SearchDto): Promise<Notice[]> {
-    const notices = await this.noticeModel.find(dto);
+  async getNoticesByCategoryAndSearch(dto: SearchDto, count = 10, offset = 0): Promise<Notice[]> {
+    const notices = await this.noticeModel
+      .find({
+        category: dto.category,
+        title: { $regex: new RegExp(dto.search, 'i') },
+      })
+      .skip(Number(offset))
+      .limit(Number(count));
     return notices;
   }
 
@@ -19,13 +25,15 @@ export class NoticeService {
     const notice = await this.noticeModel.findById(id);
 
     if (!notice) {
-      throw new HttpException('Оголошення не знайдено', HttpStatus.NOT_FOUND);
+      throw new HttpException('Ad not found', HttpStatus.NOT_FOUND);
     }
     return notice;
   }
 
-  async addNotice(userId: ObjectId, dto: CreateNoticeDto, picture: string): Promise<Notice> {
-    const picturePath = await this.s3Service.uploadFile(picture, TypeOperation.IMAGE);
+  async addNotice(userId: ObjectId, dto: CreateNoticeDto, picture: string[]): Promise<Notice> {
+    console.log('addNotice-service');
+
+    const picturePath = await Promise.all(picture.map(pic => this.s3Service.uploadFile(pic, TypeOperation.IMAGE)));
 
     const notice = await this.noticeModel.create({
       ...dto,
