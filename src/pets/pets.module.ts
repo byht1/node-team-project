@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
+import { MongooseModule } from '@nestjs/mongoose';
 import { PetsService } from './pets.service';
 import { PetsController } from './pets.controller';
-import { MongooseModule } from '@nestjs/mongoose';
 import { Pet, PetSchema } from 'src/db-schema/pets.schema';
 import { S3Module } from 'src/AWS/s3.module';
 
