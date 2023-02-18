@@ -12,7 +12,7 @@ export class EditingUserDto {
   @IsString({ message: 'Not a line' })
   @IsOptional()
   @IsEmail({})
-  @Matches(/^(?!.-.)([A-Za-z]{2,}@[A-Za-z]+.[A-Za-z]+)$/, {
+  @Matches(/^(?!-)\w{2,}@[a-zA-Z0-9]+\.[a-zA-Z]{2,}$/, {
     message: 'Incorrect email',
   })
   email?: string;

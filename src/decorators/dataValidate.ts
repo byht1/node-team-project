@@ -39,10 +39,12 @@ export function IsValidDate(validationOptions?: ValidationOptions) {
           const [day, month, year] = dateNumber;
 
           const yesterday = new Date();
-          const dataUser = new Date(year, month - 1, day - 1);
+          const min = new Date('1900-01-01');
+          const dataUser = new Date(year, month - 1, day + 1);
           const difference = subtract(dataUser, yesterday).toDays();
+          const minDifference = subtract(dataUser, min).toDays();
 
-          if (difference > -1) return false;
+          if (difference > 0 || minDifference < 0) return false;
 
           return true;
         },
