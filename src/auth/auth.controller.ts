@@ -1,5 +1,5 @@
 import { Body, Controller, Get, HttpCode, Post, Req, Res, UseGuards, UsePipes } from '@nestjs/common';
-import { ApiHeaders, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiHeaders, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
 import { Users } from 'src/db-schema/user.schema';
 import { CustomCookie } from 'src/decorators/CustomCookie.decorator';
@@ -14,6 +14,7 @@ import { ValidatePipe } from '../global/pipe/validate.pipe';
 export class AuthController {
   constructor(private authService: AuthService) {}
 
+  @ApiOperation({ summary: 'Registration' })
   @ApiResponse({ status: 201, type: Users })
   @ApiResponse({ status: 400, description: 'Bad Request' })
   @ApiResponse({
@@ -23,10 +24,18 @@ export class AuthController {
   @ApiResponse({ status: 500, description: 'Server error' })
   @UsePipes(ValidatePipe)
   @Post('sign-up')
-  signUp(@Body() newUserDto: NewUserDto) {
-    return this.authService.signUp(newUserDto);
+  async signUp(@Body() newUserDto: NewUserDto, @Res({ passthrough: true }) response: Response) {
+    const user = await this.authService.signUp(newUserDto);
+
+    response.cookie('refreshToken', user.refresh_token, {
+      maxAge: 2 * 24 * 60 * 60 * 1000,
+      httpOnly: true,
+    });
+
+    return user;
   }
 
+  @ApiOperation({ summary: 'Login to the account' })
   @ApiResponse({ status: 201, type: Users })
   @ApiResponse({ status: 400, description: 'Invalid data' })
   @ApiResponse({ status: 401, description: 'User does not exist' })
@@ -43,6 +52,7 @@ export class AuthController {
     return user;
   }
 
+  @ApiOperation({ summary: 'Logout to the account' })
   @ApiHeaders([
     {
       name: 'Authorization',
@@ -60,7 +70,8 @@ export class AuthController {
     return this.authService.logOut(req.user, req.asses_token, refreshToken);
   }
 
-  @ApiResponse({ status: 201, type: 'New refresh token' })
+  @ApiOperation({ summary: 'Get a new asses token' })
+  @ApiResponse({ status: 201, type: String })
   @ApiHeaders([
     {
       name: 'Cookie',
@@ -73,5 +84,22 @@ export class AuthController {
   @Get('refresh')
   refresh(@CustomCookie('refreshToken') refreshToken) {
     return this.authService.refresh(refreshToken);
+  }
+
+  @ApiOperation({ summary: 'Authorization by token' })
+  @ApiHeaders([
+    {
+      name: 'Authorization',
+      required: true,
+      description: 'The token issued to the current user.',
+    },
+  ])
+  @ApiResponse({ status: 201, type: Users })
+  @ApiResponse({ status: 403, description: 'Invalid token' })
+  @ApiResponse({ status: 500, description: 'Server error' })
+  @UseGuards(JwtAuthGuard)
+  @Get('current')
+  current(@Req() req: IRequestUser) {
+    return this.authService.current(req.user._id);
   }
 }

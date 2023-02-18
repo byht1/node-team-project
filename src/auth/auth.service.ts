@@ -93,6 +93,11 @@ export class AuthService {
     }
   }
 
+  async current(id: TId) {
+    const user = await this.usersModel.findById(id, '-password -asses_token -refresh_token').populate('cards');
+    return user;
+  }
+
   async getTokens(id: TId) {
     return await this.generatorTokens(id);
   }
