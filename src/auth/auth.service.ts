@@ -9,7 +9,6 @@ import { GoogleAuthDto, LogInDto, NewUserDto } from './dto';
 import { Token, TResUserAuth, TTokens } from './type';
 import { UserService } from 'src/user/user.service';
 import { TId } from 'src/type';
-import { uuid } from 'uuidv4';
 
 @Injectable()
 export class AuthService {
