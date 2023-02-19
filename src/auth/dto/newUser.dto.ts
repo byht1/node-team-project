@@ -46,10 +46,12 @@ export class NewUserDto {
 
   @ApiProperty({ example: 'Username' })
   @IsString({ message: 'Not a line' })
+  @MinLength(2, { message: 'The name must contain at least 2 characters' })
   readonly name: string;
 
   @ApiProperty({ example: 'City' })
   @IsString({ message: 'Not a line' })
+  @MinLength(2, { message: 'The city name must contain at least 2 characters' })
   readonly city: string;
 
   @ApiProperty({ example: '+380961122333' })
