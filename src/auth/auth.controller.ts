@@ -137,7 +137,7 @@ export class AuthController {
       httpOnly: true,
     });
 
-    return response.redirect(`https://byht1.github.io/react-team-project/?access_token=${tokens.access_token}`);
+    return response.redirect(`http://localhost:3000/react-team-project/?access_token=${tokens.access_token}`);
     // return response.redirect(`https://byht1.github.io/react-team-project/?access_token=${tokens.access_token}`);
     // if (jwt) {
     //   res.redirect(`${this.configService.get('https://byht1.github.io/react-team-project/')}?token=${jwt}`);

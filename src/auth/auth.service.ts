@@ -18,7 +18,7 @@ export class AuthService {
     private jwtService: JwtService, // private emailMessage: EmailMessageService,
   ) {}
 
-  async signUp(newUserDto: NewUserDto): Promise<TResUserAuth> {
+  async signUp(newUserDto: NewUserDto): Promise<TResUserAuth | any> {
     const { email, name, password } = newUserDto;
 
     const isEmail = await this.usersService.userByEmail(email);
