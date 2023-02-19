@@ -5,3 +5,4 @@ export class UploadFileDto {
     @IsFileSize()
     readonly image: any;
 }
+// @IsFile({ mime: ['', ''] }, { message: '' })

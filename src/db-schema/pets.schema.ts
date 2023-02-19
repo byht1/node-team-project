@@ -13,15 +13,15 @@ export class Pet {
     @Prop({ required: [true, 'name is required'] })
     name: string;
 
-    @ApiProperty({example: '22.04.2018'})
+    @ApiProperty({example: '22.04.2018', description: 'Pet date of birth'})
     @Prop()
     birth: string;
     
-    @ApiProperty({example: 'Persian cat'})
+    @ApiProperty({example: 'Persian cat', description: 'Pet breed'})
     @Prop({ required: [true, 'breed is required'] })
     breed: string;
 
-    @ApiProperty({example: 'Image url'})
+    @ApiProperty({example: 'https://team-project-react-node.s3.amazonaws.com/pets/99524fa4-dcf7-40db-9b59-a3a8a5e1efd1.jpg'})
     @Prop()
     image: string;
 

@@ -3,6 +3,7 @@ import { registerDecorator, ValidationOptions } from 'class-validator';
 export function IsFileSize(options?: number, validationOptions?: ValidationOptions) {
   const size = options ? options : 5000000;
   return function (object: any, propertyName: string) {
+    console.log(22222222222, "options", options)
     return registerDecorator({
       name: 'IsFileSize',
       target: object.constructor,
@@ -20,6 +21,9 @@ export function IsFileSize(options?: number, validationOptions?: ValidationOptio
           //   return true;
           // }
           // return false;
+          if (!result) {
+            console.log("result in file size validation: ", result)
+          }
           return result;
         },
       },
