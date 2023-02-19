@@ -59,6 +59,12 @@ export class NoticeService {
       throw new HttpException('Оголошення не знайдено', HttpStatus.NOT_FOUND);
     }
 
+    const picturePath = notice.imgUrl;
+
+    if (picturePath.length > 0) {
+      Promise.all(picturePath.map(el => this.s3Service.deleteFile(el, TypeOperation.IMAGE)));
+    }
+
     return notice;
   }
 }
