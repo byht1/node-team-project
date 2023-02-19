@@ -8,7 +8,7 @@ import { EditingUserDto } from './dto/editingUser.dto';
 
 @Injectable()
 export class UserService {
-  private resDate = '-password -asses_token -refresh_token';
+  private resDate = '-password -access_token -refresh_token';
 
   constructor(@InjectModel(Users.name) private usersModel: Model<UsersDocument>, private s3servise: S3Service) {}
 
@@ -91,7 +91,7 @@ export class UserService {
     const res: { [key: string]: any } = { ...user };
 
     delete res._doc.password;
-    delete res._doc.asses_token;
+    delete res._doc.access_token;
     delete res._doc.refresh_token;
 
     return { ...res._doc };

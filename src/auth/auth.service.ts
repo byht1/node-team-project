@@ -5,10 +5,11 @@ import { Model } from 'mongoose';
 import * as bcrypt from 'bcryptjs';
 import { Users, UsersDocument } from 'src/db-schema/user.schema';
 // import { EmailMessageService } from '../email-message/email-message.service';
-import { LogInDto, NewUserDto } from './dto';
+import { GoogleAuthDto, LogInDto, NewUserDto } from './dto';
 import { Token, TResUserAuth, TTokens } from './type';
 import { UserService } from 'src/user/user.service';
 import { TId } from 'src/type';
+import { uuid } from 'uuidv4';
 
 @Injectable()
 export class AuthService {
@@ -53,13 +54,22 @@ export class AuthService {
     return this.normalizeData(isUser, tokens);
   }
 
-  async logOut(user: UsersDocument, assesToken: string, refreshToken: string): Promise<void> {
+  async logOut(user: UsersDocument, accessToken: string, refreshToken: string): Promise<void> {
+    console.log('🚀  AuthService  refreshToken🚀', refreshToken);
     const id = user._id;
-    const assesTokenDelete = user.asses_token.filter(x => x.token !== assesToken);
-    const refreshTokenDelete = user.refresh_token.filter(x => x.token !== refreshToken);
-
+    // console.log('🚀  AuthService  user.refresh_token', user.refresh_token.length);
+    // console.log('🚀  AuthService  user.access_token', user.access_token.length);
+    const accessTokenDelete = user.access_token.filter(x => x.token !== accessToken);
+    const refreshTokenDelete = user.refresh_token.filter(x => {
+      console.log('🚀  AuthService  x.token !== refreshToken', x.token !== refreshToken);
+      console.log('🚀  AuthService  refreshToken', refreshToken);
+      console.log('🚀  AuthService  x.token', x.token);
+      return x.token !== refreshToken;
+    });
+    // console.log('🚀  AuthService  refreshTokenDelete', refreshTokenDelete.length);
+    // console.log('🚀  AuthService  accessTokenDelete', accessTokenDelete.length);
     await this.usersModel.findByIdAndUpdate(id, {
-      asses_token: assesTokenDelete,
+      access_token: accessTokenDelete,
       refresh_token: refreshTokenDelete,
     });
 
@@ -74,12 +84,15 @@ export class AuthService {
 
       const user = await this.usersModel.findById(isValid.id);
 
-      const assesToken = this.generatorToken(isValid.id, 'asses');
+      if (!user.refresh_token.find(x => x.token === refreshToken)) throw new Error();
 
-      user.asses_token.push(assesToken);
+      const accessToken = this.generatorToken(isValid.id, 'access');
+
+      user.access_token.push(accessToken);
       user.save();
 
-      return assesToken.token;
+      console.log('🚀  AuthService  accessToken.token', accessToken.token);
+      return accessToken.token;
     } catch (error) {
       const payload = await this.jwtService.decode(refreshToken);
 
@@ -93,8 +106,27 @@ export class AuthService {
     }
   }
 
+  async googleLogin(googleAuthDto: GoogleAuthDto): Promise<TTokens> {
+    const { email, picture, firstName, lastName } = googleAuthDto;
+
+    const isUser = await this.usersModel.findOne({ email });
+
+    if (isUser) return await this.generatorTokens(isUser._id);
+
+    const hashPassword = await this.hashPassword(Date.now().toString());
+    console.log(1111);
+    const newUser = await this.usersModel.create({
+      password: hashPassword,
+      photo: picture,
+      name: `${firstName} ${lastName}`,
+      email,
+    });
+    console.log(222);
+    return await this.generatorTokens(newUser._id);
+  }
+
   async current(id: TId) {
-    const user = await this.usersModel.findById(id, '-password -asses_token -refresh_token').populate('cards');
+    const user = await this.usersModel.findById(id, '-password -access_token -refresh_token').populate('cards');
     return user;
   }
 
@@ -105,14 +137,15 @@ export class AuthService {
   private avatarGenerator(name): string {
     return `https://api.multiavatar.com/${name}.png`;
   }
+  // access _token;
 
-  private generatorToken(id: TId, type: 'asses' | 'ref'): Token {
+  private generatorToken(id: TId, type: 'access' | 'ref'): Token {
     return {
       token: this.jwtService.sign(
         { id },
         {
           expiresIn: type === 'ref' ? '1d' : '24h',
-          secret: type === 'ref' ? process.env.REFRESH_SECRET_KEY : process.env.ASSES_SECRET_KEY,
+          secret: type === 'ref' ? process.env.REFRESH_SECRET_KEY : process.env.ACCESS_SECRET_KEY,
         },
       ),
       date: Date.now(),
@@ -120,16 +153,16 @@ export class AuthService {
   }
 
   private async generatorTokens(id: TId): Promise<TTokens> {
-    const asses = this.generatorToken(id, 'asses');
+    const access = this.generatorToken(id, 'access');
     const refresh = this.generatorToken(id, 'ref');
 
     const user = await this.usersModel.findById(id);
 
-    user.asses_token.push(asses);
+    user.access_token.push(access);
     user.refresh_token.push(refresh);
     user.save();
 
-    return { asses_token: asses.token, refresh_token: refresh.token };
+    return { access_token: access.token, refresh_token: refresh.token };
   }
 
   private async hashPassword(password: string): Promise<string> {
@@ -161,12 +194,12 @@ export class AuthService {
 
     const currentDate = Date.now();
 
-    const assesToken = [];
+    const accessToken = [];
     const refreshToken = user.refresh_token.filter(
       x => currentDate - x.date <= 24 * 60 * 60 * 1000 && x.token !== refCurrentToken,
     );
 
-    user.asses_token = assesToken;
+    user.access_token = accessToken;
     user.refresh_token = refreshToken;
 
     user.save;

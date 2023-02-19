@@ -1,5 +1,16 @@
 import { Body, Controller, Get, HttpCode, Post, Req, Res, UseGuards, UsePipes } from '@nestjs/common';
-import { ApiHeaders, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBadRequestResponse,
+  ApiBearerAuth,
+  ApiExcludeEndpoint,
+  ApiExtraModels,
+  ApiHeaders,
+  ApiHideProperty,
+  ApiOkResponse,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { Response } from 'express';
 import { Users } from 'src/db-schema/user.schema';
 import { CustomCookie } from 'src/decorators/CustomCookie.decorator';
@@ -8,11 +19,15 @@ import { AuthService } from './auth.service';
 import { LogInDto, NewUserDto } from './dto';
 import { JwtAuthGuard } from './guard/jwt-auth.guard';
 import { ValidatePipe } from '../global/pipe/validate.pipe';
+import { AuthGuard } from '@nestjs/passport';
+import { ConfigService } from '@nestjs/config';
+import { LoginRedirectUrlDto } from './dto/LoginRedirectUrlDto';
+import { TTokens } from './type';
 
 @ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService, private configService: ConfigService) {}
 
   @ApiOperation({ summary: 'Registration' })
   @ApiResponse({ status: 201, type: Users })
@@ -67,10 +82,10 @@ export class AuthController {
   @HttpCode(204)
   @Get('logout')
   logOut(@Req() req: IRequestUser, @CustomCookie('refreshToken') refreshToken) {
-    return this.authService.logOut(req.user, req.asses_token, refreshToken);
+    return this.authService.logOut(req.user, req.access_token, refreshToken);
   }
 
-  @ApiOperation({ summary: 'Get a new asses token' })
+  @ApiOperation({ summary: 'Get a new access token' })
   @ApiResponse({ status: 201, type: String })
   @ApiHeaders([
     {
@@ -83,6 +98,7 @@ export class AuthController {
   @ApiResponse({ status: 500, description: 'Server error' })
   @Get('refresh')
   refresh(@CustomCookie('refreshToken') refreshToken) {
+    console.log('🚀  AuthController  refreshToken', refreshToken);
     return this.authService.refresh(refreshToken);
   }
 
@@ -101,5 +117,35 @@ export class AuthController {
   @Get('current')
   current(@Req() req: IRequestUser) {
     return this.authService.current(req.user._id);
+  }
+
+  @ApiOperation({ summary: 'Google authorization' })
+  @ApiExtraModels(LoginRedirectUrlDto)
+  @ApiResponse({ status: 302, type: LoginRedirectUrlDto })
+  @ApiOkResponse({ description: 'User access token generated successfully' })
+  @ApiBadRequestResponse({ description: 'Invalid authorization code or state value' })
+  @Get('google')
+  @UseGuards(AuthGuard('google'))
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  googleLogin() {}
+
+  @ApiExcludeEndpoint()
+  @UseGuards(AuthGuard('google'))
+  @Get('google/callback')
+  async googleLoginCallback(@Req() req: any, @Res() response: Response) {
+    const tokens: TTokens = await this.authService.googleLogin(req.user);
+
+    response.cookie('refreshToken', tokens.refresh_token, {
+      maxAge: 2 * 24 * 60 * 60 * 1000,
+      httpOnly: true,
+    });
+
+    return response.redirect(`http://localhost:3000/react-team-project/?access_token=${tokens.access_token}`);
+    // return response.redirect(`https://byht1.github.io/react-team-project/?access_token=${tokens.access_token}`);
+    // if (jwt) {
+    //   res.redirect(`${this.configService.get('https://byht1.github.io/react-team-project/')}?token=${jwt}`);
+    // } else {
+    //   res.redirect(`${this.configService.get('https://byht1.github.io/react-team-project/')}`);
+    // }
   }
 }

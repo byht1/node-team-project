@@ -24,7 +24,7 @@ export class Users {
     example: 'eyJhbGciOiJIUzI1NiI.eyJpZCI6IjYLCJpYXQiOjE2NjU2NTM2NgsImV4cCI6MTY2NTc0MDA3OH0.mZMKEw1j3N9VVZ97E',
   })
   @Prop()
-  asses_token: Token[];
+  access_token: Token[];
 
   @ApiProperty({
     example: 'eyJhbGciOiJIUzI1NiI.eyJpZCI6IjYLCJpYXQiOjE2NjU2NTM2NgsImV4cCI6MTY2NTc0MDA3OH0.mZMKEw1j3N9VVZ97E',
@@ -36,8 +36,8 @@ export class Users {
   @Prop({ type: String, required: true })
   name: string;
 
-  @ApiProperty({ example: 'test@gmail.com' })
-  @Prop({ type: String, required: true })
+  @ApiProperty({ example: '+380964752260' })
+  @Prop({ type: String, default: '' })
   phone: string;
 
   @ApiProperty({
@@ -100,6 +100,12 @@ export class Users {
   })
   @Prop({ type: String, default: '00.00.0000' })
   birthday: string;
+
+  @ApiProperty({
+    example: 'Kyiv',
+  })
+  @Prop({ type: String, default: '' })
+  city: string;
 }
 
 export const UsersSchema = SchemaFactory.createForClass(Users);

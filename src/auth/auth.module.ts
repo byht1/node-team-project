@@ -10,17 +10,20 @@ import { AuthService } from './auth.service';
 import { UserModule } from 'src/user/user.module';
 import { UserService } from 'src/user/user.service';
 import { S3Service } from 'src/AWS/s3.service';
+import { PassportModule } from '@nestjs/passport';
+import { GoogleStrategy } from './strategy/google.strategy';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ envFilePath: '.env' }),
     MongooseModule.forFeature([{ name: Users.name, schema: UsersSchema }]),
+    PassportModule,
     JwtModule,
     EmailMessageModule,
     UserModule,
   ],
   controllers: [AuthController],
-  providers: [AuthService, EmailMessageService, S3Service, UserService],
+  providers: [AuthService, EmailMessageService, S3Service, UserService, GoogleStrategy],
   exports: [AuthService, JwtModule, MongooseModule],
 })
 export class AuthModule {}

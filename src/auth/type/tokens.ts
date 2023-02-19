@@ -4,6 +4,6 @@ export type Token = {
 };
 
 export type TTokens = {
-  asses_token: string;
+  access_token: string;
   refresh_token: string;
 };

@@ -18,19 +18,19 @@ export class JwtAuthGuard implements CanActivate {
       }
 
       const isValidToken = this.jwtService.verify(token, {
-        secret: process.env.ASSES_SECRET_KEY,
+        secret: process.env.ACCESS_SECRET_KEY,
       });
 
       const user = await this.usersModel.findById(isValidToken.id);
 
-      if (!user || !user.asses_token.find(x => x.token === token)) {
-        user.asses_token.filter(x => x !== token);
+      if (!user || !user.access_token.find(x => x.token === token)) {
+        user.access_token.filter(x => x !== token);
         user.save();
         throw new HttpException('Invalid token', HttpStatus.FORBIDDEN);
       }
 
       req.user = user;
-      req.asses_token = token;
+      req.access_token = token;
 
       return true;
     } catch (error) {
@@ -42,7 +42,7 @@ export class JwtAuthGuard implements CanActivate {
 
       const user = await this.usersModel.findById(payload.id);
 
-      user.asses_token = user.asses_token.filter(x => x.token !== token);
+      user.access_token = user.access_token.filter(x => x.token !== token);
       user.save();
 
       throw new HttpException('Invalid token', HttpStatus.FORBIDDEN);

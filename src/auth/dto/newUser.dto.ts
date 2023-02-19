@@ -7,6 +7,7 @@ export const passwordSchema = Object.freeze({
   symbol: /(?=.*[!@#$%^&*_])/,
   number: /(?=.*[0-9])/,
   min: /[0-9a-zA-Z!@#$%^&*_]{7,}/,
+  lat: /^[A-Za-z0-9!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]*$/,
   original: /(?=.*[0-9])(?=.*[!@#$%^&*_])(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*_]{7,}/,
 });
 
@@ -31,12 +32,15 @@ export class NewUserDto {
   //   message: 'Пароль повинен містити хотяби один сцеціальний символ !@#$%^&*_',
   // })
   @Matches(passwordSchema.upperCase, {
-    message: 'Пароль повинен містити хотяби одну велику літеру',
+    message: 'Password must contain a host one capital letter',
   })
   @Matches(passwordSchema.lowerCase, {
-    message: 'Пароль повинен містити хотяби одну маленьку літеру',
+    message: 'Password must contain a host one small letter',
   })
-  @MinLength(7, { message: 'Мінімум 7 симфолів' })
+  @Matches(passwordSchema.lat, {
+    message: 'Password should only contain Latin letters, digits or special characters',
+  })
+  @MinLength(7, { message: 'The minimum length of password password' })
   // @Matches(passwordSchema.original, { message: 'Не валідний пароль' })
   readonly password: string;
 
@@ -50,6 +54,6 @@ export class NewUserDto {
 
   @ApiProperty({ example: '+380961122333' })
   @IsString({ message: 'Not a line' })
-  @IsMobilePhone('uk-UA', { strictMode: true }, { message: 'Не валідний номер телефона' })
+  @IsMobilePhone('uk-UA', { strictMode: true }, { message: 'Not a valid phone number' })
   readonly phone: string;
 }
