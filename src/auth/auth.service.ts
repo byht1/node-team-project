@@ -90,7 +90,6 @@ export class AuthService {
       user.access_token.push(accessToken);
       user.save();
 
-      console.log('🚀  AuthService  accessToken.token', accessToken.token);
       return accessToken.token;
     } catch (error) {
       const payload = await this.jwtService.decode(refreshToken);
@@ -109,18 +108,17 @@ export class AuthService {
     const { email, picture, firstName, lastName } = googleAuthDto;
 
     const isUser = await this.usersModel.findOne({ email });
+    console.log('🚀  AuthService  isUser', isUser);
 
     if (isUser) return await this.generatorTokens(isUser._id);
 
     const hashPassword = await this.hashPassword(Date.now().toString());
-    console.log(1111);
     const newUser = await this.usersModel.create({
       password: hashPassword,
       photo: picture,
       name: `${firstName} ${lastName}`,
       email,
     });
-    console.log(222);
     return await this.generatorTokens(newUser._id);
   }
 
