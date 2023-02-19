@@ -34,7 +34,8 @@ import {
 import { Notice } from 'src/db-schema/notice.schema';
 import { ValidatePipe } from 'src/global/pipe/validate.pipe';
 import { UploadedFilesDto } from './dto/uploaded-files.dto';
-import { CreateNoticeSchema } from './schema-swagger/create-notice.schema';
+import { CreateNoticeSwaggerSchema } from './schema-swagger/create-notice-swagger.schema';
+import { NoticeSwagger } from './schema-swagger/notice-swagger.schema';
 
 @ApiTags('Notices')
 @Controller('/notices')
@@ -141,7 +142,7 @@ export class NoticeController {
   }
 
   @ApiOperation({ summary: 'Endpoint for receiving one ad' })
-  @ApiResponse({ status: 200, type: Notice })
+  @ApiResponse({ status: 200, type: NoticeSwagger })
   @ApiResponse({ status: 404, description: 'Not found' })
   @ApiResponse({ status: 500, description: 'Server error' })
   @ApiParam({ name: 'id', required: true, description: 'Ad identifier' })
@@ -161,7 +162,7 @@ export class NoticeController {
     },
   ])
   @ApiConsumes('multipart/form-data')
-  @ApiBody({ type: CreateNoticeSchema })
+  @ApiBody({ type: CreateNoticeSwaggerSchema })
   @ApiResponse({ status: 201, type: Notice })
   @ApiResponse({ status: 403, description: 'Invalid token' })
   @ApiResponse({ status: 404, description: 'Not found' })

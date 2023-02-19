@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { CategoryNotices } from 'src/global/enum/categoryNotices';
 
-export class CreateNoticeSchema {
+export class CreateNoticeSwaggerSchema {
   @ApiProperty({ example: 'Сute dog looking for a home' })
   readonly title: string;
 
