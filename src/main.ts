@@ -1,7 +1,5 @@
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import * as cookieParser from 'cookie-parser';
-import * as cors from 'cors';
 
 import { AppModule } from './app.module';
 
@@ -10,20 +8,6 @@ const start = async () => {
   try {
     const app = await NestFactory.create(AppModule, { cors: true });
 
-    app.use(
-      cors({
-        origin: '*',
-        // origin: true,
-        credentials: true,
-        allowedHeaders: 'Origin, X-Requested-With, Content-Type, Accept',
-      }),
-    );
-
-    app.use(cookieParser());
-    // app.use((req, res, next) => {
-    //   res.header('Access-Control-Allow-Origin', 'http://localhost:3000');
-    //   next();
-    // });
     app.setGlobalPrefix('api');
 
     const config = new DocumentBuilder()
