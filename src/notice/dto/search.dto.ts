@@ -1,25 +1,25 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEnum, IsNumber, IsNumberString, IsOptional, IsString } from 'class-validator';
+import { IsEnum, IsNumberString, IsOptional, IsString } from 'class-validator';
 import { CategoryNotices } from '../../global/enum/categoryNotices';
 
 export class SearchDto {
-  @ApiProperty({ example: "One of 'sell', 'lost/found', 'in good hands'" })
+  @ApiProperty({ description: "One of category 'sell', 'lost/found', 'in good hands'", example: 'sell' })
   @IsOptional()
   @IsString({ message: 'Not a line' })
   @IsEnum(CategoryNotices)
   readonly category?: CategoryNotices;
 
-  @ApiProperty({ example: 'Beautiful cat', required: false })
+  @ApiProperty({ description: 'Search by title', example: 'Beautiful cat', required: false })
   @IsOptional()
   @IsString({ message: 'Not a line' })
   readonly search?: string;
 
-  @ApiProperty({ example: '1', required: false })
+  @ApiProperty({ description: 'Amount of ads per page', example: '10', required: false })
   @IsOptional()
   @IsNumberString()
   readonly count?: number;
 
-  @ApiProperty({ example: '10', required: false })
+  @ApiProperty({ description: 'Page number from which the counting starts', example: '0', required: false })
   @IsOptional()
   @IsNumberString()
   readonly offset?: number;
