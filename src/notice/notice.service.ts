@@ -11,7 +11,7 @@ export class NoticeService {
   constructor(@InjectModel(Notice.name) private noticeModel: Model<NoticeDocument>, private s3Service: S3Service) {}
 
   async getNoticesByCategoryAndSearch(dto: SearchDto): Promise<Notice[]> {
-    const { count = 10, offset = 0, category } = dto;
+    const { count = 10, offset = 0, category = 'sell' } = dto;
     console.log(count, offset, category);
     const notices = await this.noticeModel
       .find({
