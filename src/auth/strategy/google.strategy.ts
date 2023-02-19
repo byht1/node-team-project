@@ -15,6 +15,11 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
       }`,
       scope: ['email', 'profile'],
     });
+    console.log(
+      process.env.CURRENT_HOST
+        ? 'http://localhost:5000/api/auth/google/callback'
+        : 'https://node-team-project.onrender.com/api/auth/google/callback',
+    );
     console.log('🚀  GoogleStrategy  process.env.GOOGLE_CLIENT_ID', process.env.GOOGLE_CLIENT_ID);
     console.log('🚀  GoogleStrategy  process.env.GOOGLE_CLIENT_SECRET', process.env.GOOGLE_CLIENT_SECRET);
   }
