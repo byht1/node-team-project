@@ -75,7 +75,10 @@ export class Notice {
   @ApiProperty({
     example: '150',
   })
-  @Prop({ type: String, required: [true, 'Price is required'] })
+  @Prop({
+    type: String,
+    // required: [true, 'Price is required']
+  })
   price: string;
 
   @ApiProperty({
@@ -91,7 +94,10 @@ export class Notice {
     example:
       'Lorem ipsum dolor sit amet, consectetur Lorem ipsum dolor sit amet, consectetur  Lorem ipsum dolor sit amet, consectetur Lorem',
   })
-  @Prop({ type: String, required: [true, 'Price is required'] })
+  @Prop({
+    type: String,
+    // required: [true, 'Price is required']
+  })
   comments: string;
 }
 
