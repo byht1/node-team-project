@@ -15,6 +15,15 @@ export class Notice {
   owner: ObjectId;
 
   @ApiProperty({
+    example: 'in good hands',
+  })
+  @Prop({
+    type: String,
+    required: [true, 'Category is required'],
+  })
+  category: CategoryNotices;
+
+  @ApiProperty({
     example: 'Сute dog looking for a home',
   })
   @Prop({
@@ -29,13 +38,6 @@ export class Notice {
   })
   @Prop({ type: String, default: '' })
   name: string;
-
-  @ApiProperty({
-    example: "['https://api.multiavatar.com/User.png', ...]",
-    required: false,
-  })
-  @Prop({ type: [String], default: ['https://api.multiavatar.com/User.png'] })
-  imgUrl: string[];
 
   @ApiProperty({
     example: '01.01.2023',
@@ -59,44 +61,44 @@ export class Notice {
   breed: string;
 
   @ApiProperty({
-    example: 'Lviv',
-    required: false,
-  })
-  @Prop({ type: String, default: '' })
-  location: string;
-
-  @ApiProperty({
     example: 'male',
-    required: false,
   })
-  @Prop({ type: String, enum: ['male', 'female'], default: '' })
+  @Prop({ type: String, enum: ['male', 'female'], default: 'male', required: [true, 'Sex is required'] })
   sex: string;
 
   @ApiProperty({
+    example: 'Lviv',
+  })
+  @Prop({ type: String, default: '', required: [true, 'Location is required'] })
+  location: string;
+
+  @ApiProperty({
+    description: 'If category is "sell" price is required',
     example: '150',
+    required: false,
   })
   @Prop({
     type: String,
-    // required: [true, 'Price is required']
   })
   price: string;
 
   @ApiProperty({
-    example: 'in good hands',
+    example: "['https://team-project-react-node.s3.amazonaws.com/image/bee726b9-45b2-4a31-b616-4cee1c640209.jpg', ...]",
+    required: false,
   })
   @Prop({
-    type: String,
-    required: [true, 'Category is required'],
+    type: [String],
+    default: ['https://team-project-react-node.s3.amazonaws.com/image/bee726b9-45b2-4a31-b616-4cee1c640209.jpg'],
   })
-  category: CategoryNotices;
+  imgUrl: string[];
 
   @ApiProperty({
     example:
       'Lorem ipsum dolor sit amet, consectetur Lorem ipsum dolor sit amet, consectetur  Lorem ipsum dolor sit amet, consectetur Lorem',
+    required: false,
   })
   @Prop({
     type: String,
-    // required: [true, 'Price is required']
   })
   comments: string;
 }

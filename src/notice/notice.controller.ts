@@ -12,6 +12,7 @@ import {
   UploadedFiles,
   UseGuards,
   UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import mongoose, { ObjectId } from 'mongoose';
 import { NoticeService } from './notice.service';
@@ -32,10 +33,10 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { Notice } from 'src/db-schema/notice.schema';
-import { ValidatePipe } from 'src/global/pipe/validate.pipe';
-import { UploadedFilesDto } from './dto/uploaded-files.dto';
 import { CreateNoticeSwaggerSchema } from './schema-swagger/create-notice-swagger.schema';
+import { UploadedFilesDto } from './dto/uploaded-files.dto';
 import { NoticeSwagger } from './schema-swagger/notice-swagger.schema';
+import { ValidatePipe } from 'src/global/pipe/validate.pipe';
 
 @ApiTags('Notices')
 @Controller('/notices')
@@ -49,7 +50,6 @@ export class NoticeController {
   @UsePipes(ValidatePipe)
   @Get()
   getNoticesByCategoryAndSearch(@Query() dto: SearchDto) {
-    console.log('getByCategoryAndSearch');
     return this.noticeService.getNoticesByCategoryAndSearch(dto);
   }
   //==============================================
@@ -163,7 +163,7 @@ export class NoticeController {
   @ApiResponse({ status: 404, description: 'Not found' })
   @ApiResponse({ status: 500, description: 'Server error' })
   @UseGuards(JwtAuthGuard)
-  @UsePipes(ValidatePipe)
+  @UsePipes(ValidationPipe)
   @Post()
   @UseInterceptors(FileFieldsInterceptor([{ name: 'picture', maxCount: 4 }]))
   addNotice(@Req() request: IRequestUser, @UploadedFiles() files: UploadedFilesDto, @Body() dto: CreateNoticeDto) {

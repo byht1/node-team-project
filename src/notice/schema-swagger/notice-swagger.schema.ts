@@ -28,7 +28,7 @@ export class NoticeSwagger {
   name: string;
 
   @ApiProperty({
-    example: "['https://api.multiavatar.com/User.png', ...]",
+    example: "['https://team-project-react-node.s3.amazonaws.com/image/bee726b9-45b2-4a31-b616-4cee1c640209.jpg', ...]",
     required: false,
   })
   imgUrl: string[];
