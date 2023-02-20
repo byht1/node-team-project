@@ -1,4 +1,4 @@
-import { Injectable} from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, ObjectId } from 'mongoose';
 import { S3Service, TypeOperation } from 'src/AWS/s3.service';
@@ -13,12 +13,20 @@ export class PetsService {
 
     async createPet(dto: CreatePetDto, image: UploadFileDto): Promise<Pet> {
         const fileName = await this.fileService.uploadFile(image, TypeOperation.PETS)
-        // const fileName = 'image'
-        const pet = await this.petModel.create({...dto, image: fileName})
+        const pet = await this.petModel.create({ ...dto, image: fileName })
         return pet
     }
 
     async removePet(id: ObjectId): Promise<Pet> {
-        return await this.petModel.findByIdAndRemove(id)
+        const petFind = await this.petModel.findById(id)
+
+        if (!petFind) {
+            throw new HttpException('Pet not found', HttpStatus.NOT_FOUND)
+        }
+        const string = petFind.image.split('/').pop()
+        await this.fileService.deleteFile(string, TypeOperation.PETS)
+        const pet = await this.petModel.findByIdAndRemove(id)
+
+        return pet
     }
 }

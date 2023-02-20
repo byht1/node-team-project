@@ -3,5 +3,5 @@ import { IsFile, IsFileSize } from "src/decorators";
 export class UploadFileDto {
     @IsFile()
     @IsFileSize()
-    readonly image: any;
+    image: any;
 }

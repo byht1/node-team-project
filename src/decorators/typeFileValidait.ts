@@ -7,7 +7,7 @@ interface IsFileOptions {
 const mime: string[] = ['image/jpg', 'image/png', 'image/jpeg', 'image/webp'];
 
 export function IsFile(options: IsFileOptions = { mime }, validationOptions?: ValidationOptions) {
-  return function (object: any, propertyName: string) {
+  return function (object: object, propertyName: string) {
     return registerDecorator({
       name: 'isFile',
       target: object.constructor,

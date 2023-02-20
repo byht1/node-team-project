@@ -1,5 +1,5 @@
-import { IsString, Length } from 'class-validator';
-import { ObjectId } from 'mongoose';
+import { IsString, Length} from "class-validator";
+// import { ObjectId } from "mongoose";
 import { IsValidDate } from 'src/decorators';
 
 export class CreatePetDto {
@@ -11,11 +11,13 @@ export class CreatePetDto {
   @IsString()
   readonly birth: string;
 
-  @IsString({ message: 'Should be a string' })
-  readonly breed: string;
+    @IsString({ message: 'Breed should be a string' })
+    @Length(1, 50, {message: 'Breed should be a string and max length is 50 symbols'})
+    readonly breed: string;
 
-  @IsString({ message: 'Should be a string' })
-  readonly comments: string;
+    @Length(8, 120, {message: 'Comments should be from 8 to 120 symbols'})
+    @IsString({message: 'Comments should be a string'})
+    readonly comments: string;
 
-  readonly owner: ObjectId;
+    // readonly owner: ObjectId;
 }
