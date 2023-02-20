@@ -18,7 +18,7 @@ export class CreateNoticeSwaggerSchema {
   readonly name: string;
 
   @ApiProperty({
-    example: '2020-08-31',
+    example: '01.01.2023',
     required: false,
   })
   readonly birthday: string;
