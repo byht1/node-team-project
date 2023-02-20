@@ -12,15 +12,17 @@ export class JwtAuthGuard implements CanActivate {
     const req = context.switchToHttp().getRequest();
     const isToken = req.headers.authorization;
 
-    if (!isToken) throw new HttpException('Missing token', HttpStatus.FORBIDDEN);
+    if (!isToken) {
+      throw new HttpException('Missing token', HttpStatus.FORBIDDEN);
+    }
 
     const [bearer, token] = isToken.split(' ');
 
-    try {
-      if (bearer !== 'Bearer' || !token) {
-        throw new HttpException('Invalid token', HttpStatus.FORBIDDEN);
-      }
+    if (bearer !== 'Bearer' || !token) {
+      throw new HttpException('Invalid token', HttpStatus.FORBIDDEN);
+    }
 
+    try {
       const isValidToken = this.jwtService.verify(token, {
         secret: process.env.ACCESS_SECRET_KEY,
       });
