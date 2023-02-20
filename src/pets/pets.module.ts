@@ -3,16 +3,15 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { PetsService } from './pets.service';
 import { PetsController } from './pets.controller';
 import { Pet, PetSchema } from 'src/db-schema/pets.schema';
-import { S3Module } from 'src/AWS/s3.module';
+import { S3Service } from 'src/AWS/s3.service';
 
 @Module({
-  providers: [PetsService],
-  controllers: [PetsController],
   imports: [
     MongooseModule.forFeature([
       {name: Pet.name, schema: PetSchema}
     ]),
-    S3Module,
-  ]
+  ],
+  controllers: [PetsController],
+  providers: [PetsService, S3Service],
 })
 export class PetsModule {}
