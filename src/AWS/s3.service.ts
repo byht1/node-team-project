@@ -18,7 +18,6 @@ export class S3Service {
   });
 
   async uploadFile(file: any | undefined, type: TypeOperation) {
-    console.log('🚀  S3Service  file', file);
     if (!file) return '';
     const { originalname } = file;
     const expansionFile = originalname.split('.').pop();

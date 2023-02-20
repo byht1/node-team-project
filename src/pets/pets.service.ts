@@ -13,8 +13,7 @@ export class PetsService {
 
     async createPet(dto: CreatePetDto, image: UploadFileDto): Promise<Pet> {
         const fileName = await this.fileService.uploadFile(image, TypeOperation.PETS)
-        // const fileName = 'image'
-        const pet = await this.petModel.create({...dto, image: fileName})
+        const pet = await this.petModel.create({ ...dto, image: fileName })
         return pet
     }
 
@@ -24,7 +23,7 @@ export class PetsService {
         if(!pet) {
             throw new HttpException('Pet not found', HttpStatus.NOT_FOUND)
         }
-        
+
         return pet
     }
 }
