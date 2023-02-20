@@ -32,7 +32,11 @@ export class NoticeService {
   }
 
   async addNotice(userId: ObjectId, dto: CreateNoticeDto, picture: string[]): Promise<Notice> {
-    const picturePath = await Promise.all(picture.map(pic => this.s3Service.uploadFile(pic, TypeOperation.IMAGE)));
+    let picturePath = [];
+
+    if (picture) {
+      picturePath = await Promise.all(picture.map(pic => this.s3Service.uploadFile(pic, TypeOperation.IMAGE)));
+    }
 
     const notice = await this.noticeModel.create({
       ...dto,
