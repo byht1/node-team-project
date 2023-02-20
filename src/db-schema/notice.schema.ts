@@ -56,7 +56,7 @@ export class Notice {
     required: false,
   })
   @Prop({ type: String, default: '' })
-  bread: string;
+  breed: string;
 
   @ApiProperty({
     example: 'Lviv',

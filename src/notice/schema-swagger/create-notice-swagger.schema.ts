@@ -27,7 +27,7 @@ export class CreateNoticeSwaggerSchema {
     example: 'Pomeranian',
     required: false,
   })
-  readonly bread: string;
+  readonly breed: string;
 
   @ApiProperty({
     example: 'Lviv',

@@ -49,7 +49,7 @@ export class NoticeSwagger {
     example: 'Pomeranian',
     required: false,
   })
-  bread: string;
+  breed: string;
 
   @ApiProperty({
     example: 'Lviv',
