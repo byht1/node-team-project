@@ -1,4 +1,3 @@
-
 import { IsNotEmpty, IsOptional, IsString, Length, ValidateIf } from 'class-validator';
 import { IsValidDate } from 'src/decorators';
 import { CategoryNotices } from 'src/global/enum/categoryNotices';
@@ -34,10 +33,6 @@ export class CreateNoticeDto {
 
   @IsString({ message: '$property should be a string' })
   readonly location: string;
-  
-  @ValidateIf(o => o.category === CategoryNotices.SELL)
-  @IsNotEmpty()
-  readonly price?: string;
 
   @IsString({ message: '$property should be a string' })
   @ValidateIf(o => o.category === CategoryNotices.SELL)

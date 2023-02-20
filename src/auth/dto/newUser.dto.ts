@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsEmail, Matches, MinLength, IsMobilePhone } from 'class-validator';
+import { IsString, IsEmail, Matches, MinLength, IsMobilePhone, MaxLength } from 'class-validator';
 
 export const passwordSchema = Object.freeze({
   upperCase: /(?=.*[A-Z])/,
@@ -40,18 +40,27 @@ export class NewUserDto {
   @Matches(passwordSchema.lat, {
     message: 'Password should only contain Latin letters, digits or special characters',
   })
-  @MinLength(7, { message: 'The minimum length of password password' })
+  @MaxLength(32, { message: 'The maximum password length is 32 characters' })
+  @MinLength(7, { message: 'The minimum password length is 7 characters' })
   // @Matches(passwordSchema.original, { message: 'Не валідний пароль' })
   readonly password: string;
 
   @ApiProperty({ example: 'Username' })
   @IsString({ message: 'Not a line' })
   @MinLength(2, { message: 'The name must contain at least 2 characters' })
+  @MaxLength(40, { message: 'The maximum name length is 40 characters' })
+  @Matches(/^[A-Za-zА-Яа-яЁё]+(?:\s+[A-Za-zА-Яа-яЁё]+){0,3}$/u, {
+    message: 'The name may contain only letters of the Latin and Cyrillic alphabets',
+  })
   readonly name: string;
 
   @ApiProperty({ example: 'City' })
   @IsString({ message: 'Not a line' })
   @MinLength(2, { message: 'The city name must contain at least 2 characters' })
+  @MaxLength(50, { message: 'The maximum city length is 40 characters' })
+  @Matches(/^[a-zA-Zа-яА-Я\s,'".]+$/, {
+    message: 'The name of the city or region must contain only letters',
+  })
   readonly city: string;
 
   @ApiProperty({ example: '+380961122333' })
