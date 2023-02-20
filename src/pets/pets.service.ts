@@ -11,21 +11,25 @@ export class PetsService {
     constructor(@InjectModel(Pet.name) private petModel: Model<PetDocument>,
     private fileService: S3Service) {}
 
-    async createPet(dto: CreatePetDto, image: UploadFileDto): Promise<Pet> {
+    async createPet(createPetDto: CreatePetDto, image: UploadFileDto, userId: ObjectId): Promise<Pet> {
         const fileName = await this.fileService.uploadFile(image, TypeOperation.PETS)
-        const pet = await this.petModel.create({ ...dto, image: fileName })
+        const pet = await this.petModel.create({
+                ...createPetDto,
+                image: fileName,
+                owner: userId,
+            })
         return pet
     }
 
-    async removePet(id: ObjectId): Promise<Pet> {
-        const petFind = await this.petModel.findById(id)
+    async removePet(petId: ObjectId): Promise<Pet> {
+        const petFind = await this.petModel.findById(petId)
 
         if (!petFind) {
             throw new HttpException('Pet not found', HttpStatus.NOT_FOUND)
         }
         const string = petFind.image.split('/').pop()
         await this.fileService.deleteFile(string, TypeOperation.PETS)
-        const pet = await this.petModel.findByIdAndRemove(id)
+        const pet = await this.petModel.findByIdAndRemove(petId).select({createdAt: 0, updatedAt: 0})
 
         return pet
     }

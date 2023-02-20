@@ -19,15 +19,15 @@ export class Friend {
   @Prop()
   title: string;
 
-  @ApiProperty({ example: 'site url' })
+  @ApiProperty({ example: 'https://dogcat.com.ua' })
   @Prop()
   url: string;
 
-  @ApiProperty({ example: 'address url' })
+  @ApiProperty({ example: 'https://goo.gl/maps/iq8NXEUf31EAQCzc6' })
   @Prop()
   addressUrl: string;
 
-  @ApiProperty({ example: 'image url' })
+  @ApiProperty({ example: 'https://api.multiavatar.com/sirius.png' })
   @Prop()
   imageUrl: string;
 

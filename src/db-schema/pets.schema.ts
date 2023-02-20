@@ -1,10 +1,11 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
 import mongoose, { Document } from "mongoose";
+import { Users } from "./user.schema";
 
 export type PetDocument = Pet & Document;
 
-@Schema({versionKey: false})
+@Schema({ versionKey: false, timestamps: true })
 export class Pet {
     @ApiProperty({example: '63f139e997fc630d8da1ff68'})
     _id: mongoose.Schema.Types.ObjectId;
@@ -21,7 +22,7 @@ export class Pet {
     @Prop({ required: [true, 'breed is required'] })
     breed: string;
 
-    @ApiProperty({example: 'https://team-project-react-node.s3.amazonaws.com/pets/99524fa4-dcf7-40db-9b59-a3a8a5e1efd1.jpg'})
+    @ApiProperty({example: 'https://api.multiavatar.com/pet.png'})
     @Prop()
     image: string;
 
@@ -29,9 +30,9 @@ export class Pet {
     @Prop({ required: [true, 'comments are required'] })
     comments: string;
     
-    // @ApiProperty({example: '63f139e997fc630d8da1ff68'})
-    // @Prop({ required: true })
-    // owner: string;
+    @ApiProperty({example: '63f37a8cbf6f72e7f1b27ba3'})
+    @Prop({ required: true, type: mongoose.Schema.Types.ObjectId, ref: 'Users' })
+    owner: Users;
 }
 
 export const PetSchema = SchemaFactory.createForClass(Pet)
