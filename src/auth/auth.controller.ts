@@ -84,7 +84,7 @@ export class AuthController {
   @ApiResponse({ status: 403, description: 'Invalid token' })
   @ApiResponse({ status: 500, description: 'Server error' })
   @UsePipes(ValidatePipe)
-  @Get('refresh')
+  @Post('refresh')
   refresh(@Body() { refresh_token }: RefreshTokenDto) {
     return this.authService.refresh(refresh_token);
   }
