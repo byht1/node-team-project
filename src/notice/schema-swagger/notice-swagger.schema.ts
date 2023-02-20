@@ -76,6 +76,7 @@ export class NoticeSwagger {
   @ApiProperty({
     example:
       'Lorem ipsum dolor sit amet, consectetur Lorem ipsum dolor sit amet, consectetur  Lorem ipsum dolor sit amet, consectetur Lorem',
+    required: false,
   })
   comments: string;
 }

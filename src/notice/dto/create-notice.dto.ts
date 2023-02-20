@@ -1,7 +1,6 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsString, Length, IsPhoneNumber, IsEmail, Matches } from 'class-validator';
+import { IsNotEmpty, IsString, Length, ValidateIf } from 'class-validator';
 import { IsValidDate } from 'src/decorators';
-import { CategoryNotices } from '../../global/enum/categoryNotices';
+import { CategoryNotices } from 'src/global/enum/categoryNotices';
 
 export class CreateNoticeDto {
   @IsString({ message: '$property should be a string' })
@@ -29,7 +28,9 @@ export class CreateNoticeDto {
   readonly sex: string;
 
   @IsString({ message: '$property should be a string' })
-  readonly price: string;
+  @ValidateIf(o => o.category === CategoryNotices.SELL)
+  @IsNotEmpty()
+  readonly price?: string;
 
   @IsString({ message: '$property should be a string' })
   readonly category: CategoryNotices;

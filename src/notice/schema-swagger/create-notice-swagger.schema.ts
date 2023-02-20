@@ -37,6 +37,7 @@ export class CreateNoticeSwaggerSchema {
 
   @ApiProperty({
     description: "One of 'male', 'female' ",
+    enum: ['male', 'female'],
     example: 'male',
     required: false,
   })
@@ -44,11 +45,14 @@ export class CreateNoticeSwaggerSchema {
 
   @ApiProperty({
     example: '150',
+    description: "Price is required if category is 'sell' ",
+    required: false,
   })
   readonly price: string;
 
   @ApiProperty({
     description: "One of 'sell', 'lost/found', 'in good hands'",
+    enum: CategoryNotices,
     example: 'in good hands',
   })
   readonly category: CategoryNotices;
@@ -56,6 +60,7 @@ export class CreateNoticeSwaggerSchema {
   @ApiProperty({
     example:
       'Lorem ipsum dolor sit amet, consectetur Lorem ipsum dolor sit amet, consectetur  Lorem ipsum dolor sit amet, consectetur Lorem',
+    required: false,
   })
   readonly comments: string;
 
@@ -66,7 +71,6 @@ export class CreateNoticeSwaggerSchema {
       format: 'binary',
       example: "['https://team-project-react-node.s3.amazonaws.com/image/3f0cd17f-d25f-491a-8cce-00bf993edc5f.jpg']",
     },
-
     required: false,
   })
   readonly picture: string[];
