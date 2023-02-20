@@ -20,7 +20,7 @@ export class CreateNoticeDto {
 
   @IsString({ message: '$property should be a string' })
   @Length(2, 50, { message: '$propertyshould be from 2 to 16 symbols' })
-  readonly bread: string;
+  readonly breed: string;
 
   @IsString({ message: '$property should be a string' })
   readonly location: string;

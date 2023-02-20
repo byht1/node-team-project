@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { CategoryNotices } from 'src/global/enum/categoryNotices';
 
-export class CreateNoticeSchema {
+export class CreateNoticeSwaggerSchema {
   @ApiProperty({ example: 'Сute dog looking for a home' })
   readonly title: string;
 
@@ -18,7 +18,7 @@ export class CreateNoticeSchema {
   readonly name: string;
 
   @ApiProperty({
-    example: '2020-08-31',
+    example: '01.01.2023',
     required: false,
   })
   readonly birthday: string;
@@ -27,7 +27,7 @@ export class CreateNoticeSchema {
     example: 'Pomeranian',
     required: false,
   })
-  readonly bread: string;
+  readonly breed: string;
 
   @ApiProperty({
     example: 'Lviv',

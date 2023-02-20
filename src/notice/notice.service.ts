@@ -12,7 +12,6 @@ export class NoticeService {
 
   async getNoticesByCategoryAndSearch(dto: SearchDto): Promise<Notice[]> {
     const { count = 10, offset = 0, category = 'sell' } = dto;
-    console.log(count, offset, category);
     const notices = await this.noticeModel
       .find({
         category,
@@ -33,8 +32,6 @@ export class NoticeService {
   }
 
   async addNotice(userId: ObjectId, dto: CreateNoticeDto, picture: string[]): Promise<Notice> {
-    console.log('addNotice-service');
-
     const picturePath = await Promise.all(picture.map(pic => this.s3Service.uploadFile(pic, TypeOperation.IMAGE)));
 
     const notice = await this.noticeModel.create({
@@ -57,6 +54,12 @@ export class NoticeService {
 
     if (!notice) {
       throw new HttpException('Оголошення не знайдено', HttpStatus.NOT_FOUND);
+    }
+
+    const picturePath = notice.imgUrl;
+
+    if (picturePath.length > 0) {
+      Promise.all(picturePath.map(el => this.s3Service.deleteFile(el, TypeOperation.IMAGE)));
     }
 
     return notice;
