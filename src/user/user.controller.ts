@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Patch, Req, UploadedFiles, UseGuards, UseInterceptors, UsePipes } from '@nestjs/common';
 import { UserService } from './user.service';
-import { ApiBody, ApiConsumes, ApiResponse, ApiTags, ApiOperation } from '@nestjs/swagger';
+import { ApiBody, ApiConsumes, ApiResponse, ApiTags, ApiOperation, ApiHeaders } from '@nestjs/swagger';
 import { ValidatePipe } from 'src/global/pipe/validate.pipe';
 import { ValidateIsNotVoid } from 'src/global/pipe/validateIsNotVoid.pipe';
 import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
@@ -15,6 +15,13 @@ export class UserController {
   constructor(private userService: UserService) {}
 
   @ApiOperation({ summary: 'Get user data' })
+  @ApiHeaders([
+    {
+      name: 'Authorization',
+      required: true,
+      description: 'The token issued to the current user.',
+    },
+  ])
   @ApiResponse({ status: 201, type: UpdateUser })
   @ApiResponse({ status: 403, description: 'Invalid token' })
   @ApiResponse({ status: 500, description: 'Server error' })
@@ -25,6 +32,13 @@ export class UserController {
   }
 
   @ApiOperation({ summary: 'Update user data' })
+  @ApiHeaders([
+    {
+      name: 'Authorization',
+      required: true,
+      description: 'The token issued to the current user.',
+    },
+  ])
   @ApiResponse({ status: 201, type: UpdateUser })
   @ApiResponse({ status: 400, description: 'Invalid data' })
   @ApiResponse({ status: 403, description: 'Invalid token' })
@@ -50,6 +64,13 @@ export class UserController {
       },
     },
   })
+  @ApiHeaders([
+    {
+      name: 'Authorization',
+      required: true,
+      description: 'The token issued to the current user.',
+    },
+  ])
   @ApiResponse({ status: 201, type: UpdateUser })
   @ApiResponse({ status: 400, description: 'Invalid data' })
   @ApiResponse({ status: 403, description: 'Invalid token' })
@@ -61,7 +82,5 @@ export class UserController {
   @Patch('editing/photo')
   editingPhoto(@UploadedFiles() { file }: EditingUserPhotoDto, @Req() req: IRequestUser) {
     return this.userService.editingPhoto(file[0], req.user._id);
-
   }
 }
-
