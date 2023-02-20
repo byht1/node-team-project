@@ -8,6 +8,15 @@ const start = async () => {
   try {
     const app = await NestFactory.create(AppModule, { cors: true });
 
+    // app.use(
+    //   cors({
+    //     origin: '*',
+    //     // origin: true,
+    //     credentials: true,
+    //     allowedHeaders: 'Origin, X-Requested-With, Content-Type, Accept',
+    //   }),
+    // );
+
     app.setGlobalPrefix('api');
 
     const config = new DocumentBuilder()
