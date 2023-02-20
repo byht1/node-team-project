@@ -24,7 +24,6 @@ import { ValidateIsNotVoid } from 'src/global/pipe/validateIsNotVoid.pipe';
 export class PetsController {
   constructor(private readonly petsService: PetsService) {}
 
-  
   @ApiOperation({ summary: 'Add pet' })
   @ApiBody({ type: CreatePetSchema })
   @ApiConsumes('multipart/form-data')
@@ -42,10 +41,11 @@ export class PetsController {
 
   @ApiOperation({ summary: 'Delete pet' })
   @ApiResponse({ status: 200, description: 'Pet deleted', type: Pet })
+  @ApiResponse({ status: 404, description: 'Not Found' })
   @ApiResponse({ status: 500, description: 'Server error' })
   @ApiParam({ name: 'id', required: true, description: 'Pet ID' })
   @Delete(':id')
   remove(@Param('id') id: ObjectId): Promise<Pet> {
-    return this.petsService.removePet(id);
+    return this.petsService.removePet(id)
   }
 }

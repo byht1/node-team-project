@@ -18,11 +18,14 @@ export class PetsService {
     }
 
     async removePet(id: ObjectId): Promise<Pet> {
-        const pet = await this.petModel.findByIdAndRemove(id)
+        const petFind = await this.petModel.findById(id)
 
-        if(!pet) {
+        if (!petFind) {
             throw new HttpException('Pet not found', HttpStatus.NOT_FOUND)
         }
+        const string = petFind.image.split('/').pop()
+        await this.fileService.deleteFile(string, TypeOperation.PETS)
+        const pet = await this.petModel.findByIdAndRemove(id)
 
         return pet
     }

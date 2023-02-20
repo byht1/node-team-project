@@ -1,13 +1,13 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { ApiProperty } from '@nestjs/swagger';
-import mongoose, { Document } from 'mongoose';
+import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import { ApiProperty } from "@nestjs/swagger";
+import mongoose, { Document } from "mongoose";
 
 export type PetDocument = Pet & Document;
 
-@Schema()
+@Schema({versionKey: false})
 export class Pet {
-  @ApiProperty({ example: '63f139e997fc630d8da1ff68' })
-  _id: mongoose.Schema.Types.ObjectId;
+    @ApiProperty({example: '63f139e997fc630d8da1ff68'})
+    _id: mongoose.Schema.Types.ObjectId;
 
     @ApiProperty({ example: 'Jack' })
     @Prop({ required: [true, 'name is required'] })
@@ -34,4 +34,4 @@ export class Pet {
     // owner: string;
 }
 
-export const PetSchema = SchemaFactory.createForClass(Pet);
+export const PetSchema = SchemaFactory.createForClass(Pet)
