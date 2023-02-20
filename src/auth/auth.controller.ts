@@ -11,10 +11,9 @@ import {
 } from '@nestjs/swagger';
 import { Response } from 'express';
 import { Users } from 'src/db-schema/user.schema';
-import { CustomCookie } from 'src/decorators/CustomCookie.decorator';
 import { IRequestUser } from 'src/type/req';
 import { AuthService } from './auth.service';
-import { LogInDto, NewUserDto } from './dto';
+import { LogInDto, NewUserDto, RefreshTokenDto } from './dto';
 import { JwtAuthGuard } from './guard/jwt-auth.guard';
 import { ValidatePipe } from '../global/pipe/validate.pipe';
 import { AuthGuard } from '@nestjs/passport';
@@ -56,12 +55,8 @@ export class AuthController {
   @ApiResponse({ status: 500, description: 'Server error' })
   @UsePipes(ValidatePipe)
   @Post('log-in')
-  async logIn(@Body() logInDto: LogInDto, @Res({ passthrough: true }) response: Response) {
+  async logIn(@Body() logInDto: LogInDto) {
     const user = await this.authService.logIn(logInDto);
-    response.cookie('refreshToken', user.refresh_token, {
-      maxAge: 2 * 24 * 60 * 60 * 1000,
-      httpOnly: true,
-    });
     return user;
   }
 
@@ -77,26 +72,21 @@ export class AuthController {
   @ApiResponse({ status: 403, description: 'Invalid token' })
   @ApiResponse({ status: 500, description: 'Server error' })
   @UseGuards(JwtAuthGuard)
+  @UsePipes(ValidatePipe)
   @HttpCode(204)
-  @Get('logout')
-  logOut(@Req() req: IRequestUser, @CustomCookie('refreshToken') refreshToken) {
-    return this.authService.logOut(req.user, req.access_token, refreshToken);
+  @Post('logout')
+  logOut(@Req() req: IRequestUser, @Body() { refresh_token }: RefreshTokenDto) {
+    return this.authService.logOut(req.user, req.access_token, refresh_token);
   }
 
   @ApiOperation({ summary: 'Get a new access token' })
   @ApiResponse({ status: 201, type: String })
-  @ApiHeaders([
-    {
-      name: 'Cookie',
-      required: true,
-      description: 'The refresh token issued to the current user.',
-    },
-  ])
   @ApiResponse({ status: 403, description: 'Invalid token' })
   @ApiResponse({ status: 500, description: 'Server error' })
+  @UsePipes(ValidatePipe)
   @Get('refresh')
-  refresh(@CustomCookie('refreshToken') refreshToken) {
-    return this.authService.refresh(refreshToken);
+  refresh(@Body() { refresh_token }: RefreshTokenDto) {
+    return this.authService.refresh(refresh_token);
   }
 
   @ApiOperation({ summary: 'Authorization by token' })
@@ -132,17 +122,8 @@ export class AuthController {
   async googleLoginCallback(@Req() req: any, @Res() response: Response) {
     const tokens: TTokens = await this.authService.googleLogin(req.user);
 
-    response.cookie('refreshToken', tokens.refresh_token, {
-      maxAge: 2 * 24 * 60 * 60 * 1000,
-      httpOnly: true,
-    });
-
-    return response.redirect(`http://localhost:3000/react-team-project/?access_token=${tokens.access_token}`);
-    // return response.redirect(`https://byht1.github.io/react-team-project/?access_token=${tokens.access_token}`);
-    // if (jwt) {
-    //   res.redirect(`${this.configService.get('https://byht1.github.io/react-team-project/')}?token=${jwt}`);
-    // } else {
-    //   res.redirect(`${this.configService.get('https://byht1.github.io/react-team-project/')}`);
-    // }
+    return response.redirect(
+      `https://byht1.github.io/react-team-project/?access_token=${tokens.access_token},refresh_token=${tokens.refresh_token}`,
+    );
   }
 }

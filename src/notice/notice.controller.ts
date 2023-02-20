@@ -34,14 +34,15 @@ import {
 import { Notice } from 'src/db-schema/notice.schema';
 import { ValidatePipe } from 'src/global/pipe/validate.pipe';
 import { UploadedFilesDto } from './dto/uploaded-files.dto';
-import { CreateNoticeSchema } from './schema-swagger/create-notice.schema';
+import { CreateNoticeSwaggerSchema } from './schema-swagger/create-notice-swagger.schema';
+import { NoticeSwagger } from './schema-swagger/notice-swagger.schema';
 
 @ApiTags('Notices')
 @Controller('/notices')
 export class NoticeController {
   constructor(private noticeService: NoticeService, private userService: UserService) {}
 
-  @ApiOperation({ summary: 'Endpoint to receive ads by category' })
+  @ApiOperation({ summary: 'Endpoint to receive ads by category and search by title' })
   @ApiResponse({ status: 200, type: [Notice] })
   @ApiResponse({ status: 404, description: 'Not found' })
   @ApiResponse({ status: 500, description: 'Server error' })
@@ -51,7 +52,7 @@ export class NoticeController {
     console.log('getByCategoryAndSearch');
     return this.noticeService.getNoticesByCategoryAndSearch(dto);
   }
-
+  //==============================================
   @ApiOperation({ summary: 'Endpoint for receiving ads of an authorized user created by this user' })
   @ApiBearerAuth()
   @ApiHeaders([
@@ -68,12 +69,11 @@ export class NoticeController {
   @UseGuards(JwtAuthGuard)
   @Get('/user')
   getUserNotices(@Req() request: IRequestUser) {
-    console.log('getUserNotices');
     const { user } = request;
 
     return this.noticeService.getUserNotices(user._id);
   }
-
+  //==============================================
   @ApiOperation({ summary: 'Endpoint for receiving ads of an authorized user who added them to favorites' })
   @ApiBearerAuth()
   @ApiHeaders([
@@ -90,12 +90,11 @@ export class NoticeController {
   @UseGuards(JwtAuthGuard)
   @Get('/favorite')
   getFavotiteNotices(@Req() request: IRequestUser) {
-    console.log('favorite');
     const { user } = request;
     return this.userService.getFavotiteNotices(user._id);
     //
   }
-
+  //==============================================
   @ApiOperation({ summary: 'Endpoint for adding an ad to your favorites' })
   @ApiBearerAuth()
   @ApiHeaders([
@@ -113,11 +112,10 @@ export class NoticeController {
   @UseGuards(JwtAuthGuard)
   @Patch('/:id/favorite')
   addNoticeToFavorite(@Req() request: IRequestUser, @Param('id') id: ObjectId) {
-    console.log('addToFavorite');
     const { user } = request;
     return this.userService.addNoticeToFavorite(user._id, id);
   }
-
+  //==============================================
   @ApiOperation({ summary: 'Endpoint for adding an ad to your favorites' })
   @ApiBearerAuth()
   @ApiHeaders([
@@ -135,22 +133,20 @@ export class NoticeController {
   @UseGuards(JwtAuthGuard)
   @Delete(':id/favorite')
   removeNoticeFromFavorite(@Req() request: IRequestUser, @Param('id') id: ObjectId) {
-    console.log('removeFromFavorite');
     const { user } = request;
     return this.userService.removeNoticeFromFavorite(user._id, id);
   }
 
   @ApiOperation({ summary: 'Endpoint for receiving one ad' })
-  @ApiResponse({ status: 200, type: Notice })
+  @ApiResponse({ status: 200, type: NoticeSwagger })
   @ApiResponse({ status: 404, description: 'Not found' })
   @ApiResponse({ status: 500, description: 'Server error' })
   @ApiParam({ name: 'id', required: true, description: 'Ad identifier' })
   @Get('/:id')
   getNoticeById(@Param('id') id: ObjectId) {
-    console.log('getById');
     return this.noticeService.getNoticeById(id);
   }
-
+  //==============================================
   @ApiOperation({ summary: 'Endpoint for adding ads according to the selected category' })
   @ApiBearerAuth()
   @ApiHeaders([
@@ -161,7 +157,7 @@ export class NoticeController {
     },
   ])
   @ApiConsumes('multipart/form-data')
-  @ApiBody({ type: CreateNoticeSchema })
+  @ApiBody({ type: CreateNoticeSwaggerSchema })
   @ApiResponse({ status: 201, type: Notice })
   @ApiResponse({ status: 403, description: 'Invalid token' })
   @ApiResponse({ status: 404, description: 'Not found' })
@@ -171,13 +167,12 @@ export class NoticeController {
   @Post()
   @UseInterceptors(FileFieldsInterceptor([{ name: 'picture', maxCount: 4 }]))
   addNotice(@Req() request: IRequestUser, @UploadedFiles() files: UploadedFilesDto, @Body() dto: CreateNoticeDto) {
-    console.log('addNotice');
     const { user } = request;
     const { picture } = files;
 
     return this.noticeService.addNotice(user._id, dto, picture);
   }
-
+  //==============================================
   @ApiOperation({ summary: "Endpoint for deleting an authorized user's ad created by this user " })
   @ApiBearerAuth()
   @ApiHeaders([
@@ -195,8 +190,6 @@ export class NoticeController {
   @UseGuards(JwtAuthGuard)
   @Delete('/:id')
   removeNotice(@Param('id') id: ObjectId) {
-    console.log('removeNotice');
-
     return this.noticeService.removeNotice(id);
   }
 }

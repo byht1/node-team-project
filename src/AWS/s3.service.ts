@@ -26,6 +26,12 @@ export class S3Service {
     return await this.s3_upload(file.buffer, this.AWS_S3_BUCKET, name, file.mimetype, type);
   }
 
+  //https://team-project-react-node.s3.amazonaws.com/image/🚀2702a575-70c3-4331-83fc-f237851149bb.jpg🚀
+  //🚀 key 🚀
+  async deleteFile(key: string, type: TypeOperation) {
+    return this.s3_delete(key, type);
+  }
+
   private async s3_upload(file: Buffer, bucket: string, name: string, mimetype: string, type: TypeOperation) {
     const params = {
       Bucket: `${bucket}/${type}`,
@@ -46,5 +52,17 @@ export class S3Service {
     } catch (e) {
       console.log(e);
     }
+  }
+
+  private async s3_delete(key: string, type: TypeOperation) {
+    console.log('🚀 ~ file: s3.service.ts:58 ~ S3Service ~ s3_delete ~ key', key);
+
+    const params = {
+      Bucket: `${this.AWS_S3_BUCKET}/${type}`,
+      Key: key,
+    };
+    console.log(await this.s3.deleteObject(params).promise());
+
+    return;
   }
 }
