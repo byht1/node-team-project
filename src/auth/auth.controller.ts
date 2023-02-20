@@ -11,7 +11,6 @@ import {
 } from '@nestjs/swagger';
 import { Response } from 'express';
 import { Users } from 'src/db-schema/user.schema';
-import { CustomCookie } from 'src/decorators/CustomCookie.decorator';
 import { IRequestUser } from 'src/type/req';
 import { AuthService } from './auth.service';
 import { LogInDto, NewUserDto, RefreshTokenDto } from './dto';
@@ -73,10 +72,11 @@ export class AuthController {
   @ApiResponse({ status: 403, description: 'Invalid token' })
   @ApiResponse({ status: 500, description: 'Server error' })
   @UseGuards(JwtAuthGuard)
+  @UsePipes(ValidatePipe)
   @HttpCode(204)
-  @Get('logout')
-  logOut(@Req() req: IRequestUser, @CustomCookie('refreshToken') refreshToken) {
-    return this.authService.logOut(req.user, req.access_token, refreshToken);
+  @Post('logout')
+  logOut(@Req() req: IRequestUser, @Body() { refresh_token }: RefreshTokenDto) {
+    return this.authService.logOut(req.user, req.access_token, refresh_token);
   }
 
   @ApiOperation({ summary: 'Get a new access token' })

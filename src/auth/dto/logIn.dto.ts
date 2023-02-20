@@ -5,7 +5,7 @@ export class LogInDto {
   @ApiProperty({ example: 'Email user' })
   @IsString({ message: 'Not a line' })
   @IsEmail({}, { message: 'Incorrect email' })
-  @Matches(/^(?!-)\w{2,}@[a-zA-Z0-9]+\.[a-zA-Z]{2,}$/, {
+  @Matches(/^(?!-)\w+(\.\w+)?@[a-zA-Z0-9]+\.[a-zA-Z]{2,}$/, {
     message: 'Incorrect email',
   })
   readonly email: string;
