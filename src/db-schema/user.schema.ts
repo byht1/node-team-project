@@ -2,6 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { ApiProperty } from '@nestjs/swagger';
 import mongoose, { ObjectId } from 'mongoose';
 import { Token } from '../auth/type';
+import { Pet } from './pets.schema';
 
 export type UsersDocument = Users & Document;
 
@@ -83,10 +84,10 @@ export class Users {
 
   @ApiProperty({ example: ['6373c0bca5a6e4c9556f1e7a'] })
   @Prop({
-    type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Notice' }],
+    type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Pet' }],
     default: [],
   })
-  cards: ObjectId[];
+  cards: Pet[];
 
   @ApiProperty({
     example: '11bf5b37-e0b8-42e0-8dcf-dc8c4aefc000',

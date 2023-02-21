@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, ObjectId } from 'mongoose';
 import { S3Service, TypeOperation } from 'src/AWS/s3.service';
+import { PetDocument } from 'src/db-schema/pets.schema';
 import { Users, UsersDocument } from 'src/db-schema/user.schema';
 import { TId } from 'src/type';
 import { EditingUserDto } from './dto/editingUser.dto';
@@ -9,6 +10,18 @@ import { EditingUserDto } from './dto/editingUser.dto';
 @Injectable()
 export class UserService {
   private resDate = '-password -access_token -refresh_token';
+  private scipDate = {
+    createdAt: 0,
+    updatedAt: 0,
+    password: 0,
+    access_token: 0,
+    refresh_token: 0,
+    favorite: 0,
+    advertisement: 0,
+    forgottenPasswordToken: 0,
+    verificationToken: 0,
+    forgottenPassword: 0,
+  };
 
   constructor(@InjectModel(Users.name) private usersModel: Model<UsersDocument>, private s3servise: S3Service) {}
 
@@ -17,7 +30,9 @@ export class UserService {
   }
 
   async editingData(editingUserDto: EditingUserDto, id: TId) {
-    const user = await this.usersModel.findByIdAndUpdate(id, editingUserDto, { new: true });
+    const user = await this.usersModel
+      .findByIdAndUpdate(id, editingUserDto, { new: true })
+      .select({ ...this.scipDate, cards: 0 });
 
     return this.normalizeData(user);
   }
@@ -61,19 +76,29 @@ export class UserService {
     return noticeId;
   }
 
-  // async getAdvertisement(userId: TId) {
-  //   const user = await (await this.usersModel.findById(userId)).populate('advertisement');
+  async allUserPets(userId: TId): Promise<UsersDocument> {
+    const user = await this.usersModel.findById(userId).populate('cards').select(this.scipDate);
 
-  //   return user.advertisement;
-  // }
+    return user;
+  }
 
-  // async removeAdvertisement(userId: TId, advertisementId: ObjectId | any) {
-  //   const user = await this.usersModel.findById(userId);
+  async addPets(userId: TId, pets: PetDocument): Promise<void> {
+    const user = await this.usersModel.findById(userId);
 
-  //   (user.advertisement = user.advertisement.filter(x => x.toString() !== advertisementId)), await user.save();
+    user.cards.push(pets._id);
+    await user.save();
 
-  //   return true;
-  // }
+    return;
+  }
+
+  async removePets(userId: TId, noticeId: PetDocument): Promise<void> {
+    const user = await this.usersModel.findById(userId);
+
+    user.cards = user.cards.filter(x => x !== noticeId._id);
+    await user.save();
+
+    return;
+  }
 
   async userById(id: TId): Promise<UsersDocument> {
     return await this.usersModel.findById(id);

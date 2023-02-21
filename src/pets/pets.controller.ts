@@ -11,7 +11,16 @@ import {
   UsePipes,
 } from '@nestjs/common';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
-import { ApiBearerAuth, ApiBody, ApiConsumes, ApiHeaders, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiConsumes,
+  ApiHeaders,
+  ApiOperation,
+  ApiParam,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { ObjectId } from 'mongoose';
 import { Pet } from 'src/db-schema/pets.schema';
 import { CreatePetDto } from './dto/create-pet.dto';
@@ -48,11 +57,9 @@ export class PetsController {
   @UsePipes(ValidateIsNotVoid)
   @UseInterceptors(FileFieldsInterceptor([{ name: 'image', maxCount: 1 }]))
   @Post()
-  create(@Req() req: IRequestUser,
-    @Body() dto: CreatePetDto,
-    @UploadedFiles() { image }: UploadFileDto) {
-      return this.petsService.createPet(dto, image[0], req.user._id)
-    }
+  create(@Req() req: IRequestUser, @Body() dto: CreatePetDto, @UploadedFiles() { image }: UploadFileDto) {
+    return this.petsService.createPet(dto, image[0], req.user._id);
+  }
 
   @ApiOperation({ summary: 'Delete pet' })
   @ApiBearerAuth()
@@ -70,7 +77,7 @@ export class PetsController {
   @UseGuards(JwtAuthGuard)
   @ApiParam({ name: 'id', required: true, description: 'Pet ID' })
   @Delete(':id')
-  remove(@Param('id') id: ObjectId): Promise<Pet> {
-    return this.petsService.removePet(id)
+  remove(@Param('id') id: ObjectId, @Req() req: IRequestUser) {
+    return this.petsService.removePet(id, req.user._id);
   }
 }

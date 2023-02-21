@@ -11,26 +11,29 @@ export const passwordSchema = Object.freeze({
   original: /(?=.*[0-9])(?=.*[!@#$%^&*_])(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*_]{7,}/,
 });
 
+export const emailValid = /^(?!-)\w+(\.\w+)?@[a-zA-Z0-9]+\.[a-zA-Z]{2,}$/;
+export const nameValid = {
+  reg: /^[A-Za-zА-Яа-яЁё\s,'"'-.]+(?:\s+[A-Za-zА-Яа-яЁё]+){0,3}$/u,
+  maxLength: 40,
+  minLength: 2,
+};
+export const ciryValid = {
+  reg: /^[a-zA-Zа-яА-Я\s,'"'-.]+$/,
+  maxLength: 50,
+  minLength: 2,
+};
+
 export class NewUserDto {
   @ApiProperty({ example: 'Email user' })
   @IsString({ message: 'Not a line' })
   @IsEmail({}, { message: 'Incorrect email' })
-  @Matches(/^(?!-)\w+(\.\w+)?@[a-zA-Z0-9]+\.[a-zA-Z]{2,}$/, {
+  @Matches(emailValid, {
     message: 'Incorrect email',
   })
-  // @Matches(/^(?!.-.)([A-Za-z]{2,}@[A-Za-z]+.[A-Za-z]+)$/, {
-  //   message: 'Incorrect email',
-  // })
   readonly email: string;
 
   @ApiProperty({ example: 'Password user' })
   @IsString({ message: 'Not a line' })
-  // @Matches(passwordSchema.number, {
-  //   message: 'Пароль повинен містити хотяби одну цифру',
-  // })
-  // @Matches(passwordSchema.symbol, {
-  //   message: 'Пароль повинен містити хотяби один сцеціальний символ !@#$%^&*_',
-  // })
   @Matches(passwordSchema.upperCase, {
     message: 'Password must contain a host one capital letter',
   })
@@ -42,23 +45,22 @@ export class NewUserDto {
   })
   @MaxLength(32, { message: 'The maximum password length is 32 characters' })
   @MinLength(7, { message: 'The minimum password length is 7 characters' })
-  // @Matches(passwordSchema.original, { message: 'Не валідний пароль' })
   readonly password: string;
 
   @ApiProperty({ example: 'Username' })
   @IsString({ message: 'Not a line' })
-  @MinLength(2, { message: 'The name must contain at least 2 characters' })
-  @MaxLength(40, { message: 'The maximum name length is 40 characters' })
-  @Matches(/^[A-Za-zА-Яа-яЁё]+(?:\s+[A-Za-zА-Яа-яЁё]+){0,3}$/u, {
+  @MinLength(nameValid.minLength, { message: 'The name must contain at least 2 characters' })
+  @MaxLength(nameValid.maxLength, { message: 'The maximum name length is 40 characters' })
+  @Matches(nameValid.reg, {
     message: 'The name may contain only letters of the Latin and Cyrillic alphabets',
   })
   readonly name: string;
 
   @ApiProperty({ example: 'City' })
   @IsString({ message: 'Not a line' })
-  @MinLength(2, { message: 'The city name must contain at least 2 characters' })
-  @MaxLength(50, { message: 'The maximum city length is 40 characters' })
-  @Matches(/^[a-zA-Zа-яА-Я\s,'".]+$/, {
+  @MinLength(ciryValid.minLength, { message: 'The city name must contain at least 2 characters' })
+  @MaxLength(ciryValid.maxLength, { message: 'The maximum city length is 40 characters' })
+  @Matches(ciryValid.reg, {
     message: 'The name of the city or region must contain only letters',
   })
   readonly city: string;
