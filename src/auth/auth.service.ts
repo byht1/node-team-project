@@ -96,12 +96,12 @@ export class AuthService {
       const payload = await this.jwtService.decode(refreshToken);
 
       if (typeof payload === 'string' || !payload.id) {
-        throw new HttpException('Invalid token', HttpStatus.FORBIDDEN);
+        throw new HttpException('Invalid token', HttpStatus.UNAUTHORIZED);
       }
 
       await this.clearTokens(payload.id, refreshToken);
 
-      throw new HttpException('Invalid token', HttpStatus.FORBIDDEN);
+      throw new HttpException('Invalid token', HttpStatus.UNAUTHORIZED);
     }
   }
 
