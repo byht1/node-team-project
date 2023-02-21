@@ -11,7 +11,12 @@ export const passwordSchema = Object.freeze({
   original: /(?=.*[0-9])(?=.*[!@#$%^&*_])(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*_]{7,}/,
 });
 
-export const emailValid = /^(?!-)\w+(\.\w+)?@[a-zA-Z0-9]+\.[a-zA-Z]{2,}$/;
+export const emailValid = {
+  reg: /^(?!-)\w{2,}(\.\w+)*@[\w-]+(\.[\w-]+)*\.[a-zA-Z]{2,}$/,
+  // reg: /^(?!-)\w{2,}(\.\w+)?@[a-zA-Z0-9]+\.[a-zA-Z]{2,}$/,
+  maxLength: 63,
+  minLength: 7,
+};
 export const nameValid = {
   reg: /^[A-Za-zА-Яа-яЁёҐґІіЇїЄє\s,'"'-.]+(?:\s+[A-Za-zА-Яа-яЁё]+){0,3}$/u,
   maxLength: 40,
@@ -27,9 +32,11 @@ export class NewUserDto {
   @ApiProperty({ example: 'Email user' })
   @IsString({ message: 'Not a line' })
   @IsEmail({}, { message: 'Incorrect email' })
-  @Matches(emailValid, {
-    message: 'Incorrect email',
+  @Matches(emailValid.reg, {
+    message: 'Incorrect email reg',
   })
+  @MaxLength(emailValid.maxLength, { message: 'The maximum length of an email is 63 characters' })
+  @MinLength(emailValid.minLength, { message: 'The minimum length of an email is 7 characters' })
   readonly email: string;
 
   @ApiProperty({ example: 'Password user' })

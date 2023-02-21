@@ -8,9 +8,11 @@ export class MessageAuthUpdateDto {
   @IsString({ message: 'Not a line' })
   @IsOptional()
   @IsEmail({})
-  @Matches(emailValid, {
+  @Matches(emailValid.reg, {
     message: 'Incorrect email',
   })
+  @MaxLength(emailValid.maxLength, { message: 'The maximum length of an email is 63 characters' })
+  @MinLength(emailValid.minLength, { message: 'The minimum length of an email is 7 characters' })
   email: string;
 
   @ApiProperty({ example: '+380961122333' })
