@@ -81,12 +81,13 @@ export class AuthService {
         secret: process.env.REFRESH_SECRET_KEY,
       });
 
+      console.log(11111);
+
       const user = await this.usersModel.findById(isValid.id);
 
       if (!user.refresh_token.find(x => x.token === refreshToken)) throw new Error();
 
       const accessToken = this.generatorToken(isValid.id, 'access');
-
       user.access_token.push(accessToken);
       user.save();
 
