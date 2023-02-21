@@ -12,7 +12,6 @@ import {
   UploadedFiles,
   UseGuards,
   UsePipes,
-  ValidationPipe,
 } from '@nestjs/common';
 import mongoose, { ObjectId } from 'mongoose';
 import { NoticeService } from './notice.service';
@@ -163,9 +162,9 @@ export class NoticeController {
   @ApiResponse({ status: 404, description: 'Not found' })
   @ApiResponse({ status: 500, description: 'Server error' })
   @UseGuards(JwtAuthGuard)
-  @UsePipes(ValidationPipe)
-  @Post()
   @UseInterceptors(FileFieldsInterceptor([{ name: 'picture', maxCount: 4 }]))
+  @UsePipes(ValidatePipe)
+  @Post()
   addNotice(@Req() request: IRequestUser, @UploadedFiles() files: UploadedFilesDto, @Body() dto: CreateNoticeDto) {
     const { user } = request;
     const { picture } = files;
