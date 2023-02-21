@@ -5,7 +5,7 @@ import { ValidatePipe } from 'src/global/pipe/validate.pipe';
 import { ValidateIsNotVoid } from 'src/global/pipe/validateIsNotVoid.pipe';
 import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
 import { IRequestUser } from 'src/type/req';
-import { UpdateUser } from './schema-swagger';
+import { UpdateUser, UserDataPets } from './schema-swagger';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { EditingUserDto, EditingUserPhotoDto } from './dto';
 
@@ -82,5 +82,22 @@ export class UserController {
   @Patch('editing/photo')
   editingPhoto(@UploadedFiles() { file }: EditingUserPhotoDto, @Req() req: IRequestUser) {
     return this.userService.editingPhoto(file[0], req.user._id);
+  }
+
+  @ApiOperation({ summary: 'Update user data' })
+  @ApiHeaders([
+    {
+      name: 'Authorization',
+      required: true,
+      description: 'The token issued to the current user.',
+    },
+  ])
+  @ApiResponse({ status: 201, type: UserDataPets })
+  @ApiResponse({ status: 403, description: 'Invalid token' })
+  @ApiResponse({ status: 500, description: 'Server error' })
+  @UseGuards(JwtAuthGuard)
+  @Get('user-pets')
+  allUserPets(@Req() req: IRequestUser) {
+    return this.userService.allUserPets(req.user._id);
   }
 }

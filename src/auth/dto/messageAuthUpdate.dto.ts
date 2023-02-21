@@ -1,21 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEmail, IsMobilePhone, IsOptional, IsString, Matches, MaxLength, MinLength } from 'class-validator';
-import { ciryValid, emailValid, nameValid } from 'src/auth/dto';
+import { ciryValid, emailValid } from 'src/auth/dto';
 import { IsValidDate } from '../../decorators/dataValidate';
 
-export class EditingUserDto {
-  @ApiProperty({ example: 'Vitalik' })
-  @IsString({ message: 'Not a line' })
-  @MinLength(2, { message: 'The name must contain at least 2 characters' })
-  @MaxLength(40, { message: 'The maximum name length is 40 characters' })
-  @MinLength(nameValid.minLength, { message: 'The name must contain at least 2 characters' })
-  @MaxLength(nameValid.maxLength, { message: 'The maximum name length is 40 characters' })
-  @Matches(nameValid.reg, {
-    message: 'The name may contain only letters of the Latin and Cyrillic alphabets',
-  })
-  @IsOptional()
-  name?: string;
-
+export class MessageAuthUpdateDto {
   @ApiProperty({ example: 'test@gmail.com' })
   @IsString({ message: 'Not a line' })
   @IsOptional()
@@ -23,13 +11,13 @@ export class EditingUserDto {
   @Matches(emailValid, {
     message: 'Incorrect email',
   })
-  email?: string;
+  email: string;
 
   @ApiProperty({ example: '+380961122333' })
   @IsString({ message: 'Not a line' })
   @IsMobilePhone('uk-UA', { strictMode: true }, { message: 'Не валідний номер телефона' })
   @IsOptional()
-  phone?: string;
+  phone: string;
 
   @ApiProperty({ example: 'Kiev' })
   @IsString({ message: 'Not a line' })
@@ -39,11 +27,11 @@ export class EditingUserDto {
     message: 'The name of the city or region must contain only letters',
   })
   @IsOptional()
-  city?: string;
+  city: string;
 
   @ApiProperty({ example: '00.00.0000' })
   @IsString({ message: 'Not a line' })
   @IsValidDate()
   @IsOptional()
-  birthday?: string;
+  birthday: string;
 }

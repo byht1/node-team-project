@@ -5,7 +5,7 @@ import { Model } from 'mongoose';
 import * as bcrypt from 'bcryptjs';
 import { Users, UsersDocument } from 'src/db-schema/user.schema';
 // import { EmailMessageService } from '../email-message/email-message.service';
-import { GoogleAuthDto, LogInDto, NewUserDto } from './dto';
+import { GoogleAuthDto, LogInDto, MessageAuthUpdateDto, NewUserDto } from './dto';
 import { Token, TResUserAuth, TTokens } from './type';
 import { UserService } from 'src/user/user.service';
 import { TId } from 'src/type';
@@ -18,7 +18,7 @@ export class AuthService {
     private jwtService: JwtService, // private emailMessage: EmailMessageService,
   ) {}
 
-  async signUp(newUserDto: NewUserDto): Promise<TResUserAuth | any> {
+  async signUp(newUserDto: NewUserDto): Promise<TResUserAuth> {
     const { email, name, password } = newUserDto;
 
     const isEmail = await this.usersService.userByEmail(email);
@@ -129,6 +129,13 @@ export class AuthService {
 
   async getTokens(id: TId) {
     return await this.generatorTokens(id);
+  }
+
+  async messageAuthUpdate(data: MessageAuthUpdateDto, id: TId): Promise<TResUserAuth> {
+    const user = await this.usersModel.findByIdAndUpdate(id, { ...data }, { new: true });
+    const tokens = await this.generatorTokens(user._id);
+
+    return this.normalizeData(user, tokens);
   }
 
   private avatarGenerator(name): string {
