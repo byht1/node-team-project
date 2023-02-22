@@ -58,6 +58,4 @@ export class CreateNoticeDto {
   @MaxLength(200, { message: '$property should be maximum 200 symbols' })
   @IsOptional()
   readonly comments: string;
-
-  readonly errors: string[];
 }

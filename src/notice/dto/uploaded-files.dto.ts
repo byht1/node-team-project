@@ -5,7 +5,5 @@ export class UploadedFilesDto {
   @IsFile()
   @IsFileSize()
   // @IsOptional()
-  readonly picture: string[];
-
-  readonly errors: string[];
+  readonly images: string[];
 }

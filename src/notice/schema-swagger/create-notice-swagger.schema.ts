@@ -72,5 +72,5 @@ export class CreateNoticeSwaggerSchema {
     },
     // required: false,
   })
-  readonly picture: string[];
+  readonly images: string[];
 }

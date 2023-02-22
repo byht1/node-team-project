@@ -168,9 +168,9 @@ export class NoticeController {
   @Post()
   addNotice(@Req() request: IRequestUser, @UploadedFiles() files: UploadedFilesDto, @Body() dto: CreateNoticeDto) {
     const { user } = request;
-    const { picture } = files;
+    const { images } = files;
 
-    return this.noticeService.addNotice(user._id, dto, picture);
+    return this.noticeService.addNotice(user._id, dto, images);
   }
   //==============================================
   @ApiOperation({ summary: 'delete a notice created by an authorized user' })
