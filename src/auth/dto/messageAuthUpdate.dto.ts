@@ -21,7 +21,7 @@ export class MessageAuthUpdateDto {
   @IsOptional()
   phone: string;
 
-  @ApiProperty({ example: 'Kiev' })
+  @ApiProperty({ example: 'Kyiv' })
   @IsString({ message: 'Not a line' })
   @MinLength(ciryValid.minLength, { message: 'The city name must contain at least 2 characters' })
   @MaxLength(ciryValid.maxLength, { message: 'The maximum city length is 40 characters' })

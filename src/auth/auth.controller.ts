@@ -27,8 +27,8 @@ export class AuthController {
   constructor(private authService: AuthService, private configService: ConfigService) {}
 
   @ApiOperation({ summary: 'Registration' })
-  @ApiResponse({ status: 201, type: Users })
-  @ApiResponse({ status: 400, description: 'Bad Request' })
+  @ApiResponse({ status: 201, type: Users, description: 'User created' })
+  @ApiResponse({ status: 400, description: 'Invalid data' })
   @ApiResponse({
     status: 409,
     description: 'Email in use',
@@ -48,7 +48,7 @@ export class AuthController {
     return user;
   }
 
-  @ApiOperation({ summary: 'Login to the account' })
+  @ApiOperation({ summary: 'Login' })
   @ApiResponse({ status: 201, type: Users })
   @ApiResponse({ status: 400, description: 'Invalid data' })
   @ApiResponse({ status: 401, description: 'User does not exist' })
@@ -62,12 +62,12 @@ export class AuthController {
     return user;
   }
 
-  @ApiOperation({ summary: 'Logout to the account' })
+  @ApiOperation({ summary: 'Logout' })
   @ApiHeaders([
     {
       name: 'Authorization',
       required: true,
-      description: 'The token issued to the current user.',
+      description: 'User access token',
     },
   ])
   @ApiResponse({ status: 204 })
@@ -95,10 +95,10 @@ export class AuthController {
     {
       name: 'Authorization',
       required: true,
-      description: 'The token issued to the current user.',
+      description: 'User access token',
     },
   ])
-  @ApiResponse({ status: 201, type: Users })
+  @ApiResponse({ status: 200, type: Users })
   @ApiResponse({ status: 403, description: 'Invalid token' })
   @ApiResponse({ status: 500, description: 'Server error' })
   @UseGuards(JwtAuthGuard)

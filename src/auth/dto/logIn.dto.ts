@@ -3,7 +3,7 @@ import { IsString, IsEmail, Matches, MaxLength, MinLength } from 'class-validato
 import { emailValid } from './newUser.dto';
 
 export class LogInDto {
-  @ApiProperty({ example: 'Email user' })
+  @ApiProperty({ example: 'User email' })
   @IsString({ message: 'Not a line' })
   @IsEmail({}, { message: 'Incorrect email' })
   @Matches(emailValid.reg, {
@@ -13,7 +13,7 @@ export class LogInDto {
   @MinLength(emailValid.minLength, { message: 'The minimum length of an email is 7 characters' })
   readonly email: string;
 
-  @ApiProperty({ example: 'Password user' })
+  @ApiProperty({ example: 'User password' })
   @IsString({ message: 'Not a line' })
   readonly password: string;
 }
