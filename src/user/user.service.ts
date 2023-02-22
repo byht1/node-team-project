@@ -1,10 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, ObjectId } from 'mongoose';
 import { S3Service, TypeOperation } from 'src/AWS/s3.service';
 import { PetDocument } from 'src/db-schema/pets.schema';
 import { Users, UsersDocument } from 'src/db-schema/user.schema';
 import { TId } from 'src/type';
+import { runInThisContext } from 'vm';
 import { EditingUserDto } from './dto/editingUser.dto';
 
 @Injectable()
@@ -30,6 +31,14 @@ export class UserService {
   }
 
   async editingData(editingUserDto: EditingUserDto, id: TId) {
+    const { email } = editingUserDto;
+
+    if (email) {
+      const isUser = await this.usersModel.findOne({ email });
+
+      if (isUser) throw new HttpException('Email in use', HttpStatus.CONFLICT);
+    }
+
     const user = await this.usersModel
       .findByIdAndUpdate(id, editingUserDto, { new: true })
       .select({ ...this.scipDate, cards: 0 });

@@ -13,7 +13,7 @@ import { Response } from 'express';
 import { Users } from 'src/db-schema/user.schema';
 import { IRequestUser } from 'src/type/req';
 import { AuthService } from './auth.service';
-import { LogInDto, MessageAuthUpdateDto, NewUserDto, RefreshTokenDto } from './dto';
+import { LogInDto, NewUserDto, RefreshTokenDto } from './dto';
 import { JwtAuthGuard } from './guard/jwt-auth.guard';
 import { ValidatePipe } from '../global/pipe/validate.pipe';
 import { AuthGuard } from '@nestjs/passport';
@@ -34,6 +34,7 @@ export class AuthController {
     description: 'Email in use',
   })
   @ApiResponse({ status: 500, description: 'Server error' })
+  @HttpCode(201)
   @UsePipes(ValidatePipe)
   @Post('sign-up')
   async signUp(@Body() newUserDto: NewUserDto, @Res({ passthrough: true }) response: Response) {
@@ -53,6 +54,7 @@ export class AuthController {
   @ApiResponse({ status: 401, description: 'User does not exist' })
   @ApiResponse({ status: 401, description: 'Incorrect password' })
   @ApiResponse({ status: 500, description: 'Server error' })
+  @HttpCode(201)
   @UsePipes(ValidatePipe)
   @Post('log-in')
   async logIn(@Body() logInDto: LogInDto) {
@@ -121,28 +123,29 @@ export class AuthController {
   async googleLoginCallback(@Req() req: any, @Res() response: Response) {
     const tokens: TTokens = await this.authService.googleLogin(req.user);
 
-    return response.redirect(`https://byht1.github.io/react-team-project/?access_token=${tokens.access_token}`);
+    // return response.redirect(`https://byht1.github.io/react-team-project/?access_token=${tokens.access_token}`);
+    return response.redirect(`http://localhost:3000/react-team-project/?access_token=${tokens.access_token}`);
     // return response.redirect(
     //   `https://byht1.github.io/react-team-project/?access_token=${tokens.access_token},refresh_token=${tokens.refresh_token}`,
     // );
   }
 
-  @ApiOperation({ summary: 'Continuation of registration of a user who auto-registered using third-party services' })
-  @ApiHeaders([
-    {
-      name: 'Authorization',
-      required: true,
-      description: 'The token issued to the current user.',
-    },
-  ])
-  @ApiResponse({ status: 201, type: Users })
-  @ApiResponse({ status: 400, description: 'Invalid data' })
-  @ApiResponse({ status: 403, description: 'Invalid token' })
-  @ApiResponse({ status: 500, description: 'Server error' })
-  @UsePipes(ValidatePipe)
-  @UseGuards(JwtAuthGuard)
-  @Post('message-auth-update')
-  messageAuthUpdate(@Body() dataUser: MessageAuthUpdateDto, @Req() req: IRequestUser) {
-    return this.authService.messageAuthUpdate(dataUser, req.user._id);
-  }
+  // @ApiOperation({ summary: 'Continuation of registration of a user who auto-registered using third-party services' })
+  // @ApiHeaders([
+  //   {
+  //     name: 'Authorization',
+  //     required: true,
+  //     description: 'The token issued to the current user.',
+  //   },
+  // ])
+  // @ApiResponse({ status: 201, type: Users })
+  // @ApiResponse({ status: 400, description: 'Invalid data' })
+  // @ApiResponse({ status: 403, description: 'Invalid token' })
+  // @ApiResponse({ status: 500, description: 'Server error' })
+  // @UsePipes(ValidatePipe)
+  // @UseGuards(JwtAuthGuard)
+  // @Post('message-auth-update')
+  // messageAuthUpdate(@Body() dataUser: MessageAuthUpdateDto, @Req() req: IRequestUser) {
+  //   return this.authService.messageAuthUpdate(dataUser, req.user._id);
+  // }
 }

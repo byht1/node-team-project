@@ -12,7 +12,7 @@ export const passwordSchema = Object.freeze({
 });
 
 export const emailValid = {
-  reg: /^(?!-)\w{2,}(\.\w+)*@[\w-]+(\.[\w-]+)*\.[a-zA-Z]{2,}$/,
+  reg: /^(?!-)[\w.-]{2,}@[\w-]+(\.[\w-]+)*\.[a-zA-Z]{2,}$/u,
   maxLength: 63,
   minLength: 7,
 };

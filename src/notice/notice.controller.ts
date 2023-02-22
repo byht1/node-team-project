@@ -166,6 +166,7 @@ export class NoticeController {
   @UsePipes(ValidatePipe)
   @Post()
   addNotice(@Req() request: IRequestUser, @UploadedFiles() files: UploadedFilesDto, @Body() dto: CreateNoticeDto) {
+    console.log('🚀  NoticeController  dto:', dto);
     const { user } = request;
     const { picture } = files;
 
