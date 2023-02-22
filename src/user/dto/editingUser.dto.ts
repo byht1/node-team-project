@@ -4,7 +4,7 @@ import { ciryValid, emailValid, nameValid } from 'src/auth/dto';
 import { IsValidDate } from '../../decorators/dataValidate';
 
 export class EditingUserDto {
-  @ApiProperty({ example: 'Vitalik' })
+  @ApiProperty({ example: 'James Allen' })
   @IsString({ message: 'Not a line' })
   @MinLength(2, { message: 'The name must contain at least 2 characters' })
   @MaxLength(40, { message: 'The maximum name length is 40 characters' })
@@ -33,7 +33,7 @@ export class EditingUserDto {
   @IsOptional()
   phone?: string;
 
-  @ApiProperty({ example: 'Kiev' })
+  @ApiProperty({ example: 'Kyiv' })
   @IsString({ message: 'Not a line' })
   @MinLength(ciryValid.minLength, { message: 'The city name must contain at least 2 characters' })
   @MaxLength(ciryValid.maxLength, { message: 'The maximum city length is 40 characters' })

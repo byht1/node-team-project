@@ -23,9 +23,8 @@ import {
 } from '@nestjs/swagger';
 import { ObjectId } from 'mongoose';
 import { Pet } from 'src/db-schema/pets.schema';
-import { CreatePetDto } from './dto/create-pet.dto';
+import { CreatePetDto, UploadFileDto } from './dto';
 import { CreatePetSchema } from './schema-swagger/create-pet.schema';
-import { UploadFileDto } from './dto/upload-file.dto';
 import { PetsService } from './pets.service';
 import { ValidatePipe } from 'src/global/pipe/validate.pipe';
 import { ValidateIsNotVoid } from 'src/global/pipe/validateIsNotVoid.pipe';
@@ -43,7 +42,7 @@ export class PetsController {
     {
       name: 'Authorization',
       required: true,
-      description: 'User token',
+      description: 'User access token',
     },
   ])
   @ApiBody({ type: CreatePetSchema })
@@ -67,7 +66,7 @@ export class PetsController {
     {
       name: 'Authorization',
       required: true,
-      description: 'User token',
+      description: 'User access token',
     },
   ])
   @ApiResponse({ status: 200, description: 'Pet deleted', type: Pet })

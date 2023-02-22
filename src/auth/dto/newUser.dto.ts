@@ -29,7 +29,7 @@ export const ciryValid = {
 };
 
 export class NewUserDto {
-  @ApiProperty({ example: 'Email user' })
+  @ApiProperty({ example: 'User email' })
   @IsString({ message: 'Not a line' })
   @IsEmail({}, { message: 'Incorrect email' })
   @Matches(emailValid.reg, {
@@ -39,7 +39,7 @@ export class NewUserDto {
   @MinLength(emailValid.minLength, { message: 'The minimum length of an email is 7 characters' })
   readonly email: string;
 
-  @ApiProperty({ example: 'Password user' })
+  @ApiProperty({ example: 'User password' })
   @IsString({ message: 'Not a line' })
   @Matches(passwordSchema.upperCase, {
     message: 'Password must contain a host one capital letter',
