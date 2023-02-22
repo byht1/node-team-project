@@ -58,8 +58,7 @@ export class CreateNoticeSwaggerSchema {
   readonly category: CategoryNotices;
 
   @ApiProperty({
-    example:
-      'Lorem ipsum dolor sit amet, consectetur Lorem ipsum dolor sit amet, consectetur  Lorem ipsum dolor sit amet, consectetur Lorem',
+    example: 'Lorem ipsum dolor sit amet, consectetur Lorem ipsum dolor sit amet, consectetur',
     required: false,
   })
   readonly comments: string;
@@ -71,7 +70,7 @@ export class CreateNoticeSwaggerSchema {
       format: 'binary',
       example: "['https://team-project-react-node.s3.amazonaws.com/image/3f0cd17f-d25f-491a-8cce-00bf993edc5f.jpg']",
     },
-    required: false,
+    // required: false,
   })
   readonly picture: string[];
 }
