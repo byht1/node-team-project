@@ -5,7 +5,6 @@ import { S3Service, TypeOperation } from 'src/AWS/s3.service';
 import { PetDocument } from 'src/db-schema/pets.schema';
 import { Users, UsersDocument } from 'src/db-schema/user.schema';
 import { TId } from 'src/type';
-import { runInThisContext } from 'vm';
 import { EditingUserDto } from './dto/editingUser.dto';
 
 @Injectable()
