@@ -77,11 +77,11 @@ export class AuthService {
 
   async refresh(refreshToken: string): Promise<string> {
     try {
+      if (!refreshToken) throw new Error();
+
       const isValid = await this.jwtService.verify(refreshToken, {
         secret: process.env.REFRESH_SECRET_KEY,
       });
-
-      console.log(11111);
 
       const user = await this.usersModel.findById(isValid.id);
 
@@ -95,7 +95,7 @@ export class AuthService {
     } catch (error) {
       const payload = await this.jwtService.decode(refreshToken);
 
-      if (typeof payload === 'string' || !payload.id) {
+      if (typeof payload === 'string' || !payload?.id) {
         throw new HttpException('Invalid token', HttpStatus.UNAUTHORIZED);
       }
 
