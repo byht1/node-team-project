@@ -6,6 +6,7 @@ export enum TypeOperation {
   IMAGE = 'image',
   PETS = 'pets',
   AVSTAR = 'avatars',
+  POSTS = 'posts',
 }
 
 @Injectable()
