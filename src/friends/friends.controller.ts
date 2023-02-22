@@ -9,7 +9,8 @@ export class FriendsController {
     constructor(private readonly friendsService: FriendsService) {}
 
     @ApiOperation({summary: 'Get all friends'})
-    @ApiResponse({status: 200, type: [Friend]})
+    @ApiResponse({status: 200, type: [Friend], description: "Friends found"})
+    @ApiResponse({ status: 500, description: 'Server error' })
     @Get()
     getAll(): Promise<Friend[]> {
         return this.friendsService.getAllFriends() 

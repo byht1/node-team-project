@@ -33,7 +33,7 @@ export class Users {
   @Prop()
   refresh_token: Token[];
 
-  @ApiProperty({ example: 'test@gmail.com' })
+  @ApiProperty({ example: 'James Allen' })
   @Prop({ type: String, required: true })
   name: string;
 
