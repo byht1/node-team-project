@@ -9,18 +9,18 @@ export function IsFileSize(options?: number, validationOptions?: ValidationOptio
       propertyName: propertyName,
       constraints: [],
       options: {
-        message: `The file size cannot be larger than ${size / 1000000}MB`,
+        message: `The file is required and size cannot be larger than ${size / 1000000}MB`,
         ...validationOptions,
       },
       validator: {
         validate(file: any) {
-          const result = file.every(f => f?.size <= size);
+          return file && file.every(f => f?.size <= size);
+
           // const value = file[0];
           // if (value?.size <= size) {
           //   return true;
           // }
           // return false;
-          return result;
         },
       },
     });
