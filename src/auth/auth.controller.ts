@@ -13,7 +13,7 @@ import { Response } from 'express';
 import { Users } from 'src/db-schema/user.schema';
 import { IRequestUser } from 'src/type/req';
 import { AuthService } from './auth.service';
-import { LogInDto, NewUserDto, RefreshTokenDto } from './dto';
+import { EmailDto, LogInDto, NewUserDto, RefreshTokenDto } from './dto';
 import { JwtAuthGuard } from './guard/jwt-auth.guard';
 import { ValidatePipe } from '../global/pipe/validate.pipe';
 import { AuthGuard } from '@nestjs/passport';
@@ -46,6 +46,19 @@ export class AuthController {
     });
 
     return user;
+  }
+
+  @ApiOperation({ summary: 'Email is use' })
+  @ApiResponse({ status: 204 })
+  @ApiResponse({
+    status: 409,
+    description: 'Email in use',
+  })
+  @HttpCode(204)
+  @ApiResponse({ status: 500, description: 'Server error' })
+  @Post('is-use-email')
+  isUseEmail(@Body() email: EmailDto) {
+    return this.authService.isUseEmail(email);
   }
 
   @ApiOperation({ summary: 'Login' })
@@ -129,26 +142,6 @@ export class AuthController {
     // return response.redirect(
     //   `https://byht1.github.io/react-team-project/?access_token=${tokens.access_token},refresh_token=${tokens.refresh_token}`,
     // );
-  }
-
-  @Get('facebook')
-  @UseGuards(AuthGuard('facebook'))
-  async facebookLogin() {
-    // Викликається автоматично
-  }
-
-  @Get('facebook/callback')
-  @UseGuards(AuthGuard('facebook'))
-  async facebookLoginRedirect(@Req() req) {
-    console.log('🚀  AuthController  req.user:', req.user);
-    // Коли користувач успішно аутентифікувався, Passport
-    // створює JWT-токен та додає його до об'єкту `req.user`.
-    // В цьому маршруті можна передати користувача на домашню сторінку або іншу
-    // захищену сторінку
-    return {
-      message: 'Аутентифікація успішна',
-      user: req.user,
-    };
   }
 
   // @ApiOperation({ summary: 'Continuation of registration of a user who auto-registered using third-party services' })
