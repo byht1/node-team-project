@@ -1,6 +1,6 @@
 export const nameValid = Object.freeze({
   reg: {
-    value: /^[A-Za-zА-Яа-яЁёҐґІіЇїЄє\s,'"'-.]+(?:\s+[A-Za-zА-Яа-яЁё]+){0,3}$/u,
+    value: /^[A-Za-zА-Яа-яЁёҐґІіЇїЄє\s,'"'-.]+(?:\s+[A-Za-zА-Яа-яЁёҐґІіЇїЄє]+){0,3}$/u,
     message: 'The name may contain only letters of the Latin and Cyrillic alphabets',
   },
   maxLength: {
