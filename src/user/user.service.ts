@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, ObjectId } from 'mongoose';
 import { S3Service, TypeOperation } from 'src/AWS/s3.service';
 import { PetDocument } from 'src/db-schema/pets.schema';
+import { PostDocument } from 'src/db-schema/post.schema';
 import { Users, UsersDocument } from 'src/db-schema/user.schema';
 import { TId } from 'src/type';
 import { EditingUserDto } from './dto/editingUser.dto';
@@ -82,19 +83,37 @@ export class UserService {
     return user;
   }
 
-  async addPets(userId: TId, pets: PetDocument): Promise<void> {
+  async addPet(userId: TId, pet: PetDocument): Promise<void> {
     const user = await this.usersModel.findById(userId);
 
-    user.cards.push(pets._id);
+    user.cards.push(pet._id);
     await user.save();
 
     return;
   }
 
-  async removePets(userId: TId, noticeId: PetDocument): Promise<void> {
+  async removePet(userId: TId, pet: PetDocument): Promise<void> {
     const user = await this.usersModel.findById(userId);
 
-    user.cards = user.cards.filter(x => x !== noticeId._id);
+    user.cards = user.cards.filter(x => x !== pet._id);
+    await user.save();
+
+    return;
+  }
+
+  async addPost(userId: TId, post: PostDocument): Promise<void> {
+    const user = await this.usersModel.findById(userId);
+
+    user.posts.push(post._id);
+    await user.save();
+
+    return;
+  }
+
+  async removePost(userId: TId, post: PostDocument): Promise<void> {
+    const user = await this.usersModel.findById(userId);
+
+    user.posts = user.posts.filter(x => x !== post._id);
     await user.save();
 
     return;

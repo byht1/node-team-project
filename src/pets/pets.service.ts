@@ -23,7 +23,7 @@ export class PetsService {
       owner: userId,
     });
 
-    await this.userService.addPets(userId, pet);
+    await this.userService.addPet(userId, pet);
 
     return pet;
   }
@@ -38,7 +38,7 @@ export class PetsService {
     await this.fileService.deleteFile(string, TypeOperation.PETS);
     const pet = await this.petModel.findByIdAndRemove(petId).select({ createdAt: 0, updatedAt: 0 });
 
-    await this.userService.removePets(userId, pet);
+    await this.userService.removePet(userId, pet);
 
     return pet;
   }
