@@ -133,13 +133,19 @@ export class AuthService {
     return await this.generatorTokens(newUser._id);
   }
 
-  async current(id: TId) {
-    const user = await this.usersModel.findById(id, '-password -access_token -refresh_token').populate('cards');
-    return user;
-  }
+  async current(id: TId, type: string) {
+    const user = await this.usersModel.findById(id, '-password').populate('cards');
 
-  async getTokens(id: TId) {
-    return await this.generatorTokens(id);
+    if (type === 'google') {
+      const tokens = await this.generatorTokens(id);
+
+      return this.normalizeData(user, tokens);
+    }
+
+    delete user.access_token;
+    delete user.refresh_token;
+
+    return user;
   }
 
   async messageAuthUpdate(data: MessageAuthUpdateDto, id: TId): Promise<TResUserAuth> {
