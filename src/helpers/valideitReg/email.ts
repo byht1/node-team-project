@@ -1,7 +1,7 @@
 export const emailValid = Object.freeze({
   reg: {
     value: /^(?!-)[\w.-]{2,}@[\w-]+(\.[\w-]+)*\.[a-zA-Z]{2,}$/u,
-    message: 'Incorrect email reg',
+    message: 'Incorrect email',
   },
   maxLength: {
     value: 63,
