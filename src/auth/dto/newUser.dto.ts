@@ -50,6 +50,9 @@ export class NewUserDto {
   @Matches(passwordSchema.lat, {
     message: 'Password should only contain Latin letters, digits or special characters',
   })
+  @Matches(passwordSchema.number, {
+    message: 'The password must contain numbers',
+  })
   @MaxLength(32, { message: 'The maximum password length is 32 characters' })
   @MinLength(7, { message: 'The minimum password length is 7 characters' })
   readonly password: string;
