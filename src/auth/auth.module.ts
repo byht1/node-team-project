@@ -12,7 +12,6 @@ import { UserService } from 'src/user/user.service';
 import { S3Service } from 'src/AWS/s3.service';
 import { PassportModule } from '@nestjs/passport';
 import { GoogleStrategy } from './strategy/google.strategy';
-import { FacebookStrategy } from './strategy/facebook.strategy';
 
 @Module({
   imports: [
@@ -24,7 +23,7 @@ import { FacebookStrategy } from './strategy/facebook.strategy';
     UserModule,
   ],
   controllers: [AuthController],
-  providers: [AuthService, EmailMessageService, S3Service, UserService, GoogleStrategy, FacebookStrategy],
+  providers: [AuthService, EmailMessageService, S3Service, UserService, GoogleStrategy],
   exports: [AuthService, JwtModule, MongooseModule],
 })
 export class AuthModule {}

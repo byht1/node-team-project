@@ -131,26 +131,6 @@ export class AuthController {
     // );
   }
 
-  @Get('facebook')
-  @UseGuards(AuthGuard('facebook'))
-  async facebookLogin() {
-    // Викликається автоматично
-  }
-
-  @Get('facebook/callback')
-  @UseGuards(AuthGuard('facebook'))
-  async facebookLoginRedirect(@Req() req) {
-    console.log('🚀  AuthController  req.user:', req.user);
-    // Коли користувач успішно аутентифікувався, Passport
-    // створює JWT-токен та додає його до об'єкту `req.user`.
-    // В цьому маршруті можна передати користувача на домашню сторінку або іншу
-    // захищену сторінку
-    return {
-      message: 'Аутентифікація успішна',
-      user: req.user,
-    };
-  }
-
   // @ApiOperation({ summary: 'Continuation of registration of a user who auto-registered using third-party services' })
   // @ApiHeaders([
   //   {
