@@ -143,23 +143,4 @@ export class AuthController {
     //   `https://byht1.github.io/react-team-project/?access_token=${tokens.access_token},refresh_token=${tokens.refresh_token}`,
     // );
   }
-
-  // @ApiOperation({ summary: 'Continuation of registration of a user who auto-registered using third-party services' })
-  // @ApiHeaders([
-  //   {
-  //     name: 'Authorization',
-  //     required: true,
-  //     description: 'The token issued to the current user.',
-  //   },
-  // ])
-  // @ApiResponse({ status: 201, type: Users })
-  // @ApiResponse({ status: 400, description: 'Invalid data' })
-  // @ApiResponse({ status: 403, description: 'Invalid token' })
-  // @ApiResponse({ status: 500, description: 'Server error' })
-  // @UsePipes(ValidatePipe)
-  // @UseGuards(JwtAuthGuard)
-  // @Post('message-auth-update')
-  // messageAuthUpdate(@Body() dataUser: MessageAuthUpdateDto, @Req() req: IRequestUser) {
-  //   return this.authService.messageAuthUpdate(dataUser, req.user._id);
-  // }
 }

@@ -5,7 +5,7 @@ import { Model } from 'mongoose';
 import * as bcrypt from 'bcryptjs';
 import { Users, UsersDocument } from 'src/db-schema/user.schema';
 // import { EmailMessageService } from '../email-message/email-message.service';
-import { EmailDto, GoogleAuthDto, LogInDto, MessageAuthUpdateDto, NewUserDto } from './dto';
+import { EmailDto, GoogleAuthDto, LogInDto,  NewUserDto } from './dto';
 import { Token, TResUserAuth, TTokens } from './type';
 import { UserService } from 'src/user/user.service';
 import { TId } from 'src/type';
@@ -148,12 +148,6 @@ export class AuthService {
     return user;
   }
 
-  async messageAuthUpdate(data: MessageAuthUpdateDto, id: TId): Promise<TResUserAuth> {
-    const user = await this.usersModel.findByIdAndUpdate(id, { ...data }, { new: true });
-    const tokens = await this.generatorTokens(user._id);
-
-    return this.normalizeData(user, tokens);
-  }
 
   private avatarGenerator(name): string {
     return `https://api.multiavatar.com/${name}.png`;
