@@ -13,7 +13,7 @@ import { Response } from 'express';
 import { Users } from 'src/db-schema/user.schema';
 import { IRequestUser } from 'src/type/req';
 import { AuthService } from './auth.service';
-import { LogInDto, NewUserDto, RefreshTokenDto } from './dto';
+import { EmailDto, LogInDto, NewUserDto, RefreshTokenDto } from './dto';
 import { JwtAuthGuard } from './guard/jwt-auth.guard';
 import { ValidatePipe } from '../global/pipe/validate.pipe';
 import { AuthGuard } from '@nestjs/passport';
@@ -46,6 +46,19 @@ export class AuthController {
     });
 
     return user;
+  }
+
+  @ApiOperation({ summary: 'Email is use' })
+  @ApiResponse({ status: 204 })
+  @ApiResponse({
+    status: 409,
+    description: 'Email in use',
+  })
+  @HttpCode(204)
+  @ApiResponse({ status: 500, description: 'Server error' })
+  @Post('is-use-email')
+  isUseEmail(@Body() email: EmailDto) {
+    return this.authService.isUseEmail(email);
   }
 
   @ApiOperation({ summary: 'Login' })
