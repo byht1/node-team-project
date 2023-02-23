@@ -137,8 +137,8 @@ export class AuthController {
   async googleLoginCallback(@Req() req: any, @Res() response: Response) {
     const tokens: TTokens = await this.authService.googleLogin(req.user);
 
-    // return response.redirect(`https://byht1.github.io/react-team-project/?access_token=${tokens.access_token}`);
-    return response.redirect(`http://localhost:3000/react-team-project/?access_token=${tokens.access_token}`);
+    return response.redirect(`https://byht1.github.io/react-team-project/?access_token=${tokens.access_token}`);
+    // return response.redirect(`http://localhost:3000/react-team-project/?access_token=${tokens.access_token}`);
     // return response.redirect(
     //   `https://byht1.github.io/react-team-project/?access_token=${tokens.access_token},refresh_token=${tokens.refresh_token}`,
     // );
