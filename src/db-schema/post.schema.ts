@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
 import mongoose, { Document } from "mongoose";
+import { Users } from "./user.schema";
 
 export type PostDocument = Post & Document;
 
@@ -28,15 +29,9 @@ export class Post {
     @Prop({ type: Number, default: 0 })
     likeCount: number;
 
-    @ApiProperty({example: [{
-        id: '63f37a8cbf6f72e7f1b27ba3',
-        name: 'James Allen',
-    }]})
-    @Prop()
-    author: {
-        id: { type: mongoose.Schema.Types.ObjectId, ref: 'Users'},
-        name: { type: string, ref: 'Users'}
-    }[];
+    @ApiProperty({example: '63f139e997fc630d8da1ff68'})
+    @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Users'})
+    author: Users;
 
     @ApiProperty({ example: ['6373c0bca5a6e4c9556f1e7a'] })
     @Prop()

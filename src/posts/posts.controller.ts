@@ -74,7 +74,7 @@ export class PostsController {
     @UseInterceptors(FileFieldsInterceptor([{ name: 'image', maxCount: 1 }]))
     @Post()
     createPost(@Req() req: IRequestUser, @Body() dto: CreatePostDto, @UploadedFiles() { image }: UploadeFileDto) {
-        return this.postsService.createPost(dto, image[0], req.user)
+        return this.postsService.createPost(dto, image[0], req.user._id)
     }
 
     @ApiOperation({ summary: 'Delete post' })
@@ -101,8 +101,10 @@ export class PostsController {
 
     // create comment
     // @ApiOperation({summary: 'Leave a comment on current post'}) // specified 
-    // @Post('/:id/comments') //or posts/:id/comments  // user from Req()
+    // @Post('/:id/comments')  // user from Req()
     // creteComment(@Body() dto: CreatePostCommentDto) {
     //     return this.postsService.createComment(dto)
     // }
 }
+
+// 
