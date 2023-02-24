@@ -15,11 +15,11 @@ export class PostsService {
     ) {}
 
     async getAllPosts(): Promise<Post[]> {
-        return await this.postModel.find().sort({'createdAt': -1});
+        return await this.postModel.find().sort({'createdAt': -1}).populate('author', {name: 1});
     }
 
     async getPostById(id: ObjectId): Promise<Post> {
-        const post = await this.postModel.findById(id);
+        const post = await this.postModel.findById(id).populate('author', {name: 1});
 
         if(!post) {
             throw new HttpException('Post not found', HttpStatus.NOT_FOUND);
