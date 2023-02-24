@@ -2,7 +2,7 @@ import { IsString, Length, MinLength } from "class-validator";
 
 export class CreatePostDto {
     @IsString({ message: 'Title should be a string' })
-    @Length(2, 48, { message: 'Name should be from 2 to 48 characters' })
+    @Length(2, 60, { message: 'Name should be from 2 to 60 characters' })
     readonly title: string;
 
     @IsString({ message: 'Text should be a string' })

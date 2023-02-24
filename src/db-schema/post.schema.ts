@@ -19,8 +19,8 @@ export class Post {
     text: string;
 
     @ApiProperty({example: 'veterinary'})
-    @Prop()
-    categoty: string[];
+    @Prop({ required: [true, 'category is required'] })
+    category: string;
 
     @ApiProperty({ example: 'https://api.multiavatar.com/post.png' })
     @Prop()
