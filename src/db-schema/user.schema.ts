@@ -3,6 +3,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import mongoose, { ObjectId } from 'mongoose';
 import { Token } from '../auth/type';
 import { Pet } from './pets.schema';
+import { Post } from './post.schema';
 
 export type UsersDocument = Users & Document;
 
@@ -33,7 +34,7 @@ export class Users {
   @Prop()
   refresh_token: Token[];
 
-  @ApiProperty({ example: 'James Allen' })
+  @ApiProperty({ example: 'test@gmail.com' })
   @Prop({ type: String, required: true })
   name: string;
 
@@ -88,6 +89,13 @@ export class Users {
     default: [],
   })
   cards: Pet[];
+
+  @ApiProperty({ example: ['6373c0bca5a6e4c9556f1e7a'] })
+  @Prop({
+    type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Post' }],
+    default: [],
+  })
+  posts: Post[];
 
   @ApiProperty({
     example: '11bf5b37-e0b8-42e0-8dcf-dc8c4aefc000',
