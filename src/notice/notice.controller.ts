@@ -189,7 +189,7 @@ export class NoticeController {
   @ApiParam({ name: 'id', required: true, description: 'Ad identifier' })
   @UseGuards(JwtAuthGuard)
   @Delete('/:id')
-  removeNotice(@Param('id') id: ObjectId) {
-    return this.noticeService.removeNotice(id);
+  removeNotice(@Param('id') id: ObjectId, @Req() req: IRequestUser) {
+    return this.noticeService.removeNotice(id, req.user._id);
   }
 }

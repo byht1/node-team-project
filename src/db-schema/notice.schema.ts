@@ -7,6 +7,7 @@ export type NoticeDocument = HydratedDocument<Notice>;
 
 @Schema()
 export class Notice {
+  _id: ObjectId;
   @ApiProperty({
     description: 'Identifier of the user who created the Notice',
     example: '63ee3d660f0d7d1060550d13',
