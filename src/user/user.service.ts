@@ -2,6 +2,7 @@ import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, ObjectId } from 'mongoose';
 import { S3Service, TypeOperation } from 'src/AWS/s3.service';
+import { Notice } from 'src/db-schema/notice.schema';
 import { PetDocument } from 'src/db-schema/pets.schema';
 import { Users, UsersDocument } from 'src/db-schema/user.schema';
 import { TId } from 'src/type';
@@ -104,6 +105,24 @@ export class UserService {
 
     user.cards = user.cards.filter(x => x !== noticeId._id);
     await user.save();
+
+    return;
+  }
+
+  async addNotise(userId: TId, post: Notice) {
+    const user = await this.usersModel.findById(userId);
+
+    user.advertisement.push(post._id);
+    user.save();
+
+    return;
+  }
+
+  async removeNotise(userId: TId, post: Notice) {
+    const user = await this.usersModel.findById(userId);
+
+    user.advertisement = user.advertisement.filter(x => x.toString() !== post._id.toString());
+    user.save();
 
     return;
   }

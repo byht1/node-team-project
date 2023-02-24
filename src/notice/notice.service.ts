@@ -5,10 +5,15 @@ import { S3Service, TypeOperation } from 'src/AWS/s3.service';
 import { Notice, NoticeDocument } from 'src/db-schema/notice.schema';
 import { CreateNoticeDto } from './dto/create-notice.dto';
 import { SearchDto } from './dto/search.dto';
+import { UserService } from 'src/user/user.service';
 
 @Injectable()
 export class NoticeService {
-  constructor(@InjectModel(Notice.name) private noticeModel: Model<NoticeDocument>, private s3Service: S3Service) {}
+  constructor(
+    @InjectModel(Notice.name) private noticeModel: Model<NoticeDocument>,
+    private s3Service: S3Service,
+    private userService: UserService,
+  ) {}
 
   async getNoticesByCategoryAndSearch(dto: SearchDto): Promise<Notice[]> {
     const { count = 10, offset = 0, category = 'sell' } = dto;
@@ -44,6 +49,8 @@ export class NoticeService {
       imgUrl: picturePath,
     });
 
+    await this.userService.addNotise(userId, notice);
+
     return notice;
   }
 
@@ -65,6 +72,8 @@ export class NoticeService {
     if (picturePath.length > 0) {
       Promise.all(picturePath.map(el => this.s3Service.deleteFile(el, TypeOperation.IMAGE)));
     }
+
+    await this.userService.removeNotise(userId, notice);
 
     return notice;
   }
