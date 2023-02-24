@@ -9,7 +9,7 @@ import {
   MinLength,
   ValidateIf,
 } from 'class-validator';
-import { IsValidDate } from 'src/decorators';
+import { IsDateFormatWhithinRange } from 'src/decorators/isDateFormatWhithinRange';
 import { CategoryNotices } from 'src/global/enum/categoryNotices';
 import { fieldsValid } from 'src/helpers';
 
@@ -33,7 +33,7 @@ export class CreateNoticeDto {
   @IsOptional()
   readonly name: string;
 
-  @IsValidDate()
+  @IsDateFormatWhithinRange('dd.MM.yyyy', '01.01.1900', new Date().toLocaleDateString())
   @IsOptional()
   readonly birthday: string;
 
