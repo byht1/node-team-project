@@ -1,7 +1,6 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
 import mongoose, { Document } from "mongoose";
-import { Users } from "./user.schema";
 
 export type PostDocument = Post & Document;
 
@@ -22,23 +21,26 @@ export class Post {
     @Prop()
     categoty: string[];
 
-    @ApiProperty({example: 'https://api.multiavatar.com/post.png'})
+    @ApiProperty({ example: 'https://api.multiavatar.com/post.png' })
     @Prop()
     image: string;
 
-    @ApiProperty({ 
-        example: ['6373c0bca5a6e4c9556f1e7a'],
-        required: false,
-    })
+    @Prop({ type: Number, default: 0 })
+    likeCount: number;
+
+    @ApiProperty({example: [{
+        id: '63f37a8cbf6f72e7f1b27ba3',
+        name: 'James Allen',
+    }]})
+    @Prop()
+    author: {
+        id: { type: mongoose.Schema.Types.ObjectId, ref: 'Users'},
+        name: { type: string, ref: 'Users'}
+    }[];
+
+    @ApiProperty({ example: ['6373c0bca5a6e4c9556f1e7a'] })
     @Prop()
     comments: string[];
-
-    @Prop({ type: Number, default: 0 })
-    likes: number;
-
-    @ApiProperty({example: '63f37a8cbf6f72e7f1b27ba3'})
-    @Prop({ required: true, type: mongoose.Schema.Types.ObjectId, ref: 'Users' })
-    owner: Users;
 }
 
 export const PostSchema = SchemaFactory.createForClass(Post)

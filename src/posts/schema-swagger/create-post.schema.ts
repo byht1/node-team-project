@@ -12,7 +12,4 @@ export class CreatePostSchema {
 
     @ApiProperty({ example: 'post.jpg', description: 'Post photo' })
     readonly image: any;
-    
-    @ApiProperty({ example: ['Thank you for the information!'], description: 'Array with comments of other users' })
-    readonly comments: string[];
 }

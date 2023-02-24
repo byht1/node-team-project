@@ -74,7 +74,7 @@ export class PostsController {
     @UseInterceptors(FileFieldsInterceptor([{ name: 'image', maxCount: 1 }]))
     @Post()
     createPost(@Req() req: IRequestUser, @Body() dto: CreatePostDto, @UploadedFiles() { image }: UploadeFileDto) {
-        return this.postsService.createPost(dto, image[0], req.user._id)
+        return this.postsService.createPost(dto, image[0], req.user)
     }
 
     @ApiOperation({ summary: 'Delete post' })

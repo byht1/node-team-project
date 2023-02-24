@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, ObjectId } from 'mongoose';
 import { S3Service, TypeOperation } from 'src/AWS/s3.service';
 import { Post, PostDocument } from 'src/db-schema/post.schema';
+import { Users } from 'src/db-schema/user.schema';
 import { UserService } from 'src/user/user.service';
 import { CreatePostDto, UploadeFileDto } from './dto';
 
@@ -28,15 +29,19 @@ export class PostsService {
         return post;
     }
 
-    async createPost(createPostDto: CreatePostDto, image: UploadeFileDto, userId: ObjectId): Promise<Post> {
+    async createPost(createPostDto: CreatePostDto, image: UploadeFileDto, user: Users): Promise<Post> {
         const fileName = await this.fileService.uploadFile(image, TypeOperation.POSTS);
+
         const post = await this.postModel.create({
             ...createPostDto, 
             image: fileName,
-            owner: userId,
+            author: {
+                id: user._id,
+                name: user.name,
+            }
         });
         
-        await this.userService.addPost(userId, post);
+        await this.userService.addPost(user._id, post);
 
         return post;
     }
