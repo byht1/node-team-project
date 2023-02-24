@@ -26,8 +26,9 @@ export class Post {
     @Prop()
     image: string;
 
-    @Prop({ type: Number, default: 0 })
-    likeCount: number;
+    @ApiProperty({ example: ['63f139e997fc630d8da1ff68'] })
+    @Prop()
+    likes: mongoose.Schema.Types.ObjectId[];
 
     @ApiProperty({example: '63f139e997fc630d8da1ff68'})
     @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Users'})

@@ -4,7 +4,9 @@ import {
     Delete, 
     Get, 
     Param, 
+    Patch, 
     Post, 
+    Query, 
     Req, 
     UploadedFiles, 
     UseGuards, 
@@ -20,11 +22,11 @@ import {
     ApiOperation, 
     ApiParam, 
     ApiResponse, 
-    ApiTags 
+    ApiTags, 
 } from '@nestjs/swagger';
 import { ObjectId } from 'mongoose';
 import { PostsService } from './posts.service';
-import { CreatePostDto, UploadeFileDto } from './dto';
+import { CreatePostDto, SearchDto, UploadeFileDto } from './dto';
 import { CreatePostSchema } from './schema-swagger/create-post.schema';
 import { Post as PostDBSchema } from 'src/db-schema/post.schema';
 import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
@@ -41,13 +43,14 @@ export class PostsController {
     @ApiResponse({ status: 200, description: 'Posts found', type: [PostDBSchema] })
     @ApiResponse({ status: 500, description: 'Server error' })
     @Get()
-    getAll() {
-        return this.postsService.getAllPosts()
+    getAll(@Query() dto: SearchDto) {
+        return this.postsService.getAllPosts(dto)
     }
 
     @ApiOperation({summary: 'Get post by id'})
     @ApiResponse({ status: 200, description: 'Post found', type: PostDBSchema })
     @ApiResponse({ status: 500, description: 'Server error' })
+    @ApiParam({ name: 'id', required: true, description: 'Post ID' })
     @Get('/:id')
     getOne(@Param('id') id: ObjectId) {
         return this.postsService.getPostById(id)
@@ -97,14 +100,23 @@ export class PostsController {
         return this.postsService.removePost(id, req.user._id)
     }
 
-    // getAllComments will be with using .populate() with getOnePost()
-
-    // create comment
-    // @ApiOperation({summary: 'Leave a comment on current post'}) // specified 
-    // @Post('/:id/comments')  // user from Req()
-    // creteComment(@Body() dto: CreatePostCommentDto) {
-    //     return this.postsService.createComment(dto)
-    // }
+    @ApiOperation({ summary: 'Leave comment' })
+    @ApiBearerAuth()
+    @ApiHeaders([
+        {
+            name: 'Authorization',
+            required: true,
+            description: 'User access token',
+        },
+    ])
+    @UseGuards(JwtAuthGuard)
+    @ApiResponse({ status: 200, description: 'Post \'likes\' field updated', type: PostDBSchema })
+    @ApiResponse({ status: 403, description: 'Invalid token' })
+    @ApiResponse({ status: 404, description: 'Not Found' })
+    @ApiResponse({ status: 500, description: 'Server error' })
+    @ApiParam({ name: 'id', required: true, description: 'Post ID' })
+    @Patch(':id/likes')
+    likes(@Param('id') id: ObjectId, @Req() req: IRequestUser) {
+        return this.postsService.likes(id, req.user._id)
+    }
 }
-
-// 
