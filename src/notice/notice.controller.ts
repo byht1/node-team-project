@@ -164,10 +164,9 @@ export class NoticeController {
   @ApiResponse({ status: 500, description: 'Server error' })
   @UseGuards(JwtAuthGuard)
   @UsePipes(ValidatePipe)
-  @UseInterceptors(FileFieldsInterceptor([{ name: 'picture', maxCount: 4 }]))
+  @UseInterceptors(FileFieldsInterceptor([{ name: 'images', maxCount: 4 }]))
   @Post()
   addNotice(@Req() request: IRequestUser, @UploadedFiles() files: UploadedFilesDto, @Body() dto: CreateNoticeDto) {
-    console.log('🚀  NoticeController  dto:', dto);
     const { user } = request;
     const { images } = files;
 
