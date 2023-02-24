@@ -53,11 +53,11 @@ export class NoticeService {
     return notices;
   }
 
-  async removeNotice(noticeId: ObjectId): Promise<Notice> {
-    const notice = await this.noticeModel.findByIdAndRemove(noticeId);
+  async removeNotice(userId: ObjectId, noticeId: ObjectId): Promise<Notice> {
+    const notice = await this.noticeModel.findOneAndRemove({ owner: userId, _id: noticeId });
 
     if (!notice) {
-      throw new HttpException('Оголошення не знайдено', HttpStatus.NOT_FOUND);
+      throw new HttpException("The notice wasn't found or doesn't belong to the authorized user", HttpStatus.NOT_FOUND);
     }
 
     const picturePath = notice.imgUrl;
