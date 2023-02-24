@@ -8,10 +8,10 @@ export class UserDataPets {
   @ApiProperty({ example: 'test@gmail.com' })
   email: string;
 
-  @ApiProperty({ example: 'test@gmail.com' })
+  @ApiProperty({ example: 'James Allen' })
   name: string;
 
-  @ApiProperty({ example: 'test@gmail.com' })
+  @ApiProperty({ example: '+380964752260' })
   phone: string;
 
   @ApiProperty({

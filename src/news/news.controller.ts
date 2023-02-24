@@ -9,7 +9,8 @@ export class NewsController {
     constructor(private readonly newsService: NewsService) {}
 
     @ApiOperation({summary: 'Get all news'})
-    @ApiResponse({status: 200, type: [New]})
+    @ApiResponse({status: 200, type: [New], description: "News found"})
+    @ApiResponse({ status: 500, description: 'Server error' })
     @Get()
     getAll(): Promise<New[]>{
         return this.newsService.getAllNews()

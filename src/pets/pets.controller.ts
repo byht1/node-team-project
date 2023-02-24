@@ -42,7 +42,7 @@ export class PetsController {
     {
       name: 'Authorization',
       required: true,
-      description: 'User token',
+      description: 'User access token',
     },
   ])
   @ApiBody({ type: CreatePetSchema })
@@ -66,7 +66,7 @@ export class PetsController {
     {
       name: 'Authorization',
       required: true,
-      description: 'User token',
+      description: 'User access token',
     },
   ])
   @ApiResponse({ status: 200, description: 'Pet deleted', type: Pet })

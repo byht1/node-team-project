@@ -19,10 +19,10 @@ export class UserController {
     {
       name: 'Authorization',
       required: true,
-      description: 'The token issued to the current user.',
+      description: 'User access token',
     },
   ])
-  @ApiResponse({ status: 201, type: UpdateUser })
+  @ApiResponse({ status: 200, type: UpdateUser, description: 'User found' })
   @ApiResponse({ status: 403, description: 'Invalid token' })
   @ApiResponse({ status: 500, description: 'Server error' })
   @UseGuards(JwtAuthGuard)
@@ -36,10 +36,10 @@ export class UserController {
     {
       name: 'Authorization',
       required: true,
-      description: 'The token issued to the current user.',
+      description: 'User access token',
     },
   ])
-  @ApiResponse({ status: 201, type: UpdateUser })
+  @ApiResponse({ status: 200, type: UpdateUser, description: 'User data updated' })
   @ApiResponse({ status: 400, description: 'Invalid data' })
   @ApiResponse({ status: 403, description: 'Invalid token' })
   @ApiResponse({ status: 500, description: 'Server error' })
@@ -68,10 +68,10 @@ export class UserController {
     {
       name: 'Authorization',
       required: true,
-      description: 'The token issued to the current user.',
+      description: 'User access token',
     },
   ])
-  @ApiResponse({ status: 201, type: UpdateUser })
+  @ApiResponse({ status: 200, type: UpdateUser, description: 'User avatar updated' })
   @ApiResponse({ status: 400, description: 'Invalid data' })
   @ApiResponse({ status: 403, description: 'Invalid token' })
   @ApiResponse({ status: 500, description: 'Server error' })
@@ -84,15 +84,15 @@ export class UserController {
     return this.userService.editingPhoto(file[0], req.user._id);
   }
 
-  @ApiOperation({ summary: 'Update user data' })
+  @ApiOperation({ summary: 'Get current user data' })
   @ApiHeaders([
     {
       name: 'Authorization',
       required: true,
-      description: 'The token issued to the current user.',
+      description: 'User access token',
     },
   ])
-  @ApiResponse({ status: 201, type: UserDataPets })
+  @ApiResponse({ status: 200, type: UserDataPets })
   @ApiResponse({ status: 403, description: 'Invalid token' })
   @ApiResponse({ status: 500, description: 'Server error' })
   @UseGuards(JwtAuthGuard)

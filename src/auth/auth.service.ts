@@ -5,7 +5,7 @@ import { Model } from 'mongoose';
 import * as bcrypt from 'bcryptjs';
 import { Users, UsersDocument } from 'src/db-schema/user.schema';
 // import { EmailMessageService } from '../email-message/email-message.service';
-import { GoogleAuthDto, LogInDto, MessageAuthUpdateDto, NewUserDto } from './dto';
+import { EmailDto, GoogleAuthDto, LogInDto,  NewUserDto } from './dto';
 import { Token, TResUserAuth, TTokens } from './type';
 import { UserService } from 'src/user/user.service';
 import { TId } from 'src/type';
@@ -35,6 +35,16 @@ export class AuthService {
     const tokens = await this.generatorTokens(user._id);
 
     return this.normalizeData(user, tokens);
+  }
+
+  async isUseEmail(email: EmailDto) {
+    if (!email) return;
+
+    const user = await this.usersModel.findOne(email);
+
+    if (user) throw new HttpException('Email in use', HttpStatus.CONFLICT);
+
+    return;
   }
 
   async logIn(logInDto: LogInDto): Promise<TResUserAuth> {
@@ -77,11 +87,11 @@ export class AuthService {
 
   async refresh(refreshToken: string): Promise<string> {
     try {
+      if (!refreshToken) throw new Error();
+
       const isValid = await this.jwtService.verify(refreshToken, {
         secret: process.env.REFRESH_SECRET_KEY,
       });
-
-      console.log(11111);
 
       const user = await this.usersModel.findById(isValid.id);
 
@@ -95,7 +105,7 @@ export class AuthService {
     } catch (error) {
       const payload = await this.jwtService.decode(refreshToken);
 
-      if (typeof payload === 'string' || !payload.id) {
+      if (typeof payload === 'string' || !payload?.id) {
         throw new HttpException('Invalid token', HttpStatus.UNAUTHORIZED);
       }
 
@@ -123,21 +133,21 @@ export class AuthService {
     return await this.generatorTokens(newUser._id);
   }
 
-  async current(id: TId) {
-    const user = await this.usersModel.findById(id, '-password -access_token -refresh_token').populate('cards');
+  async current(id: TId, type: string) {
+    const user = await this.usersModel.findById(id, '-password').populate('cards');
+
+    if (type === 'google') {
+      const tokens = await this.generatorTokens(id);
+
+      return this.normalizeData(user, tokens);
+    }
+
+    delete user.access_token;
+    delete user.refresh_token;
+
     return user;
   }
 
-  async getTokens(id: TId) {
-    return await this.generatorTokens(id);
-  }
-
-  async messageAuthUpdate(data: MessageAuthUpdateDto, id: TId): Promise<TResUserAuth> {
-    const user = await this.usersModel.findByIdAndUpdate(id, { ...data }, { new: true });
-    const tokens = await this.generatorTokens(user._id);
-
-    return this.normalizeData(user, tokens);
-  }
 
   private avatarGenerator(name): string {
     return `https://api.multiavatar.com/${name}.png`;

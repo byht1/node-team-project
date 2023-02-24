@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpCode, Post, Req, Res, UseGuards, UsePipes } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, Post, Query, Req, Res, UseGuards, UsePipes } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiExcludeEndpoint,
@@ -13,7 +13,7 @@ import { Response } from 'express';
 import { Users } from 'src/db-schema/user.schema';
 import { IRequestUser } from 'src/type/req';
 import { AuthService } from './auth.service';
-import { LogInDto, MessageAuthUpdateDto, NewUserDto, RefreshTokenDto } from './dto';
+import { EmailDto, LogInDto, NewUserDto, QueryCurrentDto, RefreshTokenDto } from './dto';
 import { JwtAuthGuard } from './guard/jwt-auth.guard';
 import { ValidatePipe } from '../global/pipe/validate.pipe';
 import { AuthGuard } from '@nestjs/passport';
@@ -27,13 +27,14 @@ export class AuthController {
   constructor(private authService: AuthService, private configService: ConfigService) {}
 
   @ApiOperation({ summary: 'Registration' })
-  @ApiResponse({ status: 201, type: Users })
-  @ApiResponse({ status: 400, description: 'Bad Request' })
+  @ApiResponse({ status: 201, type: Users, description: 'User created' })
+  @ApiResponse({ status: 400, description: 'Invalid data' })
   @ApiResponse({
     status: 409,
     description: 'Email in use',
   })
   @ApiResponse({ status: 500, description: 'Server error' })
+  @HttpCode(201)
   @UsePipes(ValidatePipe)
   @Post('sign-up')
   async signUp(@Body() newUserDto: NewUserDto, @Res({ passthrough: true }) response: Response) {
@@ -47,12 +48,26 @@ export class AuthController {
     return user;
   }
 
-  @ApiOperation({ summary: 'Login to the account' })
+  @ApiOperation({ summary: 'Email is use' })
+  @ApiResponse({ status: 204 })
+  @ApiResponse({
+    status: 409,
+    description: 'Email in use',
+  })
+  @HttpCode(204)
+  @ApiResponse({ status: 500, description: 'Server error' })
+  @Post('is-use-email')
+  isUseEmail(@Body() email: EmailDto) {
+    return this.authService.isUseEmail(email);
+  }
+
+  @ApiOperation({ summary: 'Login' })
   @ApiResponse({ status: 201, type: Users })
   @ApiResponse({ status: 400, description: 'Invalid data' })
   @ApiResponse({ status: 401, description: 'User does not exist' })
   @ApiResponse({ status: 401, description: 'Incorrect password' })
   @ApiResponse({ status: 500, description: 'Server error' })
+  @HttpCode(201)
   @UsePipes(ValidatePipe)
   @Post('log-in')
   async logIn(@Body() logInDto: LogInDto) {
@@ -60,12 +75,12 @@ export class AuthController {
     return user;
   }
 
-  @ApiOperation({ summary: 'Logout to the account' })
+  @ApiOperation({ summary: 'Logout' })
   @ApiHeaders([
     {
       name: 'Authorization',
       required: true,
-      description: 'The token issued to the current user.',
+      description: 'User access token',
     },
   ])
   @ApiResponse({ status: 204 })
@@ -93,16 +108,16 @@ export class AuthController {
     {
       name: 'Authorization',
       required: true,
-      description: 'The token issued to the current user.',
+      description: 'User access token',
     },
   ])
-  @ApiResponse({ status: 201, type: Users })
+  @ApiResponse({ status: 200, type: Users })
   @ApiResponse({ status: 403, description: 'Invalid token' })
   @ApiResponse({ status: 500, description: 'Server error' })
   @UseGuards(JwtAuthGuard)
   @Get('current')
-  current(@Req() req: IRequestUser) {
-    return this.authService.current(req.user._id);
+  current(@Req() req: IRequestUser, @Query() { type }: QueryCurrentDto) {
+    return this.authService.current(req.user._id, type);
   }
 
   @ApiOperation({ summary: 'Google authorization' })
@@ -112,8 +127,9 @@ export class AuthController {
   @ApiBadRequestResponse({ description: 'Invalid authorization code or state value' })
   @Get('google')
   @UseGuards(AuthGuard('google'))
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  googleLogin() {}
+  googleLogin() {
+    // Викликається автоматично
+  }
 
   @ApiExcludeEndpoint()
   @UseGuards(AuthGuard('google'))
@@ -122,27 +138,9 @@ export class AuthController {
     const tokens: TTokens = await this.authService.googleLogin(req.user);
 
     return response.redirect(`https://byht1.github.io/react-team-project/?access_token=${tokens.access_token}`);
+    // return response.redirect(`http://localhost:3000/react-team-project/?access_token=${tokens.access_token}`);
     // return response.redirect(
     //   `https://byht1.github.io/react-team-project/?access_token=${tokens.access_token},refresh_token=${tokens.refresh_token}`,
     // );
-  }
-
-  @ApiOperation({ summary: 'Continuation of registration of a user who auto-registered using third-party services' })
-  @ApiHeaders([
-    {
-      name: 'Authorization',
-      required: true,
-      description: 'The token issued to the current user.',
-    },
-  ])
-  @ApiResponse({ status: 201, type: Users })
-  @ApiResponse({ status: 400, description: 'Invalid data' })
-  @ApiResponse({ status: 403, description: 'Invalid token' })
-  @ApiResponse({ status: 500, description: 'Server error' })
-  @UsePipes(ValidatePipe)
-  @UseGuards(JwtAuthGuard)
-  @Post('message-auth-update')
-  messageAuthUpdate(@Body() dataUser: MessageAuthUpdateDto, @Req() req: IRequestUser) {
-    return this.authService.messageAuthUpdate(dataUser, req.user._id);
   }
 }

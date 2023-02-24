@@ -13,7 +13,6 @@ export class ValidatePipe implements PipeTransform {
     const errors = await validate(obj);
 
     if (errors.length) {
-      console.log('errors: ', errors)
       const messages = errors.reduce((acc, err) => {
         acc[err.property] = Object.values(err.constraints).join(', ');
         return acc;
