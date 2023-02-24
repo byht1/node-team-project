@@ -103,7 +103,7 @@ export class UserService {
   async removePet(userId: TId, pet: PetDocument): Promise<void> {
     const user = await this.usersModel.findById(userId);
 
-    user.cards = user.cards.filter(x => x !== pet._id);
+    user.cards = user.cards.filter(x => x.toString() !== pet._id.toString());
     await user.save();
 
     return;
