@@ -36,6 +36,7 @@ import { CreateNoticeSwaggerSchema } from './schema-swagger/create-notice-swagge
 import { UploadedFilesDto } from './dto/uploaded-files.dto';
 import { NoticeSwagger } from './schema-swagger/notice-swagger.schema';
 import { ValidatePipe } from 'src/global/pipe/validate.pipe';
+import { removeExtraSpaces } from 'src/helpers';
 
 @ApiTags('Notices')
 @Controller('/notices')
@@ -169,8 +170,9 @@ export class NoticeController {
   addNotice(@Req() request: IRequestUser, @UploadedFiles() files: UploadedFilesDto, @Body() dto: CreateNoticeDto) {
     const { user } = request;
     const { images } = files;
+    const normalizedDto = removeExtraSpaces(dto) as CreateNoticeDto;
 
-    return this.noticeService.addNotice(user._id, dto, images);
+    return this.noticeService.addNotice(user._id, normalizedDto, images);
   }
   //==============================================
   @ApiOperation({ summary: 'delete a notice created by an authorized user' })
@@ -189,7 +191,8 @@ export class NoticeController {
   @ApiParam({ name: 'id', required: true, description: 'Ad identifier' })
   @UseGuards(JwtAuthGuard)
   @Delete('/:id')
-  removeNotice(@Param('id') id: ObjectId, @Req() req: IRequestUser) {
-    return this.noticeService.removeNotice(id, req.user._id);
+  removeNotice(@Req() request: IRequestUser, @Param('id') id: ObjectId) {
+    const { user } = request;
+    return this.noticeService.removeNotice(user._id, id);
   }
 }
