@@ -1,7 +1,24 @@
 import { registerDecorator, ValidationOptions } from 'class-validator';
-import { subtract } from 'date-and-time';
+import * as date from 'date-and-time';
 
-export function IsValidDate(validationOptions?: ValidationOptions) {
+type TDateParams =
+  | {
+      pattern?: string;
+      minDate?: Date;
+      maxDate?: Date;
+    }
+  | undefined;
+
+// type Params = TDateParams | undefined;
+
+export function IsValidDate(
+  { pattern = 'DD.MM.YYYY', minDate = new Date('1900-01-01'), maxDate = new Date() }: TDateParams,
+  validationOptions?: ValidationOptions,
+) {
+  // const pattern = format ? format : 'DD.MM.YYYY';
+  // const minDate = min ? min : new Date('1900-01-01');
+  // const maxDate = max ? max : new Date();
+
   return function (object: any, propertyName: string) {
     return registerDecorator({
       name: 'IsValidDate',
@@ -14,35 +31,14 @@ export function IsValidDate(validationOptions?: ValidationOptions) {
       },
       validator: {
         validate(value: string) {
-          const date = value.split('.');
+          const parsedDate = date.parse(value, pattern);
 
-          const dateNumber: number[] = [];
+          if (isNaN(parsedDate.getTime())) return false;
 
-          if (date.length !== 3) {
-            return false;
-          }
+          const userDate = new Date(value.split('.').reverse().join('-'));
 
-          for (let i = 0; i < date.length; i += 1) {
-            const length = date[i].length;
-            if (i === 2) {
-              if (length !== 4) return false;
-            }
-            if (length !== 2 && i !== 2) return false;
-
-            const number = Number(date[i]);
-
-            if (!number) return false;
-
-            dateNumber.push(number);
-          }
-
-          const [day, month, year] = dateNumber;
-
-          const yesterday = new Date();
-          const min = new Date('1900-01-01');
-          const dataUser = new Date(year, month - 1, day + 1);
-          const difference = subtract(dataUser, yesterday).toDays();
-          const minDifference = subtract(dataUser, min).toDays();
+          const minDifference = date.subtract(userDate, minDate).toDays();
+          const difference = date.subtract(userDate, maxDate).toDays();
 
           if (difference > 0 || minDifference < 0) return false;
 

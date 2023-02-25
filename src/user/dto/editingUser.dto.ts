@@ -37,7 +37,7 @@ export class EditingUserDto {
 
   @ApiProperty({ example: '00.00.0000' })
   @IsString({ message: 'Not a line' })
-  @IsValidDate()
+  @IsValidDate({})
   @IsOptional()
   birthday?: string;
 }
