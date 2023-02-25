@@ -1,11 +1,15 @@
 import { registerDecorator, ValidationOptions } from 'class-validator';
 import * as date from 'date-and-time';
 
-type TDateParams = {
-  pattern?: string;
-  minDate?: Date;
-  maxDate?: Date;
-};
+type TDateParams =
+  | {
+      pattern?: string;
+      minDate?: Date;
+      maxDate?: Date;
+    }
+  | undefined;
+
+// type Params = TDateParams | undefined;
 
 export function IsValidDate(
   { pattern = 'DD.MM.YYYY', minDate = new Date('1900-01-01'), maxDate = new Date() }: TDateParams,
