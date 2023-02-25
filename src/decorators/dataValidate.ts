@@ -1,10 +1,19 @@
 import { registerDecorator, ValidationOptions } from 'class-validator';
 import * as date from 'date-and-time';
 
-export function IsValidDate(format?: string, min?: Date, max?: Date, validationOptions?: ValidationOptions) {
-  const pattern = format ? format : 'DD.MM.YYYY';
-  const minDate = min ? min : new Date('1900-01-01');
-  const maxDate = max ? max : new Date();
+type TDateParams = {
+  pattern?: string;
+  minDate?: Date;
+  maxDate?: Date;
+};
+
+export function IsValidDate(
+  { pattern = 'DD.MM.YYYY', minDate = new Date('1900-01-01'), maxDate = new Date() }: TDateParams,
+  validationOptions?: ValidationOptions,
+) {
+  // const pattern = format ? format : 'DD.MM.YYYY';
+  // const minDate = min ? min : new Date('1900-01-01');
+  // const maxDate = max ? max : new Date();
 
   return function (object: any, propertyName: string) {
     return registerDecorator({
