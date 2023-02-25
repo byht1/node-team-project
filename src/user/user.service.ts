@@ -122,7 +122,7 @@ export class UserService {
   async removePost(userId: TId, post: PostDocument): Promise<void> {
     const user = await this.usersModel.findById(userId);
 
-    user.posts = user.posts.filter(x => x !== post._id);
+    user.posts = user.posts.filter(x => x.toString() !== post._id.toString());
     await user.save();
 
     return;

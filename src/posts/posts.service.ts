@@ -2,6 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, ObjectId } from 'mongoose';
 import { S3Service, TypeOperation } from 'src/AWS/s3.service';
+import { CommentDocument } from 'src/db-schema/comments.scheme';
 import { Post, PostDocument } from 'src/db-schema/post.schema';
 import { UserService } from 'src/user/user.service';
 import { CreatePostDto, UploadeFileDto } from './dto';
@@ -22,13 +23,19 @@ export class PostsService {
         .skip(offset)
         .limit(count)
         .sort({'createdAt': -1})
-        .populate('author', {name: 1});
+        .populate('author', {name: 1})
         
         return posts;
     }
 
     async getPostById(id: ObjectId): Promise<Post> {
-        const post = await this.postModel.findById(id).populate('author', {name: 1});
+        const post = await this.postModel.findById(id)
+        .populate({
+            path: 'comments', 
+            populate: {
+                path: 'author', select: 'name photo',
+            }
+        });
 
         if(!post) {
             throw new HttpException('Post not found', HttpStatus.NOT_FOUND);
@@ -78,5 +85,23 @@ export class PostsService {
         await post.save();
 
         return post;
+    }
+
+    async addComment(postId: ObjectId, comment: CommentDocument) {
+        const post = await this.postModel.findById(postId);
+
+        post.comments.push(comment._id);
+        await post.save();
+
+        return;
+    }
+
+    async removeComment(postId: ObjectId, comment: CommentDocument) {
+        const post = await this.postModel.findById(postId);
+
+        post.comments = post.comments.filter(x => x.toString() !== comment._id.toString());
+        await post.save();
+
+        return;
     }
 }
