@@ -62,6 +62,12 @@ export class PetsController {
 
   @ApiOperation({ summary: 'Delete pet' })
   @ApiBearerAuth()
+  @ApiResponse({ status: 200, description: 'Pet deleted', type: Pet })
+  @ApiResponse({ status: 403, description: 'Invalid token' })
+  @ApiResponse({ status: 404, description: 'Not Found' })
+  @ApiResponse({ status: 500, description: 'Server error' })
+  @UseGuards(JwtAuthGuard)
+  @ApiParam({ name: 'id', required: true, description: 'Pet ID' })
   @ApiHeaders([
     {
       name: 'Authorization',
@@ -69,12 +75,6 @@ export class PetsController {
       description: 'User access token',
     },
   ])
-  @ApiResponse({ status: 200, description: 'Pet deleted', type: Pet })
-  @ApiResponse({ status: 403, description: 'Invalid token' })
-  @ApiResponse({ status: 404, description: 'Not Found' })
-  @ApiResponse({ status: 500, description: 'Server error' })
-  @UseGuards(JwtAuthGuard)
-  @ApiParam({ name: 'id', required: true, description: 'Pet ID' })
   @Delete(':id')
   remove(@Param('id') id: ObjectId, @Req() req: IRequestUser) {
     return this.petsService.removePet(id, req.user._id);

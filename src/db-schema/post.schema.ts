@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
 import mongoose, { Document } from "mongoose";
+import { Comment } from "./comments.scheme";
 import { Users } from "./user.schema";
 
 export type PostDocument = Post & Document;
@@ -35,8 +36,8 @@ export class Post {
     author: Users;
 
     @ApiProperty({ example: ['6373c0bca5a6e4c9556f1e7a'] })
-    @Prop()
-    comments: string[];
+    @Prop({type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Comment' }]})
+    comments: Comment[];
 }
 
 export const PostSchema = SchemaFactory.createForClass(Post)
