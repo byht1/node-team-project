@@ -1,7 +1,11 @@
 import { registerDecorator, ValidationOptions } from 'class-validator';
 import * as date from 'date-and-time';
 
-export function IsValidDate(validationOptions?: ValidationOptions) {
+export function IsValidDate(format?: string, min?: Date, max?: Date, validationOptions?: ValidationOptions) {
+  const pattern = format ? format : 'DD.MM.YYYY';
+  const minDate = min ? min : new Date('1900-01-01');
+  const maxDate = max ? max : new Date();
+
   return function (object: any, propertyName: string) {
     return registerDecorator({
       name: 'IsValidDate',
@@ -14,19 +18,16 @@ export function IsValidDate(validationOptions?: ValidationOptions) {
       },
       validator: {
         validate(value: string) {
-          const pattern = 'DD.MM.YYYY';
           const parsedDate = date.parse(value, pattern);
 
           if (isNaN(parsedDate.getTime())) return false;
 
           const userDate = new Date(value.split('.').reverse().join('-'));
-          const minDate = new Date('1900-01-01');
-          const tooDay = new Date();
 
           const minDifference = date.subtract(userDate, minDate).toDays();
-          const difference = date.subtract(userDate, tooDay).toDays();
+          const difference = date.subtract(userDate, maxDate).toDays();
 
-          if (difference > -1 || minDifference < 0) return false;
+          if (difference > 0 || minDifference < 0) return false;
 
           return true;
         },
