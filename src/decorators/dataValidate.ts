@@ -1,5 +1,5 @@
 import { registerDecorator, ValidationOptions } from 'class-validator';
-import { subtract } from 'date-and-time';
+import * as date from 'date-and-time';
 
 export function IsValidDate(validationOptions?: ValidationOptions) {
   return function (object: any, propertyName: string) {
@@ -14,37 +14,19 @@ export function IsValidDate(validationOptions?: ValidationOptions) {
       },
       validator: {
         validate(value: string) {
-          const date = value.split('.');
+          const pattern = 'DD.MM.YYYY';
+          const parsedDate = date.parse(value, pattern);
 
-          const dateNumber: number[] = [];
+          if (isNaN(parsedDate.getTime())) return false;
 
-          if (date.length !== 3) {
-            return false;
-          }
+          const userDate = new Date(value.split('.').reverse().join('-'));
+          const minDate = new Date('1900-01-01');
+          const tooDay = new Date();
 
-          for (let i = 0; i < date.length; i += 1) {
-            const length = date[i].length;
-            if (i === 2) {
-              if (length !== 4) return false;
-            }
-            if (length !== 2 && i !== 2) return false;
+          const minDifference = date.subtract(userDate, minDate).toDays();
+          const difference = date.subtract(userDate, tooDay).toDays();
 
-            const number = Number(date[i]);
-
-            if (!number) return false;
-
-            dateNumber.push(number);
-          }
-
-          const [day, month, year] = dateNumber;
-
-          const yesterday = new Date();
-          const min = new Date('1900-01-01');
-          const dataUser = new Date(year, month - 1, day + 1);
-          const difference = subtract(dataUser, yesterday).toDays();
-          const minDifference = subtract(dataUser, min).toDays();
-
-          if (difference > 0 || minDifference < 0) return false;
+          if (difference > -1 || minDifference < 0) return false;
 
           return true;
         },
