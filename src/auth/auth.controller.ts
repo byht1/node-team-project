@@ -195,6 +195,6 @@ export class AuthController {
   @UseGuards(ForgotenPasswordGuard)
   @Patch('/forgotten-password/new')
   passwordChangeNewPassword(@Req() req: IRequestUser, @Body() body: NewPasswordDto) {
-    return this.authService.passwordChangeNewPassword(req.user.forgottenPasswordToken, body, req.user._id);
+    return this.authService.passwordChangeNewPassword(body, req.user._id);
   }
 }
