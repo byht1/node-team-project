@@ -185,7 +185,7 @@ export class AuthService {
     return;
   }
 
-  async passwordChangeNewPassword(token: string, { password }: NewPasswordDto, userId: TId) {
+  async passwordChangeNewPassword( { password }: NewPasswordDto, userId: TId) {
     const hashPassword = await this.hashPassword(password);
 
     const user = await this.usersModel.findByIdAndUpdate(
