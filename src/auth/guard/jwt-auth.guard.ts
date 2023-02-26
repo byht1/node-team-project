@@ -30,7 +30,6 @@ export class JwtAuthGuard implements CanActivate {
       const user = await this.usersModel.findById(isValidToken.id);
 
       if (!user || !user.access_token.find(x => x.token === token)) {
-        console.log(11111111111);
         user.access_token.filter(x => x !== token);
         user.save();
         throw new HttpException('Invalid token', HttpStatus.FORBIDDEN);

@@ -72,17 +72,10 @@ export class AuthService {
 
   async logOut(user: UsersDocument, accessToken: string, refreshToken: string): Promise<void> {
     const id = user._id;
-    // console.log('🚀  AuthService  user.refresh_token', user.refresh_token.length);
-    // console.log('🚀  AuthService  user.access_token', user.access_token.length);
     const accessTokenDelete = user.access_token.filter(x => x.token !== accessToken);
     const refreshTokenDelete = user.refresh_token.filter(x => {
-      console.log('🚀  AuthService  x.token !== refreshToken', x.token !== refreshToken);
-      console.log('🚀  AuthService  refreshToken', refreshToken);
-      console.log('🚀  AuthService  x.token', x.token);
       return x.token !== refreshToken;
     });
-    // console.log('🚀  AuthService  refreshTokenDelete', refreshTokenDelete.length);
-    // console.log('🚀  AuthService  accessTokenDelete', accessTokenDelete.length);
     await this.usersModel.findByIdAndUpdate(id, {
       access_token: accessTokenDelete,
       refresh_token: refreshTokenDelete,
@@ -125,7 +118,6 @@ export class AuthService {
     const { email, picture, firstName, lastName } = googleAuthDto;
 
     const isUser = await this.usersModel.findOne({ email });
-    console.log('🚀  AuthService  isUser', isUser);
 
     if (isUser) return await this.generatorTokens(isUser._id);
 
@@ -185,7 +177,7 @@ export class AuthService {
     return;
   }
 
-  async passwordChangeNewPassword( { password }: NewPasswordDto, userId: TId) {
+  async passwordChangeNewPassword({ password }: NewPasswordDto, userId: TId) {
     const hashPassword = await this.hashPassword(password);
 
     const user = await this.usersModel.findByIdAndUpdate(

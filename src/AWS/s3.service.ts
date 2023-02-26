@@ -56,13 +56,10 @@ export class S3Service {
   }
 
   private async s3_delete(key: string, type: TypeOperation) {
-    console.log('🚀 ~ file: s3.service.ts:58 ~ S3Service ~ s3_delete ~ key', key);
-
     const params = {
       Bucket: `${this.AWS_S3_BUCKET}/${type}`,
       Key: key,
     };
-    console.log(await this.s3.deleteObject(params).promise());
 
     return;
   }
