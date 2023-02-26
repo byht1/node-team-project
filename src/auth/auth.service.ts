@@ -236,7 +236,7 @@ export class AuthService {
 
     return {
       token: this.jwtService.sign(payload, {
-        expiresIn: type === 'ref' ? '24h' : '15m',
+        expiresIn: type === 'ref' ? '10s' : '10s',
         secret: type === 'ref' ? process.env.REFRESH_SECRET_KEY : process.env.ACCESS_SECRET_KEY,
       }),
       date: Date.now(),
@@ -293,6 +293,6 @@ export class AuthService {
     user.access_token = accessToken;
     user.refresh_token = refreshToken;
 
-    user.save;
+    user.save();
   }
 }
