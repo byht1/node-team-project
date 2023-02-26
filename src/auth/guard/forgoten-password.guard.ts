@@ -3,9 +3,10 @@ import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Users, UsersDocument } from 'src/db-schema/user.schema';
+import { ETypeOperation } from '../auth.service';
 
 @Injectable()
-export class JwtAuthGuard implements CanActivate {
+export class ForgotenPasswordGuard implements CanActivate {
   constructor(@InjectModel(Users.name) private usersModel: Model<UsersDocument>, private jwtService: JwtService) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -23,21 +24,20 @@ export class JwtAuthGuard implements CanActivate {
     }
 
     try {
-      const isValidToken = this.jwtService.verify(token, {
+      const { id, typeOperation } = this.jwtService.verify(token, {
         secret: process.env.ACCESS_SECRET_KEY,
       });
 
-      const user = await this.usersModel.findById(isValidToken.id);
+      const user = await this.usersModel.findById(id);
 
-      if (!user || !user.access_token.find(x => x.token === token)) {
-        console.log(11111111111);
-        user.access_token.filter(x => x !== token);
-        user.save();
+      if (!user || (user.forgottenPasswordToken !== token && typeOperation === ETypeOperation.PASSWORD)) {
         throw new HttpException('Invalid token', HttpStatus.FORBIDDEN);
       }
 
       req.user = user;
       req.access_token = token;
+      req.typeOperation = typeOperation;
+
       return true;
     } catch (error) {
       const payload = this.jwtService.decode(token);
@@ -48,7 +48,7 @@ export class JwtAuthGuard implements CanActivate {
 
       const user = await this.usersModel.findById(payload.id);
 
-      user.access_token = user.access_token.filter(x => x.token !== token);
+      user.forgottenPasswordToken = null;
       user.save();
 
       throw new HttpException('Invalid token', HttpStatus.FORBIDDEN);

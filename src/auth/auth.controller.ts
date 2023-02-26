@@ -1,4 +1,16 @@
-import { Body, Controller, Get, HttpCode, Post, Query, Req, Res, UseGuards, UsePipes } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  Patch,
+  Post,
+  Query,
+  Req,
+  Res,
+  UseGuards,
+  UsePipes,
+} from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiExcludeEndpoint,
@@ -13,13 +25,22 @@ import { Response } from 'express';
 import { Users } from 'src/db-schema/user.schema';
 import { IRequestUser } from 'src/type/req';
 import { AuthService } from './auth.service';
-import { EmailDto, LogInDto, NewUserDto, QueryCurrentDto, RefreshTokenDto } from './dto';
+import {
+  EmailDto,
+  LogInDto,
+  NewPasswordDto,
+  NewUserDto,
+  QueryCurrentDto,
+  RefreshTokenDto,
+  TokenForgotenPasswordDto,
+} from './dto';
 import { JwtAuthGuard } from './guard/jwt-auth.guard';
 import { ValidatePipe } from '../global/pipe/validate.pipe';
 import { AuthGuard } from '@nestjs/passport';
 import { ConfigService } from '@nestjs/config';
 import { LoginRedirectUrlDto } from './dto/LoginRedirectUrlDto';
 import { TTokens } from './type';
+import { ForgotenPasswordGuard } from './guard/forgoten-password.guard';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -138,9 +159,42 @@ export class AuthController {
     const tokens: TTokens = await this.authService.googleLogin(req.user);
 
     return response.redirect(`https://byht1.github.io/react-team-project/?access_token=${tokens.access_token}`);
-    // return response.redirect(`http://localhost:3000/react-team-project/?access_token=${tokens.access_token}`);
-    // return response.redirect(
-    //   `https://byht1.github.io/react-team-project/?access_token=${tokens.access_token},refresh_token=${tokens.refresh_token}`,
-    // );
+  }
+
+  @ApiOperation({ summary: 'Password change request' })
+  @ApiResponse({ status: 204 })
+  @ApiResponse({ status: 400, description: 'Invalid data' })
+  @ApiResponse({ status: 401, description: 'User does not exist' })
+  @ApiResponse({ status: 500, description: 'Server error' })
+  @HttpCode(204)
+  @Patch('/forgotten-password')
+  passwordChangeRequest(@Body() body: EmailDto) {
+    return this.authService.passwordChangeRequest(body);
+  }
+
+  @ApiExcludeEndpoint()
+  @Get('/forgotten-password/error')
+  async passwordChangeRequestError(@Query() { token }: TokenForgotenPasswordDto, @Res() response: Response) {
+    await this.authService.forgottenPasswordError(token);
+    return response.redirect(`https://byht1.github.io/react-team-project`);
+  }
+
+  @ApiOperation({ summary: 'Password change' })
+  @ApiHeaders([
+    {
+      name: 'Authorization',
+      required: true,
+      description: 'User access token',
+    },
+  ])
+  @ApiResponse({ status: 201, type: Users })
+  @ApiResponse({ status: 400, description: 'Invalid data' })
+  @ApiResponse({ status: 403, description: 'Invalid token' })
+  @ApiResponse({ status: 500, description: 'Server error' })
+  @HttpCode(201)
+  @UseGuards(ForgotenPasswordGuard)
+  @Patch('/forgotten-password/new')
+  passwordChangeNewPassword(@Req() req: IRequestUser, @Body() body: NewPasswordDto) {
+    return this.authService.passwordChangeNewPassword(req.user.forgottenPasswordToken, body, req.user._id);
   }
 }

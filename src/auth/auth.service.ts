@@ -5,17 +5,24 @@ import { Model } from 'mongoose';
 import * as bcrypt from 'bcryptjs';
 import { Users, UsersDocument } from 'src/db-schema/user.schema';
 // import { EmailMessageService } from '../email-message/email-message.service';
-import { EmailDto, GoogleAuthDto, LogInDto,  NewUserDto } from './dto';
+import { EmailDto, GoogleAuthDto, LogInDto, NewPasswordDto, NewUserDto } from './dto';
 import { Token, TResUserAuth, TTokens } from './type';
 import { UserService } from 'src/user/user.service';
 import { TId } from 'src/type';
+import { EmailMessageService } from 'src/email-message/email-message.service';
+
+export enum ETypeOperation {
+  GOOGLE = 'google',
+  PASSWORD = 'password',
+}
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectModel(Users.name) private usersModel: Model<UsersDocument>,
     private usersService: UserService,
-    private jwtService: JwtService, // private emailMessage: EmailMessageService,
+    private jwtService: JwtService,
+    private emailMessage: EmailMessageService,
   ) {}
 
   async signUp(newUserDto: NewUserDto): Promise<TResUserAuth> {
@@ -64,7 +71,6 @@ export class AuthService {
   }
 
   async logOut(user: UsersDocument, accessToken: string, refreshToken: string): Promise<void> {
-    console.log('🚀  AuthService  refreshToken🚀', refreshToken);
     const id = user._id;
     // console.log('🚀  AuthService  user.refresh_token', user.refresh_token.length);
     // console.log('🚀  AuthService  user.access_token', user.access_token.length);
@@ -148,21 +154,99 @@ export class AuthService {
     return user;
   }
 
+  async passwordChangeRequest({ email }: EmailDto) {
+    const isUser = await this.usersModel.findOne({ email });
+
+    if (!isUser) {
+      throw new HttpException('User does not exist', HttpStatus.UNAUTHORIZED);
+    }
+
+    const { token } = this.generatorToken(isUser._id, 'access', ETypeOperation.PASSWORD);
+
+    await this.emailMessage.forgottenPassword(email, token);
+
+    isUser.forgottenPasswordToken = token;
+    isUser.save();
+
+    return;
+  }
+
+  async forgottenPasswordError(token: string): Promise<void> {
+    const isUser = await this.forgottenPasswordUserSearch(token);
+
+    if (typeof isUser === 'boolean') {
+      return this.forgottenPasswordDecode(token);
+    }
+
+    await this.usersModel.findByIdAndUpdate(isUser._id, {
+      forgottenPasswordToken: null,
+    });
+
+    return;
+  }
+
+  async passwordChangeNewPassword(token: string, { password }: NewPasswordDto, userId: TId) {
+    const hashPassword = await this.hashPassword(password);
+
+    const user = await this.usersModel.findByIdAndUpdate(
+      userId,
+      {
+        forgottenPasswordToken: null,
+        password: hashPassword,
+      },
+      { new: true },
+    );
+
+    const tokens = await this.generatorTokens(user.id);
+
+    return this.normalizeData(user, tokens);
+  }
+
+  private async forgottenPasswordUserSearch(forgottenPasswordToken: string): Promise<UsersDocument | boolean> {
+    const { id, typeOperation } = await this.jwtService.verify(forgottenPasswordToken, {
+      secret: process.env.ACCESS_SECRET_KEY,
+    });
+
+    if (!id || typeOperation !== ETypeOperation.PASSWORD) return false;
+
+    const isUser = await this.usersModel.findById(id);
+
+    if (!isUser || isUser?.forgottenPasswordToken !== forgottenPasswordToken) return false;
+
+    return isUser;
+  }
+
+  private async forgottenPasswordDecode(token: string) {
+    const payload = await this.jwtService.decode(token);
+
+    if (typeof payload === 'string' || !payload?.id) {
+      throw new HttpException('Invalid token', HttpStatus.UNAUTHORIZED);
+    }
+
+    const user = await this.usersModel.findById(payload.id);
+
+    user.forgottenPasswordToken = null;
+    user.save();
+
+    return;
+  }
 
   private avatarGenerator(name): string {
     return `https://api.multiavatar.com/${name}.png`;
   }
-  // access _token;
 
-  private generatorToken(id: TId, type: 'access' | 'ref'): Token {
+  private generatorToken(id: TId, type: 'access' | 'ref', typeOperation?: ETypeOperation): Token {
+    const payload: { [key: string]: TId } = { id };
+
+    if (typeOperation) {
+      payload.typeOperation = typeOperation;
+    }
+
     return {
-      token: this.jwtService.sign(
-        { id },
-        {
-          expiresIn: type === 'ref' ? '1d' : '24h',
-          secret: type === 'ref' ? process.env.REFRESH_SECRET_KEY : process.env.ACCESS_SECRET_KEY,
-        },
-      ),
+      token: this.jwtService.sign(payload, {
+        expiresIn: type === 'ref' ? '15m' : '24h',
+        secret: type === 'ref' ? process.env.REFRESH_SECRET_KEY : process.env.ACCESS_SECRET_KEY,
+      }),
       date: Date.now(),
     };
   }

@@ -1,6 +1,6 @@
 export const ciryValid = Object.freeze({
   reg: {
-    value: /^(?!\s)[a-zA-Zа-яА-ЯЁёҐґІіЇїЄє\s,'"'-.]+$/,
+    value: /^(?!\s)[a-zA-Zа-яА-ЯЁёҐґІіЇїЄє\s,'’"'-.]+$/,
     // value: /^[a-zA-Zа-яА-ЯЁёҐґІіЇїЄє\s,'"'-.]+$/,
     message: 'The name of the city or region must contain only letters',
   },
