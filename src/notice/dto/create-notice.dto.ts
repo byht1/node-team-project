@@ -34,7 +34,7 @@ export class CreateNoticeDto {
   @IsOptional()
   readonly name: string;
 
-  // @IsDateFormatWhithinRange('dd.MM.yyyy', '01.01.1900', new Date().toLocaleDateString())
+  // @IsDateFormatWhithinRange('dd.MM.yyyy', '01.01.1900', new Date().toLocaleDateString("uk"))
   @IsValidDate({})
   @IsOptional()
   readonly birthday: string;

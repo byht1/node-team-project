@@ -5,7 +5,7 @@ import { CategoryNotices } from 'src/global/enum/categoryNotices';
 
 export type NoticeDocument = HydratedDocument<Notice>;
 
-@Schema()
+@Schema({ versionKey: false, timestamps: true })
 export class Notice {
   _id: ObjectId;
   @ApiProperty({
