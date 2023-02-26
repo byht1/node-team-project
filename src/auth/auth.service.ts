@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable, HttpCode } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
@@ -9,10 +9,9 @@ import { EmailDto, GoogleAuthDto, LogInDto, NewPasswordDto, NewUserDto } from '.
 import { Token, TResUserAuth, TTokens } from './type';
 import { UserService } from 'src/user/user.service';
 import { TId } from 'src/type';
-import { uuid } from 'uuidv4';
 import { EmailMessageService } from 'src/email-message/email-message.service';
 
-enum ETypeOperation {
+export enum ETypeOperation {
   GOOGLE = 'google',
   PASSWORD = 'password',
 }
@@ -186,17 +185,11 @@ export class AuthService {
     return;
   }
 
-  async passwordChangeNewPassword(token: string, { password }: NewPasswordDto) {
-    const isUser = await this.forgottenPasswordUserSearch(token);
-
-    if (typeof isUser === 'boolean') {
-      throw new HttpException('The time to change the password has expired', HttpStatus.UNAUTHORIZED);
-    }
-
+  async passwordChangeNewPassword(token: string, { password }: NewPasswordDto, userId: TId) {
     const hashPassword = await this.hashPassword(password);
 
     const user = await this.usersModel.findByIdAndUpdate(
-      isUser._id,
+      userId,
       {
         forgottenPasswordToken: null,
         password: hashPassword,

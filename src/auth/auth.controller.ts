@@ -3,7 +3,6 @@ import {
   Controller,
   Get,
   HttpCode,
-  Param,
   Patch,
   Post,
   Query,
@@ -41,6 +40,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { ConfigService } from '@nestjs/config';
 import { LoginRedirectUrlDto } from './dto/LoginRedirectUrlDto';
 import { TTokens } from './type';
+import { ForgotenPasswordGuard } from './guard/forgoten-password.guard';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -180,14 +180,21 @@ export class AuthController {
   }
 
   @ApiOperation({ summary: 'Password change' })
-  @ApiResponse({ status: 204 })
+  @ApiHeaders([
+    {
+      name: 'Authorization',
+      required: true,
+      description: 'User access token',
+    },
+  ])
+  @ApiResponse({ status: 201, type: Users })
   @ApiResponse({ status: 400, description: 'Invalid data' })
   @ApiResponse({ status: 403, description: 'Invalid token' })
   @ApiResponse({ status: 500, description: 'Server error' })
-  @HttpCode(204)
-  @UseGuards(JwtAuthGuard)
+  @HttpCode(201)
+  @UseGuards(ForgotenPasswordGuard)
   @Patch('/forgotten-password/new')
   passwordChangeNewPassword(@Req() req: IRequestUser, @Body() body: NewPasswordDto) {
-    return this.authService.passwordChangeNewPassword(req.user.forgottenPasswordToken, body);
+    return this.authService.passwordChangeNewPassword(req.user.forgottenPasswordToken, body, req.user._id);
   }
 }
