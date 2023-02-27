@@ -44,10 +44,10 @@ export class AuthService {
     return this.normalizeData(user, tokens);
   }
 
-  async isUseEmail(email: EmailDto) {
+  async isUseEmail({ email }: EmailDto) {
     if (!email) return;
 
-    const user = await this.usersModel.findOne(email);
+    const user = await this.usersService.userByEmail(email);
 
     if (user) throw new HttpException('Email in use', HttpStatus.CONFLICT);
 
@@ -117,7 +117,7 @@ export class AuthService {
   async googleLogin(googleAuthDto: GoogleAuthDto): Promise<TTokens> {
     const { email, picture, firstName, lastName } = googleAuthDto;
 
-    const isUser = await this.usersModel.findOne({ email });
+    const isUser = await this.usersService.userByEmail(email);
 
     if (isUser) return await this.generatorTokens(isUser._id);
 
@@ -147,7 +147,9 @@ export class AuthService {
   }
 
   async passwordChangeRequest({ email }: EmailDto) {
-    const isUser = await this.usersModel.findOne({ email });
+    const regex = new RegExp(email, 'i');
+
+    const isUser = await this.usersModel.findOne({ email: regex });
 
     if (!isUser) {
       throw new HttpException('User does not exist', HttpStatus.UNAUTHORIZED);

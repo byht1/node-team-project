@@ -151,7 +151,8 @@ export class UserService {
   }
 
   async userByEmail(email: string): Promise<UsersDocument> {
-    return await this.usersModel.findOne({ email: email });
+    const regex = new RegExp(email, 'i');
+    return await this.usersModel.findOne({ email: regex });
   }
 
   async userByUsername(username: string): Promise<UsersDocument> {
