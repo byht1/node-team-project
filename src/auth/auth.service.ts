@@ -282,7 +282,7 @@ export class AuthService {
     const user = await this.usersModel.findById(id);
 
     if (!user) {
-      throw new HttpException('Invalid token', HttpStatus.FORBIDDEN);
+      throw new HttpException('Invalid token', HttpStatus.UNAUTHORIZED);
     }
 
     const currentDate = Date.now();
