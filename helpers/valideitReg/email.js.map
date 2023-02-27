@@ -1,0 +1,1 @@
+{"version":3,"file":"email.js","sourceRoot":"","sources":["../../../src/helpers/valideitReg/email.ts"],"names":[],"mappings":";;;AAAa,QAAA,UAAU,GAAG,MAAM,CAAC,MAAM,CAAC;IACtC,GAAG,EAAE;QACH,KAAK,EAAE,oDAAoD;QAC3D,OAAO,EAAE,iBAAiB;KAC3B;IACD,SAAS,EAAE;QACT,KAAK,EAAE,EAAE;QACT,OAAO,EAAE,iDAAiD;KAC3D;IACD,SAAS,EAAE;QACT,KAAK,EAAE,CAAC;QACR,OAAO,EAAE,gDAAgD;KAC1D;CACF,CAAC,CAAC"}
