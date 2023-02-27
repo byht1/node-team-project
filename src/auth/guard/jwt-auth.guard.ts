@@ -49,8 +49,10 @@ export class JwtAuthGuard implements CanActivate {
       if (isDelete) {
         const user = await this.usersModel.findById(payload.id);
 
-        user.access_token = user.access_token.filter(x => x.token !== token);
-        user.save();
+        if (user) {
+          user.access_token = user.access_token.filter(x => x.token !== token);
+          user.save();
+        }
       }
 
       throw new HttpException('Invalid token', HttpStatus.FORBIDDEN);
