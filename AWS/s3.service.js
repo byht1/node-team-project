@@ -61,6 +61,7 @@ let S3Service = class S3Service {
             Bucket: `${this.AWS_S3_BUCKET}/${type}`,
             Key: key,
         };
+        await this.s3.deleteObject(params).promise();
         return;
     }
 };

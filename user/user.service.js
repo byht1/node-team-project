@@ -106,6 +106,18 @@ let UserService = class UserService {
         await user.save();
         return;
     }
+    async addComment(userId, comment) {
+        const user = await this.usersModel.findById(userId);
+        user.comments.push(comment._id);
+        await user.save();
+        return;
+    }
+    async removeComment(userId, comment) {
+        const user = await this.usersModel.findById(userId);
+        user.comments = user.comments.filter(x => x.toString() !== comment._id.toString());
+        await user.save();
+        return;
+    }
     async addNotise(userId, post) {
         const user = await this.usersModel.findById(userId);
         user.advertisement.push(post._id);

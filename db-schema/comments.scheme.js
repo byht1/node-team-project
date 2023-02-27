@@ -28,14 +28,14 @@ __decorate([
 ], Comment.prototype, "text", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({ example: '63f37a8cbf6f72e7f1b27ba3' }),
-    (0, mongoose_1.Prop)({ required: true, type: mongoose_2.default.Schema.Types.ObjectId, ref: 'Users' }),
-    __metadata("design:type", user_schema_1.Users)
-], Comment.prototype, "author", void 0);
-__decorate([
-    (0, swagger_1.ApiProperty)({ example: '63f37a8cbf6f72e7f1b27ba3' }),
     (0, mongoose_1.Prop)({ required: true, type: mongoose_2.default.Schema.Types.ObjectId, ref: 'Post' }),
     __metadata("design:type", post_schema_1.Post)
 ], Comment.prototype, "post", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({ example: '63f37a8cbf6f72e7f1b27ba3' }),
+    (0, mongoose_1.Prop)({ required: true, type: mongoose_2.default.Schema.Types.ObjectId, ref: 'Users' }),
+    __metadata("design:type", user_schema_1.Users)
+], Comment.prototype, "owner", void 0);
 Comment = __decorate([
     (0, mongoose_1.Schema)({ versionKey: false, timestamps: true })
 ], Comment);

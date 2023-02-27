@@ -20,12 +20,12 @@ __decorate([
 ], CreatePostDto.prototype, "title", void 0);
 __decorate([
     (0, class_validator_1.IsString)({ message: 'Text should be a string' }),
-    (0, class_validator_1.MinLength)(8, { message: 'Text should be at least 8 characters' }),
+    (0, class_validator_1.Length)(8, 2000, { message: 'Text should be from 2 to 2000 characters' }),
     __metadata("design:type", String)
 ], CreatePostDto.prototype, "text", void 0);
 __decorate([
     (0, class_validator_1.IsString)({ message: 'Category should be a string' }),
-    (0, class_validator_1.Length)(2, 28, { message: 'Category should be from 2 to 28 characters' }),
+    (0, class_validator_1.Length)(2, 14, { message: 'Category should be from 2 to 14 characters' }),
     __metadata("design:type", String)
 ], CreatePostDto.prototype, "category", void 0);
 exports.CreatePostDto = CreatePostDto;

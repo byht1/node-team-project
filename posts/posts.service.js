@@ -54,15 +54,14 @@ let PostsService = class PostsService {
         return post;
     }
     async removePost(postId, userId) {
-        const postFind = await this.postModel.findById(postId);
+        const postFind = await this.postModel.findOneAndRemove({ author: { _id: userId }, _id: postId }).select({ createdAt: 0, updatedAt: 0 });
         if (!postFind) {
             throw new common_1.HttpException('Post not found', common_1.HttpStatus.NOT_FOUND);
         }
         const string = postFind.image.split('/').pop();
         await this.fileService.deleteFile(string, s3_service_1.TypeOperation.POSTS);
-        const post = await this.postModel.findByIdAndRemove(postId).select({ createdAt: 0, updatedAt: 0 });
-        await this.userService.removePost(userId, post);
-        return post;
+        await this.userService.removePost(userId, postFind);
+        return postFind;
     }
     async likes(postId, userId) {
         const post = await this.postModel.findById(postId);

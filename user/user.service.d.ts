@@ -24,6 +24,7 @@
 /// <reference types="mongoose/types/inferschematype" />
 import { Model, ObjectId } from 'mongoose';
 import { S3Service } from 'src/AWS/s3.service';
+import { CommentDocument } from 'src/db-schema/comments.scheme';
 import { Notice } from 'src/db-schema/notice.schema';
 import { PetDocument } from 'src/db-schema/pets.schema';
 import { PostDocument } from 'src/db-schema/post.schema';
@@ -50,6 +51,8 @@ export declare class UserService {
     removePet(userId: TId, pet: PetDocument): Promise<void>;
     addPost(userId: TId, post: PostDocument): Promise<void>;
     removePost(userId: TId, post: PostDocument): Promise<void>;
+    addComment(userId: TId, comment: CommentDocument): Promise<void>;
+    removeComment(userId: TId, comment: CommentDocument): Promise<void>;
     addNotise(userId: TId, post: Notice): Promise<void>;
     removeNotise(userId: TId, post: Notice): Promise<void>;
     userById(id: TId): Promise<UsersDocument>;

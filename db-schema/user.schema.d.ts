@@ -1,3 +1,4 @@
+import { Comments } from 'aws-sdk/clients/codecommit';
 import mongoose, { ObjectId } from 'mongoose';
 import { Token } from '../auth/type';
 import { Pet } from './pets.schema';
@@ -19,6 +20,7 @@ export declare class Users {
     advertisement: ObjectId[];
     cards: Pet[];
     posts: Post[];
+    comments: Comments[];
     forgottenPassword: string;
     birthday: string;
     city: string;

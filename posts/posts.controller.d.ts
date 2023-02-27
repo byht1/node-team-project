@@ -15,5 +15,5 @@ export declare class PostsController {
     removePost(id: ObjectId, req: IRequestUser): Promise<PostDBSchema>;
     likes(id: ObjectId, req: IRequestUser): Promise<PostDBSchema>;
     addComment(postId: ObjectId, req: IRequestUser, dto: CreateCommentDto): Promise<CommentDBSchema>;
-    removeComment(postId: ObjectId, commentId: ObjectId): Promise<CommentDBSchema>;
+    removeComment(postId: ObjectId, req: IRequestUser, commentId: ObjectId): Promise<CommentDBSchema>;
 }

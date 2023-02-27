@@ -18,23 +18,27 @@ const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const comments_scheme_1 = require("../db-schema/comments.scheme");
 const posts_service_1 = require("../posts/posts.service");
+const user_service_1 = require("../user/user.service");
 let CommentsService = class CommentsService {
-    constructor(commentModel, postService) {
+    constructor(commentModel, postService, userService) {
         this.commentModel = commentModel;
         this.postService = postService;
+        this.userService = userService;
     }
     async createComment(createCommentDto, postId, userId) {
-        const comment = await this.commentModel.create(Object.assign(Object.assign({}, createCommentDto), { author: userId, post: postId }));
+        const comment = await this.commentModel.create(Object.assign(Object.assign({}, createCommentDto), { owner: userId, post: postId }));
         await this.postService.addComment(postId, comment);
+        await this.userService.addComment(userId, comment);
         return comment;
     }
-    async removeComment(commentId, postId) {
-        const commentFind = await this.commentModel.findById(commentId);
+    async removeComment(commentId, postId, userId) {
+        const commentFind = await this.commentModel.findOne({ owner: userId, _id: commentId });
         if (!commentFind) {
             throw new common_1.HttpException('Comment not found', common_1.HttpStatus.NOT_FOUND);
         }
         const comment = await this.commentModel.findByIdAndRemove(commentId).select({ createdAt: 0, updatedAt: 0 });
         await this.postService.removeComment(postId, comment);
+        await this.userService.removeComment(userId, comment);
         return comment;
     }
 };
@@ -42,7 +46,8 @@ CommentsService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, mongoose_1.InjectModel)(comments_scheme_1.Comment.name)),
     __metadata("design:paramtypes", [mongoose_2.Model,
-        posts_service_1.PostsService])
+        posts_service_1.PostsService,
+        user_service_1.UserService])
 ], CommentsService);
 exports.CommentsService = CommentsService;
 //# sourceMappingURL=comments.service.js.map

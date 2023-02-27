@@ -32,13 +32,12 @@ let PetsService = class PetsService {
         return pet;
     }
     async removePet(petId, userId) {
-        const petFind = await this.petModel.findById(petId);
-        if (!petFind) {
+        const pet = await this.petModel.findOneAndRemove({ owner: userId, _id: petId });
+        if (!pet) {
             throw new common_1.HttpException('Pet not found', common_1.HttpStatus.NOT_FOUND);
         }
-        const string = petFind.image.split('/').pop();
+        const string = pet.image.split('/').pop();
         await this.fileService.deleteFile(string, s3_service_1.TypeOperation.PETS);
-        const pet = await this.petModel.findByIdAndRemove(petId).select({ createdAt: 0, updatedAt: 0 });
         await this.userService.removePet(userId, pet);
         return pet;
     }

@@ -119,6 +119,14 @@ __decorate([
     __metadata("design:type", Array)
 ], Users.prototype, "posts", void 0);
 __decorate([
+    (0, swagger_1.ApiProperty)({ example: ['6373c0bca5a6e4c9556f1e7a'] }),
+    (0, mongoose_1.Prop)({
+        type: [{ type: mongoose_2.default.Schema.Types.ObjectId, ref: 'Comments' }],
+        default: [],
+    }),
+    __metadata("design:type", Array)
+], Users.prototype, "comments", void 0);
+__decorate([
     (0, swagger_1.ApiProperty)({
         example: '11bf5b37-e0b8-42e0-8dcf-dc8c4aefc000',
     }),

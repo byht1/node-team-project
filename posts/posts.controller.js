@@ -49,8 +49,8 @@ let PostsController = class PostsController {
     addComment(postId, req, dto) {
         return this.commentsService.createComment(dto, postId, req.user._id);
     }
-    removeComment(postId, commentId) {
-        return this.commentsService.removeComment(commentId, postId);
+    removeComment(postId, req, commentId) {
+        return this.commentsService.removeComment(commentId, postId, req.user._id);
     }
 };
 __decorate([
@@ -213,9 +213,10 @@ __decorate([
     ]),
     (0, common_1.Delete)(':postId/comments/:commentId'),
     __param(0, (0, common_1.Param)('postId')),
-    __param(1, (0, common_1.Param)('commentId')),
+    __param(1, (0, common_1.Req)()),
+    __param(2, (0, common_1.Param)('commentId')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:paramtypes", [Object, Object, Object]),
     __metadata("design:returntype", void 0)
 ], PostsController.prototype, "removeComment", null);
 PostsController = __decorate([

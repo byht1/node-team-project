@@ -5,7 +5,7 @@ export type CommentDocument = Comment & Document;
 export declare class Comment {
     _id: mongoose.Schema.Types.ObjectId;
     text: string;
-    author: Users;
     post: Post;
+    owner: Users;
 }
 export declare const CommentSchema: mongoose.Schema<Comment, mongoose.Model<Comment, any, any, any, any>, {}, {}, {}, {}, mongoose.DefaultSchemaOptions, Comment>;
