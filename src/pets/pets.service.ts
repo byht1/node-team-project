@@ -29,14 +29,13 @@ export class PetsService {
   }
 
   async removePet(petId: ObjectId, userId: ObjectId): Promise<Pet> {
-    const petFind = await this.petModel.findById(petId);
+    const pet = await this.petModel.findOneAndRemove({ owner: userId, _id: petId });
 
-    if (!petFind) {
+    if (!pet) {
       throw new HttpException('Pet not found', HttpStatus.NOT_FOUND);
     }
-    const string = petFind.image.split('/').pop();
+    const string = pet.image.split('/').pop();
     await this.fileService.deleteFile(string, TypeOperation.PETS);
-    const pet = await this.petModel.findByIdAndRemove(petId).select({ createdAt: 0, updatedAt: 0 });
 
     await this.userService.removePet(userId, pet);
 

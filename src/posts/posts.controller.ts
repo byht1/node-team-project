@@ -185,8 +185,9 @@ export class PostsController {
         },
     ])
     @Delete(':postId/comments/:commentId')
-    removeComment(@Param('postId') postId: ObjectId, 
+    removeComment(@Param('postId') postId: ObjectId,
+    @Req() req: IRequestUser,
     @Param('commentId') commentId: ObjectId) {
-        return this.commentsService.removeComment(commentId, postId)
+        return this.commentsService.removeComment(commentId, postId, req.user._id)
     }
 }

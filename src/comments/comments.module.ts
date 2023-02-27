@@ -3,10 +3,11 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { AuthModule } from 'src/auth/auth.module';
 import { Comment, CommentSchema } from 'src/db-schema/comments.scheme';
 import { PostsModule } from 'src/posts/posts.module';
+import { UserModule } from 'src/user/user.module';
 import { CommentsService } from './comments.service';
 
 @Module({
-  imports: [MongooseModule.forFeature([{ name: Comment.name, schema: CommentSchema }]), AuthModule, forwardRef(() => PostsModule)],
+  imports: [MongooseModule.forFeature([{ name: Comment.name, schema: CommentSchema }]), AuthModule, UserModule, forwardRef(() => PostsModule)],
   providers: [CommentsService],
   exports: [CommentsService],
 })
