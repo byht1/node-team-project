@@ -215,7 +215,7 @@ let AuthService = class AuthService {
     async clearTokens(id, refCurrentToken) {
         const user = await this.usersModel.findById(id);
         if (!user) {
-            throw new common_1.HttpException('Invalid token', common_1.HttpStatus.FORBIDDEN);
+            throw new common_1.HttpException('Invalid token', common_1.HttpStatus.UNAUTHORIZED);
         }
         const currentDate = Date.now();
         const accessToken = [];
