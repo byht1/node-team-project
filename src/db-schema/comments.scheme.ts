@@ -21,7 +21,7 @@ export class Comment {
     
     @ApiProperty({example: '63f37a8cbf6f72e7f1b27ba3'})
     @Prop({ required: true, type: mongoose.Schema.Types.ObjectId, ref: 'Users' })
-    owner: Users; 
+    author: Users; 
 }
 
 export const CommentSchema = SchemaFactory.createForClass(Comment)
