@@ -59,18 +59,17 @@ export class PostsService {
     }
 
     async removePost(postId: ObjectId, userId: ObjectId): Promise<Post> {
-        const postFind = await this.postModel.findById(postId);
+        const postFind = await this.postModel.findOneAndRemove({ author: {_id: userId}, _id: postId}).select({ createdAt: 0, updatedAt: 0 });
 
         if(!postFind) {
             throw new HttpException('Post not found', HttpStatus.NOT_FOUND);
         }
         const string = postFind.image.split('/').pop();
         await this.fileService.deleteFile(string, TypeOperation.POSTS);
-        const post = await this.postModel.findByIdAndRemove(postId).select({ createdAt: 0, updatedAt: 0 });
 
-        await this.userService.removePost(userId, post);
+        await this.userService.removePost(userId, postFind);
 
-        return post;
+        return postFind;
     }
 
     async likes(postId: ObjectId, userId: ObjectId): Promise<Post> {

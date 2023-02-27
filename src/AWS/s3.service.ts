@@ -61,6 +61,8 @@ export class S3Service {
       Key: key,
     };
 
+    await this.s3.deleteObject(params).promise()
+    
     return;
   }
 }
