@@ -30,6 +30,7 @@ export class PostsService {
 
     async getPostById(id: ObjectId): Promise<Post> {
         const post = await this.postModel.findById(id)
+        .populate('author', {name: 1, photo: 1})
         .populate({
             path: 'comments', 
             populate: {
