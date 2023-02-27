@@ -16,15 +16,16 @@ export class NoticeService {
   ) {}
 
   async getNoticesByCategoryAndSearch(dto: SearchDto): Promise<Notice[]> {
-    const { count = 10, offset = 0, category = 'sell' } = dto;
+    const { count = 10, offset = 0, category = 'sell', search = '' } = dto;
 
     const notices = await this.noticeModel
       .find({
         category,
-        title: { $regex: new RegExp(dto.search, 'i') },
+        title: { $regex: new RegExp(search, 'i') },
       })
       .skip(Number(offset) * count)
-      .limit(Number(count));
+      .limit(Number(count))
+      .sort({ createdAt: -1 });
 
     return notices;
   }
@@ -51,7 +52,7 @@ export class NoticeService {
       imgUrl: picturePath,
     });
 
-    await this.userService.addNotise(userId, notice);
+    await this.userService.addNotice(userId, notice);
 
     return notice;
   }

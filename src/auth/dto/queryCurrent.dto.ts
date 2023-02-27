@@ -6,4 +6,9 @@ export class QueryCurrentDto {
   @IsOptional()
   @IsString({ message: 'Not a line' })
   readonly type?: string;
+
+  @ApiProperty({ description: 'Query fields', example: 'advertisement,cards,...', required: false })
+  @IsOptional()
+  @IsString({ message: 'Not a line' })
+  readonly fields?: string;
 }

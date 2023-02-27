@@ -147,7 +147,7 @@ export class UserService {
     return;
   }
 
-  async addNotise(userId: TId, post: Notice) {
+  async addNotice(userId: TId, post: Notice) {
     const user = await this.usersModel.findById(userId);
 
     user.advertisement.push(post._id);
