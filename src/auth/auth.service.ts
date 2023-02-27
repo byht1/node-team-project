@@ -94,7 +94,7 @@ export class AuthService {
 
       const user = await this.usersModel.findById(isValid.id);
 
-      if (!user.refresh_token.find(x => x.token === refreshToken)) throw new Error();
+      if (!user?.refresh_token.find(x => x.token === refreshToken)) throw new Error();
 
       const accessToken = this.generatorToken(isValid.id, 'access');
       user.access_token.push(accessToken);
