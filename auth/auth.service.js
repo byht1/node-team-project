@@ -81,7 +81,7 @@ let AuthService = class AuthService {
                 secret: process.env.REFRESH_SECRET_KEY,
             });
             const user = await this.usersModel.findById(isValid.id);
-            if (!user.refresh_token.find(x => x.token === refreshToken))
+            if (!(user === null || user === void 0 ? void 0 : user.refresh_token.find(x => x.token === refreshToken)))
                 throw new Error();
             const accessToken = this.generatorToken(isValid.id, 'access');
             user.access_token.push(accessToken);
