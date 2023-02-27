@@ -52,7 +52,7 @@ export class NoticeService {
       imgUrl: picturePath,
     });
 
-    await this.userService.addNotiсe(userId, notice);
+    await this.userService.addNotice(userId, notice);
 
     return notice;
   }
