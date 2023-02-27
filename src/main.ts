@@ -3,7 +3,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 import { AppModule } from './app.module';
 
-const start = async () => {
+export const start = async () => {
   const { CURRENT_HOST, PORT = 5000 } = process.env;
   try {
     const app = await NestFactory.create(AppModule, { cors: true });
