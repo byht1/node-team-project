@@ -24,7 +24,8 @@ export class NoticeService {
         title: { $regex: new RegExp(dto.search, 'i') },
       })
       .skip(Number(offset) * count)
-      .limit(Number(count));
+      .limit(Number(count))
+      .sort({ createdAt: -1 });
 
     return notices;
   }
@@ -51,7 +52,7 @@ export class NoticeService {
       imgUrl: picturePath,
     });
 
-    await this.userService.addNotise(userId, notice);
+    await this.userService.addNotiсe(userId, notice);
 
     return notice;
   }

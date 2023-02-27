@@ -1,5 +1,3 @@
-// порожній рядок - тільки пробіли
-
 export const fieldsValid = Object.freeze({
   emptyField: {
     value: /^\s*\S/,

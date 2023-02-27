@@ -1,16 +1,4 @@
-import {
-  Body,
-  Controller,
-  Get,
-  HttpCode,
-  Patch,
-  Post,
-  Query,
-  Req,
-  Res,
-  UseGuards,
-  UsePipes,
-} from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, Patch, Post, Query, Req, Res, UseGuards, UsePipes } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiExcludeEndpoint,
@@ -137,8 +125,8 @@ export class AuthController {
   @ApiResponse({ status: 500, description: 'Server error' })
   @UseGuards(JwtAuthGuard)
   @Get('current')
-  current(@Req() req: IRequestUser, @Query() { type }: QueryCurrentDto) {
-    return this.authService.current(req.user._id, type);
+  current(@Req() req: IRequestUser, @Query() { type, fields }: QueryCurrentDto) {
+    return this.authService.current(req.user._id, type, fields);
   }
 
   @ApiOperation({ summary: 'Google authorization' })
