@@ -38,7 +38,7 @@ export declare class AuthController {
     logIn(logInDto: LogInDto): Promise<import("./type").TResUserAuth>;
     logOut(req: IRequestUser, { refresh_token }: RefreshTokenDto): Promise<void>;
     refresh({ refresh_token }: RefreshTokenDto): Promise<string>;
-    current(req: IRequestUser, { type }: QueryCurrentDto): Promise<import("./type").TResUserAuth | (import("mongoose").Document<unknown, any, import("src/db-schema/user.schema").UsersDocument> & Users & Document & Required<{
+    current(req: IRequestUser, { type, fields }: QueryCurrentDto): Promise<import("./type").TResUserAuth | (import("mongoose").Document<unknown, any, import("src/db-schema/user.schema").UsersDocument> & Users & Document & Required<{
         _id: import("mongoose").Schema.Types.ObjectId;
     }>)>;
     googleLogin(): void;

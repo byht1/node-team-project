@@ -26,14 +26,15 @@ let NoticeService = class NoticeService {
         this.userService = userService;
     }
     async getNoticesByCategoryAndSearch(dto) {
-        const { count = 10, offset = 0, category = 'sell' } = dto;
+        const { count = 10, offset = 0, category = 'sell', search = '' } = dto;
         const notices = await this.noticeModel
             .find({
             category,
-            title: { $regex: new RegExp(dto.search, 'i') },
+            title: { $regex: new RegExp(search, 'i') },
         })
             .skip(Number(offset) * count)
-            .limit(Number(count));
+            .limit(Number(count))
+            .sort({ createdAt: -1 });
         return notices;
     }
     async getNoticeById(id) {
@@ -49,7 +50,7 @@ let NoticeService = class NoticeService {
             picturePath = await Promise.all(picture.map(pic => this.s3Service.uploadFile(pic, s3_service_1.TypeOperation.IMAGE)));
         }
         const notice = await this.noticeModel.create(Object.assign(Object.assign({}, dto), { owner: userId, imgUrl: picturePath }));
-        await this.userService.addNotise(userId, notice);
+        await this.userService.addNotice(userId, notice);
         return notice;
     }
     async getUserNotices(userId) {

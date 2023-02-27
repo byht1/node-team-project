@@ -20,5 +20,11 @@ __decorate([
     (0, class_validator_1.IsString)({ message: 'Not a line' }),
     __metadata("design:type", String)
 ], QueryCurrentDto.prototype, "type", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({ description: 'Query fields', example: 'advertisement,cards,...', required: false }),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)({ message: 'Not a line' }),
+    __metadata("design:type", String)
+], QueryCurrentDto.prototype, "fields", void 0);
 exports.QueryCurrentDto = QueryCurrentDto;
 //# sourceMappingURL=queryCurrent.dto.js.map

@@ -118,7 +118,7 @@ let UserService = class UserService {
         await user.save();
         return;
     }
-    async addNotise(userId, post) {
+    async addNotice(userId, post) {
         const user = await this.usersModel.findById(userId);
         user.advertisement.push(post._id);
         user.save();

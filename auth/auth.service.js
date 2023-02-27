@@ -111,8 +111,16 @@ let AuthService = class AuthService {
         });
         return await this.generatorTokens(newUser._id);
     }
-    async current(id, type) {
+    async current(id, type, fields) {
         const user = await this.usersModel.findById(id, '-password').populate('cards');
+        if (fields) {
+            const fieldsToReturn = fields.split(',').reduce((obj, field) => {
+                obj[field] = 1;
+                return obj;
+            }, {});
+            const data = await this.usersModel.findById(id, fieldsToReturn);
+            return data;
+        }
         if (type === 'google') {
             const tokens = await this.generatorTokens(id);
             return this.normalizeData(user, tokens);

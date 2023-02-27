@@ -46,7 +46,7 @@ export declare class AuthService {
     logOut(user: UsersDocument, accessToken: string, refreshToken: string): Promise<void>;
     refresh(refreshToken: string): Promise<string>;
     googleLogin(googleAuthDto: GoogleAuthDto): Promise<TTokens>;
-    current(id: TId, type: string): Promise<TResUserAuth | (import("mongoose").Document<unknown, any, UsersDocument> & Users & Document & Required<{
+    current(id: TId, type: string, fields: string): Promise<TResUserAuth | (import("mongoose").Document<unknown, any, UsersDocument> & Users & Document & Required<{
         _id: import("mongoose").Schema.Types.ObjectId;
     }>)>;
     passwordChangeRequest({ email }: EmailDto): Promise<void>;

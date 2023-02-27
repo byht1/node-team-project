@@ -53,7 +53,7 @@ export declare class UserService {
     removePost(userId: TId, post: PostDocument): Promise<void>;
     addComment(userId: TId, comment: CommentDocument): Promise<void>;
     removeComment(userId: TId, comment: CommentDocument): Promise<void>;
-    addNotise(userId: TId, post: Notice): Promise<void>;
+    addNotice(userId: TId, post: Notice): Promise<void>;
     removeNotise(userId: TId, post: Notice): Promise<void>;
     userById(id: TId): Promise<UsersDocument>;
     userByEmail(email: string): Promise<UsersDocument>;

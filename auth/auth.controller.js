@@ -50,8 +50,8 @@ let AuthController = class AuthController {
     refresh({ refresh_token }) {
         return this.authService.refresh(refresh_token);
     }
-    current(req, { type }) {
-        return this.authService.current(req.user._id, type);
+    current(req, { type, fields }) {
+        return this.authService.current(req.user._id, type, fields);
     }
     googleLogin() {
     }
