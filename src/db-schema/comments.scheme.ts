@@ -14,14 +14,14 @@ export class Comment {
     @ApiProperty({ example: 'Post title' })
     @Prop({ required: [true, 'text is required'] })
     text: string;
-    
-    @ApiProperty({example: '63f37a8cbf6f72e7f1b27ba3'})
-    @Prop({ required: true, type: mongoose.Schema.Types.ObjectId, ref: 'Users' })
-    author: Users;
 
     @ApiProperty({example: '63f37a8cbf6f72e7f1b27ba3'})
     @Prop({ required: true, type: mongoose.Schema.Types.ObjectId, ref: 'Post' })
     post: Post;
+    
+    @ApiProperty({example: '63f37a8cbf6f72e7f1b27ba3'})
+    @Prop({ required: true, type: mongoose.Schema.Types.ObjectId, ref: 'Users' })
+    owner: Users; 
 }
 
 export const CommentSchema = SchemaFactory.createForClass(Comment)
