@@ -11,7 +11,6 @@ export class EmailMessageService {
     const html = `<div>
     <h1>Підтвердження пошти на сайті PERLY</h1>
     <span>Для підтвердження перейдіть  <a href="https://byht1.github.io/react-team-project/forgotten-password/?token=${token}">за посиланням</a></span>
-    <span>Для підтвердження перейдіть  <a href="http://localhost:3000/react-team-project/forgotten-password/?token=${token}">Локальне посилання</a></span>
     </br>
     </br>
     <span>Якщо це були не ви то перейдіть <a href="${dev}api/auth/forgotten-password/error/?token=${token}">за посиланням</a></span>
