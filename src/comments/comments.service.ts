@@ -15,7 +15,7 @@ export class CommentsService {
     async createComment(createCommentDto: CreateCommentDto, postId: ObjectId, userId: ObjectId): Promise<Comment> {
         const comment = await this.commentModel.create({
             ...createCommentDto,
-            owner: userId,
+            author: userId,
             post: postId,
         });
 
