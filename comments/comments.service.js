@@ -26,7 +26,7 @@ let CommentsService = class CommentsService {
         this.userService = userService;
     }
     async createComment(createCommentDto, postId, userId) {
-        const comment = await this.commentModel.create(Object.assign(Object.assign({}, createCommentDto), { owner: userId, post: postId }));
+        const comment = await this.commentModel.create(Object.assign(Object.assign({}, createCommentDto), { author: userId, post: postId }));
         await this.postService.addComment(postId, comment);
         await this.userService.addComment(userId, comment);
         return comment;
