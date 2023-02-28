@@ -16,46 +16,46 @@
 <ul>
     <li>
         <span>Віталій Дихал - Team Lead Fullstack</span>
-        <a href='https://github.com/byht1'>рерозиторій</a>
+        <a href='https://github.com/byht1'>gitHub</a>
     </li>
     <li>
         <span>Владислава Бойко - Scrum Master Fullstack</span>
-        <a href='https://github.com/VladaBoiko'>рерозиторій</a>
+        <a href='https://github.com/VladaBoiko'>gitHub</a>
     </li>
     <li>
         <span>Інна Лазорко - Developer Fullstack</span>
-        <a href='https://github.com/iLazorko'>рерозиторій</a>
+        <a href='https://github.com/iLazorko'>gitHub</a>
     </li>
     <li>
         <span>Вадим Лугінець- Developer Fullstack</span>
-        <a href='https://github.com/VadimLuginets'>рерозиторій</a>
+        <a href='https://github.com/VadimLuginets'>gitHub</a>
     </li>
     <li>
         <span>Шубін Олександр- Developer Fullstack</span>
-        <a href='https://github.com/zlatan-dp'>рерозиторій</a>
+        <a href='https://github.com/zlatan-dp'>gitHub</a>
     </li>
     <li>
         <span>Володимир Стогній- Developer Fullstack</span>
-        <a href='https://github.com/VladimirSt13'>рерозиторій</a>
+        <a href='https://github.com/VladimirSt13'>gitHub</a>
     </li>
     <li>
         <span>Тетяна Каут- Developer Fullstack</span>
-        <a href='https://github.com/KautTanya'>рерозиторій</a>
+        <a href='https://github.com/KautTanya'>gitHub</a>
     </li>
     <li>
         <span>Надія Шек- Developer Fullstack</span>
-        <a href='https://github.com/NadiiaShek'>рерозиторій</a>
+        <a href='https://github.com/NadiiaShek'>gitHub</a>
     </li>
     <li>
         <span>Руслан Бабаєв- Developer Fullstack</span>
-        <a href='https://github.com/Grantoed'>рерозиторій</a>
+        <a href='https://github.com/Grantoed'>gitHub</a>
     </li>
     <li>
         <span>Вероніка Кравченко- Developer Fullstack</span>
-        <a href='https://github.com/Veronika-chenko'>рерозиторій</a>
+        <a href='https://github.com/Veronika-chenko'>gitHub</a>
     </li>
     <li>
         <span>Вікторія Зиняк- Developer Fullstack</span>
-        <a href='https://github.com/ViktoriaZinyak'>рерозиторій</a>
+        <a href='https://github.com/ViktoriaZinyak'>gitHub</a>
     </li>
 </ul>
