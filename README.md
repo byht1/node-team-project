@@ -11,7 +11,7 @@
  <a href='https://github.com/byht1/react-team-project'>Полинання на front-end</a>
 </h2>
 
-<h2>Учасники еоманди</h2>
+<h2>Учасники команди</h2>
 
 <ul>
     <li>
