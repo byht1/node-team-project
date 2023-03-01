@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
 import mongoose, { Document } from "mongoose";
-import { Comment } from "./comments.scheme";
+import { Comment } from "./comments.schema";
 import { Users } from "./user.schema";
 
 export type PostDocument = Post & Document;

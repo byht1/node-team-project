@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, ObjectId } from 'mongoose';
-import { Comment, CommentDocument } from 'src/db-schema/comments.scheme';
+import { Comment, CommentDocument } from 'src/db-schema/comments.schema';
 import { PostsService } from 'src/posts/posts.service';
 import { UserService } from 'src/user/user.service';
 import { CreateCommentDto } from './dto';

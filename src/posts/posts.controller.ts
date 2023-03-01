@@ -27,13 +27,13 @@ import {
 import { ObjectId } from 'mongoose';
 import { PostsService } from './posts.service';
 import { CreateCommentDto, CreatePostDto, SearchDto, UploadeFileDto } from './dto';
-import { CreatePostSchema } from './schema-swagger/create-post.schema';
-import { Post as PostDBSchema } from 'src/db-schema/post.schema';
-import { Comment as CommentDBSchema } from 'src/db-schema/comments.scheme';
+import { CreatePostSchema, GetAllPostsSchema, GetOnePostSchema } from './schema-swagger';
 import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
 import { ValidatePipe } from 'src/global/pipe/validate.pipe';
 import { ValidateIsNotVoid } from 'src/global/pipe/validateIsNotVoid.pipe';
 import { IRequestUser } from 'src/type/req';
+import { Post as PostDBSchema } from 'src/db-schema/post.schema';
+import { Comment as CommentDBSchema } from 'src/db-schema/comments.schema';
 import { CommentsService } from 'src/comments/comments.service';
 import { CreateCommentSchema } from 'src/comments/schema-swagger/create-comment.schema';
 
@@ -52,7 +52,7 @@ export class PostsController {
             description: 'User access token',
         },
     ])
-    @ApiResponse({ status: 200, description: 'Posts found', type: [PostDBSchema] })
+    @ApiResponse({ status: 200, description: 'Posts found', type: [GetAllPostsSchema] })
     @ApiResponse({ status: 403, description: 'Invalid token' })
     @ApiResponse({ status: 500, description: 'Server error' })
     @UseGuards(JwtAuthGuard)
@@ -63,7 +63,7 @@ export class PostsController {
 
     @ApiOperation({summary: 'Get post by id'})
     @ApiBearerAuth()
-    @ApiResponse({ status: 200, description: 'Post found', type: PostDBSchema })
+    @ApiResponse({ status: 200, description: 'Post found', type: GetOnePostSchema })
     @ApiResponse({ status: 403, description: 'Invalid token' })
     @ApiResponse({ status: 500, description: 'Server error' })
     @UseGuards(JwtAuthGuard)

@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, ObjectId } from 'mongoose';
 import { S3Service, TypeOperation } from 'src/AWS/s3.service';
-import { CommentDocument } from 'src/db-schema/comments.scheme';
+import { CommentDocument } from 'src/db-schema/comments.schema';
 import { Post, PostDocument } from 'src/db-schema/post.schema';
 import { UserService } from 'src/user/user.service';
 import { CreatePostDto, UploadeFileDto } from './dto';

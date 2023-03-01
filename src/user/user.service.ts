@@ -2,7 +2,7 @@ import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, ObjectId } from 'mongoose';
 import { S3Service, TypeOperation } from 'src/AWS/s3.service';
-import { CommentDocument } from 'src/db-schema/comments.scheme';
+import { CommentDocument } from 'src/db-schema/comments.schema';
 import { Notice } from 'src/db-schema/notice.schema';
 import { PetDocument } from 'src/db-schema/pets.schema';
 import { PostDocument } from 'src/db-schema/post.schema';
