@@ -21,7 +21,6 @@ export const start = async () => {
 
     //Пробую зробити щоб сервер не засинав
     setInterval(() => {
-      fetch('https://node-team-project.onrender.com/docs');
       console.log('test', test);
       test += 1;
     }, 10 * 60 * 1000);
