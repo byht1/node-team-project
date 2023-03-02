@@ -8,8 +8,11 @@ const start = async () => {
     const { CURRENT_HOST, PORT = 5000 } = process.env;
     try {
         const app = await core_1.NestFactory.create(app_module_1.AppModule, { cors: true });
+        let test = 1;
         setInterval(() => {
             fetch('https://node-team-project.onrender.com/docs');
+            console.log('test', test);
+            test += 1;
         }, 10 * 60 * 1000);
         app.setGlobalPrefix('api');
         const config = new swagger_1.DocumentBuilder()
