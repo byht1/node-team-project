@@ -17,6 +17,11 @@ export const start = async () => {
     //   }),
     // );
 
+    //Пробую зробити щоб сервер не засинав
+    setInterval(() => {
+      fetch('https://node-team-project.onrender.com/docs');
+    }, 10 * 60 * 1000);
+
     app.setGlobalPrefix('api');
 
     const config = new DocumentBuilder()
