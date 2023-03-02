@@ -120,8 +120,9 @@ export class PostsController {
         },
     ])
     @Delete(':postId')
-    removePost(@Param('postId') id: ObjectId, @Req() req: IRequestUser) {
-        return this.postsService.removePost(id, req.user._id)
+    removePost(@Param('postId') postId: ObjectId, @Req() req: IRequestUser) {
+        this.commentsService.removeAllPostComments(postId);
+        return this.postsService.removePost(postId, req.user._id);
     }
 
     @ApiOperation({ summary: 'Add or remove \'like\' mark' })

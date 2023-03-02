@@ -19,7 +19,7 @@ export class CommentsService {
             post: postId,
         });
 
-        await this.postService.addComment(postId, comment);
+        await this.postService.addCommentToPost(postId, comment);
         await this.userService.addComment(userId, comment);
 
         return comment;
@@ -33,9 +33,14 @@ export class CommentsService {
         }
         const comment = await this.commentModel.findByIdAndRemove(commentId).select({ createdAt: 0, updatedAt: 0 });
 
-        await this.postService.removeComment(postId, comment);
+        await this.postService.removeCommentFromPost(postId, comment);
         await this.userService.removeComment(userId, comment);
 
         return comment;
+    }
+
+    async removeAllPostComments(postId: ObjectId) {
+        await this.commentModel.deleteMany({post: postId});
+        return;
     }
 }
