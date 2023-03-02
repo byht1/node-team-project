@@ -16,7 +16,7 @@ exports.CommentsService = void 0;
 const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
-const comments_scheme_1 = require("../db-schema/comments.scheme");
+const comments_schema_1 = require("../db-schema/comments.schema");
 const posts_service_1 = require("../posts/posts.service");
 const user_service_1 = require("../user/user.service");
 let CommentsService = class CommentsService {
@@ -27,7 +27,7 @@ let CommentsService = class CommentsService {
     }
     async createComment(createCommentDto, postId, userId) {
         const comment = await this.commentModel.create(Object.assign(Object.assign({}, createCommentDto), { author: userId, post: postId }));
-        await this.postService.addComment(postId, comment);
+        await this.postService.addCommentToPost(postId, comment);
         await this.userService.addComment(userId, comment);
         return comment;
     }
@@ -37,14 +37,18 @@ let CommentsService = class CommentsService {
             throw new common_1.HttpException('Comment not found', common_1.HttpStatus.NOT_FOUND);
         }
         const comment = await this.commentModel.findByIdAndRemove(commentId).select({ createdAt: 0, updatedAt: 0 });
-        await this.postService.removeComment(postId, comment);
+        await this.postService.removeCommentFromPost(postId, comment);
         await this.userService.removeComment(userId, comment);
         return comment;
+    }
+    async removeAllPostComments(postId) {
+        await this.commentModel.deleteMany({ post: postId });
+        return;
     }
 };
 CommentsService = __decorate([
     (0, common_1.Injectable)(),
-    __param(0, (0, mongoose_1.InjectModel)(comments_scheme_1.Comment.name)),
+    __param(0, (0, mongoose_1.InjectModel)(comments_schema_1.Comment.name)),
     __metadata("design:paramtypes", [mongoose_2.Model,
         posts_service_1.PostsService,
         user_service_1.UserService])

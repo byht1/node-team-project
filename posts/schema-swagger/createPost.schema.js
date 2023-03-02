@@ -30,4 +30,4 @@ __decorate([
     __metadata("design:type", Object)
 ], CreatePostSchema.prototype, "image", void 0);
 exports.CreatePostSchema = CreatePostSchema;
-//# sourceMappingURL=create-post.schema.js.map
+//# sourceMappingURL=createPost.schema.js.map

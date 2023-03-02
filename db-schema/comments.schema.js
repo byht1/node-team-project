@@ -41,4 +41,4 @@ Comment = __decorate([
 ], Comment);
 exports.Comment = Comment;
 exports.CommentSchema = mongoose_1.SchemaFactory.createForClass(Comment);
-//# sourceMappingURL=comments.scheme.js.map
+//# sourceMappingURL=comments.schema.js.map

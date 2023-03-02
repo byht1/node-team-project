@@ -1,6 +1,6 @@
 import { Model, ObjectId } from 'mongoose';
 import { S3Service } from 'src/AWS/s3.service';
-import { CommentDocument } from 'src/db-schema/comments.scheme';
+import { CommentDocument } from 'src/db-schema/comments.schema';
 import { Post, PostDocument } from 'src/db-schema/post.schema';
 import { UserService } from 'src/user/user.service';
 import { CreatePostDto, UploadeFileDto } from './dto';
@@ -15,6 +15,6 @@ export declare class PostsService {
     createPost(createPostDto: CreatePostDto, image: UploadeFileDto, userId: ObjectId): Promise<Post>;
     removePost(postId: ObjectId, userId: ObjectId): Promise<Post>;
     likes(postId: ObjectId, userId: ObjectId): Promise<Post>;
-    addComment(postId: ObjectId, comment: CommentDocument): Promise<void>;
-    removeComment(postId: ObjectId, comment: CommentDocument): Promise<void>;
+    addCommentToPost(postId: ObjectId, comment: CommentDocument): Promise<void>;
+    removeCommentFromPost(postId: ObjectId, comment: CommentDocument): Promise<void>;
 }

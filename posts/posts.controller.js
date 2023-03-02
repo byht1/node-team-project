@@ -18,12 +18,12 @@ const platform_express_1 = require("@nestjs/platform-express");
 const swagger_1 = require("@nestjs/swagger");
 const posts_service_1 = require("./posts.service");
 const dto_1 = require("./dto");
-const create_post_schema_1 = require("./schema-swagger/create-post.schema");
-const post_schema_1 = require("../db-schema/post.schema");
-const comments_scheme_1 = require("../db-schema/comments.scheme");
+const schema_swagger_1 = require("./schema-swagger");
 const jwt_auth_guard_1 = require("../auth/guard/jwt-auth.guard");
 const validate_pipe_1 = require("../global/pipe/validate.pipe");
 const validateIsNotVoid_pipe_1 = require("../global/pipe/validateIsNotVoid.pipe");
+const post_schema_1 = require("../db-schema/post.schema");
+const comments_schema_1 = require("../db-schema/comments.schema");
 const comments_service_1 = require("../comments/comments.service");
 const create_comment_schema_1 = require("../comments/schema-swagger/create-comment.schema");
 let PostsController = class PostsController {
@@ -40,8 +40,9 @@ let PostsController = class PostsController {
     createPost(req, dto, { image }) {
         return this.postsService.createPost(dto, image[0], req.user._id);
     }
-    removePost(id, req) {
-        return this.postsService.removePost(id, req.user._id);
+    removePost(postId, req) {
+        this.commentsService.removeAllPostComments(postId);
+        return this.postsService.removePost(postId, req.user._id);
     }
     likes(id, req) {
         return this.postsService.likes(id, req.user._id);
@@ -63,7 +64,7 @@ __decorate([
             description: 'User access token',
         },
     ]),
-    (0, swagger_1.ApiResponse)({ status: 200, description: 'Posts found', type: [post_schema_1.Post] }),
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'Posts found', type: [schema_swagger_1.GetAllPostsSchema] }),
     (0, swagger_1.ApiResponse)({ status: 403, description: 'Invalid token' }),
     (0, swagger_1.ApiResponse)({ status: 500, description: 'Server error' }),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
@@ -76,7 +77,7 @@ __decorate([
 __decorate([
     (0, swagger_1.ApiOperation)({ summary: 'Get post by id' }),
     (0, swagger_1.ApiBearerAuth)(),
-    (0, swagger_1.ApiResponse)({ status: 200, description: 'Post found', type: post_schema_1.Post }),
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'Post found', type: schema_swagger_1.GetOnePostSchema }),
     (0, swagger_1.ApiResponse)({ status: 403, description: 'Invalid token' }),
     (0, swagger_1.ApiResponse)({ status: 500, description: 'Server error' }),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
@@ -104,7 +105,7 @@ __decorate([
             description: 'User access token',
         },
     ]),
-    (0, swagger_1.ApiBody)({ type: create_post_schema_1.CreatePostSchema }),
+    (0, swagger_1.ApiBody)({ type: schema_swagger_1.CreatePostSchema }),
     (0, swagger_1.ApiConsumes)('multipart/form-data'),
     (0, swagger_1.ApiResponse)({ status: 201, description: 'Post created', type: post_schema_1.Post }),
     (0, swagger_1.ApiResponse)({ status: 400, description: 'Bad Request' }),
@@ -173,7 +174,7 @@ __decorate([
     (0, swagger_1.ApiBearerAuth)(),
     (0, swagger_1.ApiBody)({ type: create_comment_schema_1.CreateCommentSchema }),
     (0, swagger_1.ApiConsumes)('multipart/form-data'),
-    (0, swagger_1.ApiResponse)({ status: 201, description: 'Comment created', type: comments_scheme_1.Comment }),
+    (0, swagger_1.ApiResponse)({ status: 201, description: 'Comment created', type: comments_schema_1.Comment }),
     (0, swagger_1.ApiResponse)({ status: 400, description: 'Bad Request' }),
     (0, swagger_1.ApiResponse)({ status: 403, description: 'Invalid token' }),
     (0, swagger_1.ApiResponse)({ status: 500, description: 'Server error' }),
@@ -197,7 +198,7 @@ __decorate([
 __decorate([
     (0, swagger_1.ApiOperation)({ summary: 'Delete comment' }),
     (0, swagger_1.ApiBearerAuth)(),
-    (0, swagger_1.ApiResponse)({ status: 200, description: 'Comment deleted', type: comments_scheme_1.Comment }),
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'Comment deleted', type: comments_schema_1.Comment }),
     (0, swagger_1.ApiResponse)({ status: 403, description: 'Invalid token' }),
     (0, swagger_1.ApiResponse)({ status: 404, description: 'Not Found' }),
     (0, swagger_1.ApiResponse)({ status: 500, description: 'Server error' }),

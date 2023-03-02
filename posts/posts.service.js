@@ -75,14 +75,20 @@ let PostsService = class PostsService {
         await post.save();
         return post;
     }
-    async addComment(postId, comment) {
+    async addCommentToPost(postId, comment) {
         const post = await this.postModel.findById(postId);
+        if (!post) {
+            throw new common_1.HttpException('Post not found', common_1.HttpStatus.NOT_FOUND);
+        }
         post.comments.push(comment._id);
         await post.save();
         return;
     }
-    async removeComment(postId, comment) {
+    async removeCommentFromPost(postId, comment) {
         const post = await this.postModel.findById(postId);
+        if (!post) {
+            throw new common_1.HttpException('Post not found', common_1.HttpStatus.NOT_FOUND);
+        }
         post.comments = post.comments.filter(x => x.toString() !== comment._id.toString());
         await post.save();
         return;

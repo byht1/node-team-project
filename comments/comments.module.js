@@ -10,7 +10,7 @@ exports.CommentsModule = void 0;
 const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
 const auth_module_1 = require("../auth/auth.module");
-const comments_scheme_1 = require("../db-schema/comments.scheme");
+const comments_schema_1 = require("../db-schema/comments.schema");
 const posts_module_1 = require("../posts/posts.module");
 const user_module_1 = require("../user/user.module");
 const comments_service_1 = require("./comments.service");
@@ -18,7 +18,7 @@ let CommentsModule = class CommentsModule {
 };
 CommentsModule = __decorate([
     (0, common_1.Module)({
-        imports: [mongoose_1.MongooseModule.forFeature([{ name: comments_scheme_1.Comment.name, schema: comments_scheme_1.CommentSchema }]), auth_module_1.AuthModule, user_module_1.UserModule, (0, common_1.forwardRef)(() => posts_module_1.PostsModule)],
+        imports: [mongoose_1.MongooseModule.forFeature([{ name: comments_schema_1.Comment.name, schema: comments_schema_1.CommentSchema }]), auth_module_1.AuthModule, user_module_1.UserModule, (0, common_1.forwardRef)(() => posts_module_1.PostsModule)],
         providers: [comments_service_1.CommentsService],
         exports: [comments_service_1.CommentsService],
     })

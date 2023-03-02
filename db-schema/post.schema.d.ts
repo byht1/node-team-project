@@ -1,5 +1,5 @@
 import mongoose, { Document } from "mongoose";
-import { Comment } from "./comments.scheme";
+import { Comment } from "./comments.schema";
 import { Users } from "./user.schema";
 export type PostDocument = Post & Document;
 export declare class Post {
