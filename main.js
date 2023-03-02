@@ -10,7 +10,6 @@ const start = async () => {
         const app = await core_1.NestFactory.create(app_module_1.AppModule, { cors: true });
         let test = 1;
         setInterval(() => {
-            fetch('https://node-team-project.onrender.com/docs');
             console.log('test', test);
             test += 1;
         }, 10 * 60 * 1000);
