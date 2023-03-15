@@ -56,6 +56,24 @@ export class UserService {
     return this.normalizeData(user);
   }
 
+  async addNotice(userId: TId, notice: Notice) {
+    const user = await this.usersModel.findById(userId);
+
+    user.advertisement.push(notice._id);
+    user.save();
+
+    return;
+  }
+
+  async removeNotise(userId: TId, notice: Notice) {
+    const user = await this.usersModel.findById(userId);
+
+    user.advertisement = user.advertisement.filter(x => x.toString() !== notice._id.toString());
+    user.save();
+
+    return;
+  }
+
   async addFavirite(userId: TId, advertisementId: ObjectId) {
     const user = await this.usersModel.findById(userId);
 
@@ -71,19 +89,19 @@ export class UserService {
     return user.favorite;
   }
 
-  async removeNoticeFromFavorite(userId: TId, noticeId: ObjectId | any): Promise<ObjectId> {
-    await this.usersModel.findByIdAndUpdate(userId, {
-      $pull: { favorite: noticeId },
-    });
-    return noticeId;
-  }
-
   async addNoticeToFavorite(userId: TId, noticeId: ObjectId): Promise<ObjectId> {
     const user = await this.usersModel.findById(userId);
 
     user.favorite.push(noticeId);
     await user.save();
 
+    return noticeId;
+  }
+
+  async removeNoticeFromFavorite(userId: TId, noticeId: ObjectId | any): Promise<ObjectId> {
+    await this.usersModel.findByIdAndUpdate(userId, {
+      $pull: { favorite: noticeId },
+    });
     return noticeId;
   }
 
@@ -102,10 +120,12 @@ export class UserService {
     return;
   }
 
-  async removePet(userId: TId, pet: PetDocument): Promise<void> {
+  async removePet(userId: TId, petId: ObjectId): Promise<void> {
     const user = await this.usersModel.findById(userId);
 
-    user.cards = user.cards.filter(x => x.toString() !== pet._id.toString());
+    const petIdToString = petId.toString();
+    user.cards = user.cards.filter(x => x.toString() !== petIdToString);
+    
     await user.save();
 
     return;
@@ -120,10 +140,12 @@ export class UserService {
     return;
   }
 
-  async removePost(userId: TId, post: PostDocument): Promise<void> {
+  async removePost(userId: TId, postId: ObjectId): Promise<void> {
     const user = await this.usersModel.findById(userId);
 
-    user.posts = user.posts.filter(x => x.toString() !== post._id.toString());
+    const postIdToString = postId.toString();
+    user.posts = user.posts.filter(x => x.toString() !== postIdToString);
+
     await user.save();
 
     return;
@@ -138,29 +160,13 @@ export class UserService {
     return;
   }
 
-  async removeComment(userId: TId, comment: CommentDocument): Promise<void> {
+  async removeComment(userId: TId, commentId: ObjectId): Promise<void> {
     const user = await this.usersModel.findById(userId);
 
-    user.comments = user.comments.filter(x => x.toString() !== comment._id.toString());
+    const commentIdToString = commentId.toString();
+    user.comments = user.comments.filter(x => x.toString() !== commentIdToString);
+    
     await user.save();
-
-    return;
-  }
-
-  async addNotice(userId: TId, post: Notice) {
-    const user = await this.usersModel.findById(userId);
-
-    user.advertisement.push(post._id);
-    user.save();
-
-    return;
-  }
-
-  async removeNotise(userId: TId, post: Notice) {
-    const user = await this.usersModel.findById(userId);
-
-    user.advertisement = user.advertisement.filter(x => x.toString() !== post._id.toString());
-    user.save();
 
     return;
   }

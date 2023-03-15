@@ -60,23 +60,27 @@ export class PostsService {
     }
 
     async removePost(postId: ObjectId, userId: ObjectId): Promise<Post> {
-        const postFind = await this.postModel.findOneAndRemove({ author: {_id: userId}, _id: postId}).select({ createdAt: 0, updatedAt: 0 });
+        const post = await this.postModel.findOneAndRemove({ author: {_id: userId}, _id: postId}).select({ createdAt: 0, updatedAt: 0 });
 
-        if(!postFind) {
+        if(!post) {
             throw new HttpException('Post not found', HttpStatus.NOT_FOUND);
         }
-        const string = postFind.image.split('/').pop();
-        await this.fileService.deleteFile(string, TypeOperation.POSTS);
-        await this.userService.removePost(userId, postFind);
+        const string = post.image.split('/').pop();
 
-        return postFind;
+        const deleteFilePromise = this.fileService.deleteFile(string, TypeOperation.POSTS);
+        const userPostPromise = this.userService.removePost(userId, post._id);
+
+        await Promise.all([deleteFilePromise, userPostPromise])
+
+        return post;
     }
 
     async likes(postId: ObjectId, userId: ObjectId): Promise<Post> {
         const post = await this.postModel.findById(postId);
 
         if (post.likes.includes(userId)) {
-            post.likes = post.likes.filter(x => x.toString() !== userId.toString());
+            const userIdToString = userId.toString()
+            post.likes = post.likes.filter(x => x.toString() !== userIdToString);
         } else {
             post.likes.push(userId)
         }
@@ -99,14 +103,16 @@ export class PostsService {
         return;
     }
 
-    async removeCommentFromPost(postId: ObjectId, comment: CommentDocument) {
+    async removeCommentFromPost(postId: ObjectId, commentId: ObjectId) {
         const post = await this.postModel.findById(postId);
 
         if(!post) {
             throw new HttpException('Post not found', HttpStatus.NOT_FOUND); 
         }
 
-        post.comments = post.comments.filter(x => x.toString() !== comment._id.toString());
+        const commentIdToString = commentId.toString();
+        post.comments = post.comments.filter(x => x.toString() !== commentIdToString);
+        
         await post.save();
 
         return;
