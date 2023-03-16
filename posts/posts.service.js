@@ -55,19 +55,21 @@ let PostsService = class PostsService {
         return post;
     }
     async removePost(postId, userId) {
-        const postFind = await this.postModel.findOneAndRemove({ author: { _id: userId }, _id: postId }).select({ createdAt: 0, updatedAt: 0 });
-        if (!postFind) {
+        const post = await this.postModel.findOneAndRemove({ author: { _id: userId }, _id: postId }).select({ createdAt: 0, updatedAt: 0 });
+        if (!post) {
             throw new common_1.HttpException('Post not found', common_1.HttpStatus.NOT_FOUND);
         }
-        const string = postFind.image.split('/').pop();
-        await this.fileService.deleteFile(string, s3_service_1.TypeOperation.POSTS);
-        await this.userService.removePost(userId, postFind);
-        return postFind;
+        const string = post.image.split('/').pop();
+        const deleteFilePromise = this.fileService.deleteFile(string, s3_service_1.TypeOperation.POSTS);
+        const userPostPromise = this.userService.removePost(userId, post._id);
+        await Promise.all([deleteFilePromise, userPostPromise]);
+        return post;
     }
     async likes(postId, userId) {
         const post = await this.postModel.findById(postId);
         if (post.likes.includes(userId)) {
-            post.likes = post.likes.filter(x => x.toString() !== userId.toString());
+            const userIdToString = userId.toString();
+            post.likes = post.likes.filter(id => id.toString() !== userIdToString);
         }
         else {
             post.likes.push(userId);
@@ -84,13 +86,10 @@ let PostsService = class PostsService {
         await post.save();
         return;
     }
-    async removeCommentFromPost(postId, comment) {
-        const post = await this.postModel.findById(postId);
-        if (!post) {
-            throw new common_1.HttpException('Post not found', common_1.HttpStatus.NOT_FOUND);
-        }
-        post.comments = post.comments.filter(x => x.toString() !== comment._id.toString());
-        await post.save();
+    async removeCommentFromPost(postId, commentId) {
+        await this.postModel.findByIdAndUpdate(postId, {
+            $pull: { comments: commentId },
+        });
         return;
     }
 };

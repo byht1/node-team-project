@@ -27,8 +27,9 @@ let CommentsService = class CommentsService {
     }
     async createComment(createCommentDto, postId, userId) {
         const comment = await this.commentModel.create(Object.assign(Object.assign({}, createCommentDto), { author: userId, post: postId }));
-        await this.postService.addCommentToPost(postId, comment);
-        await this.userService.addComment(userId, comment);
+        const postCommentPromise = await this.postService.addCommentToPost(postId, comment);
+        const userCommentPromise = await this.userService.addComment(userId, comment);
+        await Promise.all([postCommentPromise, userCommentPromise]);
         return comment;
     }
     async removeComment(commentId, postId, userId) {
@@ -37,8 +38,9 @@ let CommentsService = class CommentsService {
             throw new common_1.HttpException('Comment not found', common_1.HttpStatus.NOT_FOUND);
         }
         const comment = await this.commentModel.findByIdAndRemove(commentId).select({ createdAt: 0, updatedAt: 0 });
-        await this.postService.removeCommentFromPost(postId, comment);
-        await this.userService.removeComment(userId, comment);
+        const postCommentPromise = this.postService.removeCommentFromPost(postId, comment._id);
+        const userCommentPromise = this.userService.removeComment(userId, comment._id);
+        await Promise.all([postCommentPromise, userCommentPromise]);
         return comment;
     }
     async removeAllPostComments(postId) {

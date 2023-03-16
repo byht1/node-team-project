@@ -66,7 +66,7 @@ let NoticeService = class NoticeService {
         if (picturePath.length > 0) {
             Promise.all(picturePath.map(el => this.s3Service.deleteFile(el, s3_service_1.TypeOperation.IMAGE)));
         }
-        await this.userService.removeNotise(userId, notice);
+        await this.userService.removeNotise(userId, notice._id);
         return notice;
     }
 };

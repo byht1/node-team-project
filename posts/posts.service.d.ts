@@ -16,5 +16,5 @@ export declare class PostsService {
     removePost(postId: ObjectId, userId: ObjectId): Promise<Post>;
     likes(postId: ObjectId, userId: ObjectId): Promise<Post>;
     addCommentToPost(postId: ObjectId, comment: CommentDocument): Promise<void>;
-    removeCommentFromPost(postId: ObjectId, comment: CommentDocument): Promise<void>;
+    removeCommentFromPost(postId: ObjectId, commentId: ObjectId): Promise<void>;
 }

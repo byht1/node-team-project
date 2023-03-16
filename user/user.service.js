@@ -56,26 +56,32 @@ let UserService = class UserService {
         const user = await this.usersModel.findByIdAndUpdate(userId, { photo: photoUrl }, { new: true });
         return this.normalizeData(user);
     }
-    async addFavirite(userId, advertisementId) {
+    async addNotice(userId, notice) {
         const user = await this.usersModel.findById(userId);
-        user.favorite.push(advertisementId);
+        user.advertisement.push(notice._id);
         await user.save();
-        return true;
+        return;
+    }
+    async removeNotise(userId, noticeId) {
+        await this.usersModel.findByIdAndUpdate(userId, {
+            $pull: { advertisement: noticeId },
+        });
+        return;
     }
     async getFavotiteNotices(userId) {
         const user = await this.usersModel.findById(userId, 'favorite').populate('favorite');
         return user.favorite;
     }
-    async removeNoticeFromFavorite(userId, noticeId) {
-        await this.usersModel.findByIdAndUpdate(userId, {
-            $pull: { favorite: noticeId },
-        });
-        return noticeId;
-    }
     async addNoticeToFavorite(userId, noticeId) {
         const user = await this.usersModel.findById(userId);
         user.favorite.push(noticeId);
         await user.save();
+        return noticeId;
+    }
+    async removeNoticeFromFavorite(userId, noticeId) {
+        await this.usersModel.findByIdAndUpdate(userId, {
+            $pull: { favorite: noticeId },
+        });
         return noticeId;
     }
     async allUserPets(userId) {
@@ -88,10 +94,10 @@ let UserService = class UserService {
         await user.save();
         return;
     }
-    async removePet(userId, pet) {
-        const user = await this.usersModel.findById(userId);
-        user.cards = user.cards.filter(x => x.toString() !== pet._id.toString());
-        await user.save();
+    async removePet(userId, petId) {
+        await this.usersModel.findByIdAndUpdate(userId, {
+            $pull: { cards: petId },
+        });
         return;
     }
     async addPost(userId, post) {
@@ -100,10 +106,10 @@ let UserService = class UserService {
         await user.save();
         return;
     }
-    async removePost(userId, post) {
-        const user = await this.usersModel.findById(userId);
-        user.posts = user.posts.filter(x => x.toString() !== post._id.toString());
-        await user.save();
+    async removePost(userId, postId) {
+        await this.usersModel.findByIdAndUpdate(userId, {
+            $pull: { posts: postId },
+        });
         return;
     }
     async addComment(userId, comment) {
@@ -112,22 +118,10 @@ let UserService = class UserService {
         await user.save();
         return;
     }
-    async removeComment(userId, comment) {
-        const user = await this.usersModel.findById(userId);
-        user.comments = user.comments.filter(x => x.toString() !== comment._id.toString());
-        await user.save();
-        return;
-    }
-    async addNotice(userId, post) {
-        const user = await this.usersModel.findById(userId);
-        user.advertisement.push(post._id);
-        user.save();
-        return;
-    }
-    async removeNotise(userId, post) {
-        const user = await this.usersModel.findById(userId);
-        user.advertisement = user.advertisement.filter(x => x.toString() !== post._id.toString());
-        user.save();
+    async removeComment(userId, commentId) {
+        await this.usersModel.findByIdAndUpdate(userId, {
+            $pull: { comments: commentId },
+        });
         return;
     }
     async userById(id) {

@@ -37,8 +37,9 @@ let PetsService = class PetsService {
             throw new common_1.HttpException('Pet not found', common_1.HttpStatus.NOT_FOUND);
         }
         const string = pet.image.split('/').pop();
-        await this.fileService.deleteFile(string, s3_service_1.TypeOperation.PETS);
-        await this.userService.removePet(userId, pet);
+        const deleteFilePromise = this.fileService.deleteFile(string, s3_service_1.TypeOperation.PETS);
+        const userPetPromise = this.userService.removePet(userId, pet._id);
+        await Promise.all([deleteFilePromise, userPetPromise]);
         return pet;
     }
 };
