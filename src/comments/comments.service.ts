@@ -19,8 +19,10 @@ export class CommentsService {
             post: postId,
         });
 
-        await this.postService.addCommentToPost(postId, comment);
-        await this.userService.addComment(userId, comment);
+        const postCommentPromise = await this.postService.addCommentToPost(postId, comment);
+        const userCommentPromise = await this.userService.addComment(userId, comment);
+
+        await Promise.all([postCommentPromise, userCommentPromise]);
 
         return comment;
     }
@@ -33,8 +35,10 @@ export class CommentsService {
         }
         const comment = await this.commentModel.findByIdAndRemove(commentId).select({ createdAt: 0, updatedAt: 0 });
 
-        await this.postService.removeCommentFromPost(postId, comment);
-        await this.userService.removeComment(userId, comment);
+        const postCommentPromise = this.postService.removeCommentFromPost(postId, comment._id);
+        const userCommentPromise = this.userService.removeComment(userId, comment._id);
+
+        await Promise.all([postCommentPromise, userCommentPromise]);
 
         return comment;
     }
