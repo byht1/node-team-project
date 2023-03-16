@@ -60,27 +60,17 @@ export class UserService {
     const user = await this.usersModel.findById(userId);
 
     user.advertisement.push(notice._id);
-    user.save();
-
-    return;
-  }
-
-  async removeNotise(userId: TId, notice: Notice) {
-    const user = await this.usersModel.findById(userId);
-
-    user.advertisement = user.advertisement.filter(x => x.toString() !== notice._id.toString());
-    user.save();
-
-    return;
-  }
-
-  async addFavirite(userId: TId, advertisementId: ObjectId) {
-    const user = await this.usersModel.findById(userId);
-
-    user.favorite.push(advertisementId);
     await user.save();
 
-    return true;
+    return;
+  }
+
+  async removeNotise(userId: TId, noticeId: ObjectId) {
+    await this.usersModel.findByIdAndUpdate(userId, {
+      $pull: { advertisement: noticeId },
+    });
+
+    return;
   }
 
   async getFavotiteNotices(userId: TId) {
@@ -121,12 +111,9 @@ export class UserService {
   }
 
   async removePet(userId: TId, petId: ObjectId): Promise<void> {
-    const user = await this.usersModel.findById(userId);
-
-    const petIdToString = petId.toString();
-    user.cards = user.cards.filter(x => x.toString() !== petIdToString);
-    
-    await user.save();
+    await this.usersModel.findByIdAndUpdate(userId, {
+      $pull: { cards: petId },
+    });
 
     return;
   }
@@ -141,12 +128,9 @@ export class UserService {
   }
 
   async removePost(userId: TId, postId: ObjectId): Promise<void> {
-    const user = await this.usersModel.findById(userId);
-
-    const postIdToString = postId.toString();
-    user.posts = user.posts.filter(x => x.toString() !== postIdToString);
-
-    await user.save();
+    await this.usersModel.findByIdAndUpdate(userId, {
+      $pull: { posts: postId },
+    });
 
     return;
   }
@@ -161,12 +145,9 @@ export class UserService {
   }
 
   async removeComment(userId: TId, commentId: ObjectId): Promise<void> {
-    const user = await this.usersModel.findById(userId);
-
-    const commentIdToString = commentId.toString();
-    user.comments = user.comments.filter(x => x.toString() !== commentIdToString);
-    
-    await user.save();
+    await this.usersModel.findByIdAndUpdate(userId, {
+      $pull: { comments: commentId },
+    });
 
     return;
   }

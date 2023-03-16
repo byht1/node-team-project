@@ -79,10 +79,10 @@ export class PostsService {
         const post = await this.postModel.findById(postId);
 
         if (post.likes.includes(userId)) {
-            const userIdToString = userId.toString()
-            post.likes = post.likes.filter(x => x.toString() !== userIdToString);
+            const userIdToString = userId.toString();
+            post.likes = post.likes.filter(id => id.toString() !== userIdToString);
         } else {
-            post.likes.push(userId)
+            post.likes.push(userId);
         }
         
         await post.save();
@@ -104,16 +104,9 @@ export class PostsService {
     }
 
     async removeCommentFromPost(postId: ObjectId, commentId: ObjectId) {
-        const post = await this.postModel.findById(postId);
-
-        if(!post) {
-            throw new HttpException('Post not found', HttpStatus.NOT_FOUND); 
-        }
-
-        const commentIdToString = commentId.toString();
-        post.comments = post.comments.filter(x => x.toString() !== commentIdToString);
-        
-        await post.save();
+        await this.postModel.findByIdAndUpdate(postId, {
+            $pull: { comments: commentId },
+        });
 
         return;
     }

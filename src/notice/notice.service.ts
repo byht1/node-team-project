@@ -76,7 +76,7 @@ export class NoticeService {
       Promise.all(picturePath.map(el => this.s3Service.deleteFile(el, TypeOperation.IMAGE)));
     }
 
-    await this.userService.removeNotise(userId, notice);
+    await this.userService.removeNotise(userId, notice._id);
 
     return notice;
   }
