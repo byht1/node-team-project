@@ -19,8 +19,8 @@ export class CommentsService {
             post: postId,
         });
 
-        const postCommentPromise = await this.postService.addCommentToPost(postId, comment);
-        const userCommentPromise = await this.userService.addComment(userId, comment);
+        const postCommentPromise = this.postService.addCommentToPost(postId, comment);
+        const userCommentPromise = this.userService.addComment(userId, comment);
 
         await Promise.all([postCommentPromise, userCommentPromise]);
 
