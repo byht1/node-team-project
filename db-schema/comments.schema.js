@@ -22,7 +22,7 @@ __decorate([
     __metadata("design:type", mongoose_2.default.Schema.Types.ObjectId)
 ], Comment.prototype, "_id", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)({ example: 'Post title' }),
+    (0, swagger_1.ApiProperty)({ example: 'Comment text' }),
     (0, mongoose_1.Prop)({ required: [true, 'text is required'] }),
     __metadata("design:type", String)
 ], Comment.prototype, "text", void 0);

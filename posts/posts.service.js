@@ -55,7 +55,7 @@ let PostsService = class PostsService {
         return post;
     }
     async removePost(postId, userId) {
-        const post = await this.postModel.findOneAndRemove({ author: { _id: userId }, _id: postId }).select({ createdAt: 0, updatedAt: 0 });
+        const post = await this.postModel.findOneAndRemove({ author: userId, _id: postId }).select({ createdAt: 0, updatedAt: 0 });
         if (!post) {
             throw new common_1.HttpException('Post not found', common_1.HttpStatus.NOT_FOUND);
         }

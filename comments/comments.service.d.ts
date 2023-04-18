@@ -1,8 +1,8 @@
 import { Model, ObjectId } from 'mongoose';
 import { Comment, CommentDocument } from 'src/db-schema/comments.schema';
+import { CreateCommentDto } from './dto';
 import { PostsService } from 'src/posts/posts.service';
 import { UserService } from 'src/user/user.service';
-import { CreateCommentDto } from './dto';
 export declare class CommentsService {
     private commentModel;
     private postService;

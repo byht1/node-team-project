@@ -1,10 +1,11 @@
 import { ObjectId } from 'mongoose';
 import { PostsService } from './posts.service';
-import { CreateCommentDto, CreatePostDto, SearchDto, UploadeFileDto } from './dto';
+import { CreatePostDto, SearchDto, UploadeFileDto } from './dto';
 import { IRequestUser } from 'src/type/req';
 import { Post as PostDBSchema } from 'src/db-schema/post.schema';
 import { Comment as CommentDBSchema } from 'src/db-schema/comments.schema';
 import { CommentsService } from 'src/comments/comments.service';
+import { CreateCommentDto } from 'src/comments/dto';
 export declare class PostsController {
     private readonly postsService;
     private readonly commentsService;

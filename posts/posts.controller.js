@@ -26,6 +26,7 @@ const post_schema_1 = require("../db-schema/post.schema");
 const comments_schema_1 = require("../db-schema/comments.schema");
 const comments_service_1 = require("../comments/comments.service");
 const create_comment_schema_1 = require("../comments/schema-swagger/create-comment.schema");
+const dto_2 = require("../comments/dto");
 let PostsController = class PostsController {
     constructor(postsService, commentsService) {
         this.postsService = postsService;
@@ -173,12 +174,10 @@ __decorate([
     (0, swagger_1.ApiOperation)({ summary: 'Add comment' }),
     (0, swagger_1.ApiBearerAuth)(),
     (0, swagger_1.ApiBody)({ type: create_comment_schema_1.CreateCommentSchema }),
-    (0, swagger_1.ApiConsumes)('multipart/form-data'),
     (0, swagger_1.ApiResponse)({ status: 201, description: 'Comment created', type: comments_schema_1.Comment }),
     (0, swagger_1.ApiResponse)({ status: 400, description: 'Bad Request' }),
     (0, swagger_1.ApiResponse)({ status: 403, description: 'Invalid token' }),
     (0, swagger_1.ApiResponse)({ status: 500, description: 'Server error' }),
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, swagger_1.ApiParam)({ name: 'postId', required: true, description: 'Post ID' }),
     (0, swagger_1.ApiHeaders)([
         {
@@ -187,12 +186,14 @@ __decorate([
             description: 'User access token',
         },
     ]),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, common_1.UsePipes)(validate_pipe_1.ValidatePipe),
     (0, common_1.Post)(':postId/comments'),
     __param(0, (0, common_1.Param)('postId')),
     __param(1, (0, common_1.Req)()),
     __param(2, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Object, dto_1.CreateCommentDto]),
+    __metadata("design:paramtypes", [Object, Object, dto_2.CreateCommentDto]),
     __metadata("design:returntype", void 0)
 ], PostsController.prototype, "addComment", null);
 __decorate([

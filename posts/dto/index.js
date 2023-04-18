@@ -17,5 +17,4 @@ Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./create-post.dto"), exports);
 __exportStar(require("./upload-file.dto"), exports);
 __exportStar(require("./search.dto"), exports);
-__exportStar(require("./create-comment.dto"), exports);
 //# sourceMappingURL=index.js.map

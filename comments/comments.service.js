@@ -33,7 +33,7 @@ let CommentsService = class CommentsService {
         return comment;
     }
     async removeComment(commentId, postId, userId) {
-        const commentFind = await this.commentModel.findOne({ owner: userId, _id: commentId });
+        const commentFind = await this.commentModel.findOne({ owner: userId, _id: commentId, post: postId });
         if (!commentFind) {
             throw new common_1.HttpException('Comment not found', common_1.HttpStatus.NOT_FOUND);
         }

@@ -15,6 +15,8 @@ let ValidatePipe = class ValidatePipe {
     async transform(value, metadata) {
         if (!value)
             throw new validation_exception_1.ValidationException('The request body cannot be empty');
+        if (typeof value !== 'object')
+            return value;
         const obj = (0, class_transformer_1.plainToClass)(metadata.metatype, value);
         const errors = await (0, class_validator_1.validate)(obj);
         if (errors.length) {
