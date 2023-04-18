@@ -15,6 +15,7 @@ class CreateCommentDto {
 }
 __decorate([
     (0, class_validator_1.IsString)({ message: 'Text should be a string' }),
+    (0, class_validator_1.Matches)(/^\s*\S/, { message: 'The field shouldn\'t be empty' }),
     (0, class_validator_1.Length)(2, 200, { message: 'Text should be from 2 to 200 symbols' }),
     __metadata("design:type", String)
 ], CreateCommentDto.prototype, "text", void 0);

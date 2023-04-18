@@ -80,6 +80,7 @@ __decorate([
     (0, swagger_1.ApiBearerAuth)(),
     (0, swagger_1.ApiResponse)({ status: 200, description: 'Post found', type: schema_swagger_1.GetOnePostSchema }),
     (0, swagger_1.ApiResponse)({ status: 403, description: 'Invalid token' }),
+    (0, swagger_1.ApiResponse)({ status: 404, description: 'Not Found' }),
     (0, swagger_1.ApiResponse)({ status: 500, description: 'Server error' }),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, swagger_1.ApiParam)({ name: 'postId', required: true, description: 'Post ID' }),
