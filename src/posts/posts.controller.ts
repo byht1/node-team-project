@@ -26,7 +26,7 @@ import {
 } from '@nestjs/swagger';
 import { ObjectId } from 'mongoose';
 import { PostsService } from './posts.service';
-import { CreateCommentDto, CreatePostDto, SearchDto, UploadeFileDto } from './dto';
+import { CreatePostDto, SearchDto, UploadeFileDto } from './dto';
 import { CreatePostSchema, GetAllPostsSchema, GetOnePostSchema } from './schema-swagger';
 import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
 import { ValidatePipe } from 'src/global/pipe/validate.pipe';
@@ -36,6 +36,7 @@ import { Post as PostDBSchema } from 'src/db-schema/post.schema';
 import { Comment as CommentDBSchema } from 'src/db-schema/comments.schema';
 import { CommentsService } from 'src/comments/comments.service';
 import { CreateCommentSchema } from 'src/comments/schema-swagger/create-comment.schema';
+import { CreateCommentDto } from 'src/comments/dto';
 
 @ApiTags('Blog')
 @Controller('posts')
@@ -148,12 +149,10 @@ export class PostsController {
     @ApiOperation({ summary: 'Add comment' })
     @ApiBearerAuth()
     @ApiBody({ type: CreateCommentSchema })
-    @ApiConsumes('multipart/form-data')
     @ApiResponse({ status: 201, description: 'Comment created', type: CommentDBSchema })
     @ApiResponse({ status: 400, description: 'Bad Request' })
     @ApiResponse({ status: 403, description: 'Invalid token' })
     @ApiResponse({ status: 500, description: 'Server error' })
-    @UseGuards(JwtAuthGuard)
     @ApiParam({ name: 'postId', required: true, description: 'Post ID' })
     @ApiHeaders([
         {
@@ -162,10 +161,12 @@ export class PostsController {
             description: 'User access token',
         },
     ])
+    @UseGuards(JwtAuthGuard)
+    @UsePipes(ValidatePipe)
+    // @UsePipes(ValidateIsNotVoid)
     @Post(':postId/comments')
-    addComment(@Param('postId') postId: ObjectId, 
-    @Req() req: IRequestUser,
-    @Body() dto: CreateCommentDto) {
+    addComment(@Param('postId') postId: ObjectId, @Req() req: IRequestUser, @Body() dto: CreateCommentDto) {
+        console.log(169, postId)
         return this.commentsService.createComment(dto, postId, req.user._id)
     }
 

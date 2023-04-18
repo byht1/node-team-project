@@ -2,6 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, ObjectId } from 'mongoose';
 import { Comment, CommentDocument } from 'src/db-schema/comments.schema';
+// import { CreateCommentDto } from 'src/posts/dto';
 import { PostsService } from 'src/posts/posts.service';
 import { UserService } from 'src/user/user.service';
 import { CreateCommentDto } from './dto';
@@ -13,6 +14,7 @@ export class CommentsService {
     private userService: UserService) {}
 
     async createComment(createCommentDto: CreateCommentDto, postId: ObjectId, userId: ObjectId): Promise<Comment> {
+        console.log(17, postId)
         const comment = await this.commentModel.create({
             ...createCommentDto,
             author: userId,
@@ -28,7 +30,7 @@ export class CommentsService {
     }
 
     async removeComment(commentId: ObjectId, postId: ObjectId, userId: ObjectId): Promise<Comment> {
-        const commentFind = await this.commentModel.findOne({ owner: userId, _id: commentId });
+        const commentFind = await this.commentModel.findOne({ owner: userId, _id: commentId, post: postId });
 
         if(!commentFind) {
             throw new HttpException('Comment not found', HttpStatus.NOT_FOUND);

@@ -16,7 +16,8 @@ export class Comment {
     text: string;
 
     @ApiProperty({example: '63f37a8cbf6f72e7f1b27ba3'})
-    @Prop({ required: true, type: mongoose.Schema.Types.ObjectId, ref: 'Post' })
+    // @Prop({ required: true, type: mongoose.Schema.Types.ObjectId, ref: 'Post' })
+    @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Post' })
     post: Post;
     
     @ApiProperty({example: '63f37a8cbf6f72e7f1b27ba3'})
