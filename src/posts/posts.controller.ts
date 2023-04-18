@@ -66,6 +66,7 @@ export class PostsController {
     @ApiBearerAuth()
     @ApiResponse({ status: 200, description: 'Post found', type: GetOnePostSchema })
     @ApiResponse({ status: 403, description: 'Invalid token' })
+    @ApiResponse({ status: 404, description: 'Not Found' })
     @ApiResponse({ status: 500, description: 'Server error' })
     @UseGuards(JwtAuthGuard)
     @ApiParam({ name: 'postId', required: true, description: 'Post ID' })
