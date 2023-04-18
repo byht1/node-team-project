@@ -7,7 +7,6 @@ import { Post, PostDocument } from 'src/db-schema/post.schema';
 import { UserService } from 'src/user/user.service';
 import { CreatePostDto, UploadeFileDto } from './dto';
 import { SearchDto } from './dto/search.dto';
-import { TId } from 'src/type';
 
 @Injectable()
 export class PostsService {
@@ -61,7 +60,7 @@ export class PostsService {
     }
 
     async removePost(postId: ObjectId, userId: ObjectId): Promise<Post> {
-        const post = await this.postModel.findOneAndRemove({ author: {_id: userId}, _id: postId}).select({ createdAt: 0, updatedAt: 0 });
+        const post = await this.postModel.findOneAndRemove({ author: userId, _id: postId}).select({ createdAt: 0, updatedAt: 0 });
 
         if(!post) {
             throw new HttpException('Post not found', HttpStatus.NOT_FOUND);
@@ -92,11 +91,9 @@ export class PostsService {
     }
 
     async addCommentToPost(postId: ObjectId, comment: CommentDocument) {
-        console.log(1, postId)
         const post = await this.postModel.findById(postId);
 
         if(!post) {
-            console.log(2, post)
             throw new HttpException('Post not found', HttpStatus.NOT_FOUND); 
         }
 
@@ -106,11 +103,10 @@ export class PostsService {
         return;
     }
 
-    async removeCommentFromPost(postId: TId, commentId: ObjectId) {
+    async removeCommentFromPost(postId: ObjectId, commentId: ObjectId) {
         await this.postModel.findByIdAndUpdate(postId, {
             $pull: { comments: commentId },
         });
-
 
         return;
     }

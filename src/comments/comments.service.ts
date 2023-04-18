@@ -2,10 +2,9 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, ObjectId } from 'mongoose';
 import { Comment, CommentDocument } from 'src/db-schema/comments.schema';
-// import { CreateCommentDto } from 'src/posts/dto';
+import { CreateCommentDto } from './dto';
 import { PostsService } from 'src/posts/posts.service';
 import { UserService } from 'src/user/user.service';
-import { CreateCommentDto } from './dto';
 
 @Injectable()
 export class CommentsService {
@@ -14,7 +13,6 @@ export class CommentsService {
     private userService: UserService) {}
 
     async createComment(createCommentDto: CreateCommentDto, postId: ObjectId, userId: ObjectId): Promise<Comment> {
-        console.log(17, postId)
         const comment = await this.commentModel.create({
             ...createCommentDto,
             author: userId,

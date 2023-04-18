@@ -163,10 +163,8 @@ export class PostsController {
     ])
     @UseGuards(JwtAuthGuard)
     @UsePipes(ValidatePipe)
-    // @UsePipes(ValidateIsNotVoid)
     @Post(':postId/comments')
     addComment(@Param('postId') postId: ObjectId, @Req() req: IRequestUser, @Body() dto: CreateCommentDto) {
-        console.log(169, postId)
         return this.commentsService.createComment(dto, postId, req.user._id)
     }
 
