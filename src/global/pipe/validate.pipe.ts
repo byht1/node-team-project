@@ -8,6 +8,7 @@ import { ValidationException } from 'src/global/exceptions/validation.exception'
 export class ValidatePipe implements PipeTransform {
   async transform(value: any, metadata: ArgumentMetadata): Promise<any> {
     if (!value) throw new ValidationException('The request body cannot be empty');
+    if (typeof value !== 'object') return value;
 
     const obj = plainToClass(metadata.metatype, value);
     const errors = await validate(obj);

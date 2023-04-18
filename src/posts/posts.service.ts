@@ -60,7 +60,7 @@ export class PostsService {
     }
 
     async removePost(postId: ObjectId, userId: ObjectId): Promise<Post> {
-        const post = await this.postModel.findOneAndRemove({ author: {_id: userId}, _id: postId}).select({ createdAt: 0, updatedAt: 0 });
+        const post = await this.postModel.findOneAndRemove({ author: userId, _id: postId}).select({ createdAt: 0, updatedAt: 0 });
 
         if(!post) {
             throw new HttpException('Post not found', HttpStatus.NOT_FOUND);

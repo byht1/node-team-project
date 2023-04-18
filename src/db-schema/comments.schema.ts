@@ -11,7 +11,7 @@ export class Comment {
     @ApiProperty({example: '63f139e997fc630d8da1ff68'})
     _id: mongoose.Schema.Types.ObjectId;
 
-    @ApiProperty({ example: 'Post title' })
+    @ApiProperty({ example: 'Comment text' })
     @Prop({ required: [true, 'text is required'] })
     text: string;
 
